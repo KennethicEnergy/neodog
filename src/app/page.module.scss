@@ -1,0 +1,28 @@
+.page {
+  font-family: var(--font-geist-sans);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease-in-out;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  // .page {
+  //   padding: 32px;
+  //   padding-bottom: 80px;
+  // }
+
+  // .main {
+  //   align-items: center;
+  // }
+
+  // .footer {
+  //   flex-wrap: wrap;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
+}

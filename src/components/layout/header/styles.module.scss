@@ -1,0 +1,15 @@
+.header {
+  height: 3.5rem;
+  background: #22394b;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .brandWrapper {
+    .brand {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+  }
+}
