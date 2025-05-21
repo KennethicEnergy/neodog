@@ -6,9 +6,9 @@ import styles from "./page.module.scss";
 export default function Home() {
   return (
     <div className={styles.page}>
-      <Header />
+      <Sidebar />
       <div className={styles.content}>
-        <Sidebar />
+        <Header />
         <Main/>
       </div>
     </div>

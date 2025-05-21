@@ -1,12 +1,11 @@
 .page {
   font-family: var(--font-geist-sans);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   transition: all 0.2s ease-in-out;
 
   .content {
-    display: flex;
-    flex-direction: column;
+    width: 100%;
   }
 }
 

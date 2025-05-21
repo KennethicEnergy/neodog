@@ -1,13 +1,18 @@
 .card {
   padding: 1rem;
-  border: 1px solid rgb(75, 82, 92);
   border-radius: 10px;
-  background: #222429;
+  background: #FFFFFF;
   text-align: center;
-  color: #fff;
-  height: 300px;
+  color: #c3c3c3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
   h2 {
     margin-bottom: 1rem;
+  }
+
+  p {
+    text-align: left;
   }
 }

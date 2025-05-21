@@ -1,11 +1,13 @@
 import React from 'react';
 import styles from './styles.module.scss';
+import { TCard } from '@/src/types/types';
 
-const Card = () => {
+
+const Card = ({ title, description, cardStyles }: TCard) => {
   return (
-    <div className={styles.card}>
-      <h2>Lorem Ipsum</h2>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus, placeat perspiciatis ratione alias illum impedit modi pariatur. Unde, fuga nobis.</p>
+    <div className={styles.card} style={cardStyles}>
+      <h2>{title}</h2>
+      <p>{description}</p>
     </div>
   )
 }
