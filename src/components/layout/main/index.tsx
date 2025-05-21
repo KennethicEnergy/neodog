@@ -6,10 +6,42 @@ const Main = () => {
   return (
     <main className={styles.main}>
       <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Enim, nisi?" cardStyles={{height: '200px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Enim, nisi?" cardStyles={{height: '200px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Enim, nisi?" cardStyles={{height: '200px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Enim, nisi?" cardStyles={{height: '200px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+      </div>
+      <div className={styles.gridRow}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
       </div>
     </main>
   )

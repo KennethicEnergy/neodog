@@ -3,25 +3,40 @@
   height: 100dvh;
   height: 100vh;
   background: #FFFFFF;
-  padding: 1.5rem;
+  padding: 0 1.2rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 1rem;
+
+  .brandWrapper {
+    display: flex;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .sidebarItems {
+    display: flex;
+    flex-direction: column;
+    height: calc(50vh - 3.5rem);
+    gap: 0.5rem;
+  }
 
   .sidebarItem, .sidebarBottomItem {
-    padding: 1rem 0;
+    padding: 0.5rem .9rem;
     display: flex;
-    justify-content: center;
-    border-radius: 0.2rem;
+    justify-content: flex-start;
+    border-radius: 0.5rem;
+    gap: 1rem;
 
     &:hover {
-      background: #364c5c;
+      background:#3B82F6;
       cursor: pointer;
+      color: #FFFFFF
     }
   }
 
   .sidebarItem.active {
-    background: #364c5c;
+    background: #3B82F6;
   }
 
   .sidebarItem {
@@ -29,6 +44,25 @@
   }
 
   .sidebarBottomItem {
-    align-items: end;
+    align-items: start;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .sidebar {
+    width: 4rem; // Minimized width
+    padding: 1rem 0.5rem;
+    transition: all 0.3s ease-in-out;
+
+    .sidebarItem, .sidebarBottomItem {
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem 0;
+    }
+
+    .sidebarItem span,
+    .sidebarBottomItem span {
+      display: none; // Hide text or labels
+    }
   }
 }
