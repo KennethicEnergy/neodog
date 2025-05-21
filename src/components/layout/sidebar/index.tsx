@@ -4,23 +4,19 @@ import clsx from 'clsx';
 import { useState } from 'react';
 
 const sidebarMenuItems = [
-  "Dashboard",
-  "Pets & Client",
-  "Appointments",
-  "Services",
-  "Reports",
-  "Support",
-  "Settings"
-]
+  'Dashboard',
+  'Pets & Client',
+  'Appointments',
+  'Services',
+  'Reports',
+  'Support',
+  'Settings'
+];
 
 const Sidebar = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const renderItems = (
-    items: string[],
-    className: string,
-    startIndex: number,
-  ) => (
+  const renderItems = (items: string[], className: string, startIndex: number) => (
     <div className={styles.sidebarItems}>
       {items.map((item, index) => {
         const itemIndex = startIndex + index;
@@ -32,8 +28,7 @@ const Sidebar = () => {
               className,
               activeIndex === itemIndex && styles.active
             )}
-            onClick={() => setActiveIndex(itemIndex)}
-          >
+            onClick={() => setActiveIndex(itemIndex)}>
             <DummyIcon />
             <p className={styles.itemName}>{item}</p>
           </div>
@@ -45,15 +40,14 @@ const Sidebar = () => {
   const renderBrand = () => (
     <div className={styles.brandWrapper}>
       <DummyIcon />
-      <h3 className={styles.brand}>
-        {/* NeoDog */}
-      </h3>
+      <h3 className={styles.brand}>{/* NeoDog */}</h3>
     </div>
   );
 
   const renderMenuItems = () => renderItems(sidebarMenuItems.slice(0, 5), styles.sidebarItem, 0);
 
-  const renderBottomItems = () => renderItems(sidebarMenuItems.slice(5, 7), styles.sidebarBottomItem, 5);
+  const renderBottomItems = () =>
+    renderItems(sidebarMenuItems.slice(5, 7), styles.sidebarBottomItem, 5);
 
   return (
     <div className={styles.sidebar}>

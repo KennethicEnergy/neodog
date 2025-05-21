@@ -6,9 +6,9 @@ const SearchBar = () => {
   return (
     <div className={styles.searchbar}>
       <DummyIcon />
-      <input type="text" placeholder="Search" />
+      <input type="text" placeholder="Search Clients, Pets, Appointments" />
     </div>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;

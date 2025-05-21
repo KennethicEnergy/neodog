@@ -67,7 +67,7 @@ const Table = () => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Table
+export default Table;

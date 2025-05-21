@@ -1,10 +1,8 @@
 import React from 'react';
-import styles from './styles.module.scss'
+import styles from './styles.module.scss';
 
 const DummyIcon = () => {
-  return (
-    <div className={styles.dummyIcon}/>
-  )
-}
+  return <div className={styles.dummyIcon} />;
+};
 
-export default DummyIcon
+export default DummyIcon;

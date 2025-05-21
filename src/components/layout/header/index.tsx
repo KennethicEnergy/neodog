@@ -4,14 +4,11 @@ import DummyIcon from '../../common/dummy-icon';
 import SearchBar from '../../common/searchbar';
 
 const Header = () => {
-
   const renderBrand = () => (
     <div className={styles.brandWrapper}>
-      <h3 className={styles.brand}>
-        {/* NeoDog */}
-      </h3>
+      <h3 className={styles.brand}>{/* NeoDog */}</h3>
     </div>
-  )
+  );
 
   const renderHeaderLeft = () => {
     return (
@@ -19,8 +16,8 @@ const Header = () => {
         {renderBrand()}
         <SearchBar />
       </div>
-    )
-  }
+    );
+  };
 
   const renderHeaderRight = () => {
     return (
@@ -36,8 +33,8 @@ const Header = () => {
         </div>
         <DummyIcon />
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <header className={styles.header}>
@@ -46,7 +43,7 @@ const Header = () => {
         {renderHeaderRight()}
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

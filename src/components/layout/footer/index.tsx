@@ -1,22 +1,13 @@
-import React from 'react'
-import styles from './styles.module.scss'
-import DummyIcon from '../../common/dummy-icon'
-
+import React from 'react';
+import styles from './styles.module.scss';
+import DummyIcon from '../../common/dummy-icon';
 
 const Footer = () => {
-  const FOOTER_MENUS = [
-    "Terms",
-    "Privacy",
-    "Help"
-  ]
+  const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];
 
   const renderAllRightsReserved = () => {
-    return (
-      <div className={styles.allRightsReserved}>
-        © 2025 NeoDog. All rights reserved.
-      </div>
-    )
-  }
+    return <div className={styles.allRightsReserved}>© 2025 NeoDog. All rights reserved.</div>;
+  };
 
   const renderFooterMenus = () => (
     <div className={styles.footerMenus}>
@@ -25,19 +16,18 @@ const Footer = () => {
           {menu}
         </div>
       ))}
-      <DummyIcon/>
-      <DummyIcon/>
-      <DummyIcon/>
+      <DummyIcon />
+      <DummyIcon />
+      <DummyIcon />
     </div>
-  )
-
+  );
 
   return (
     <div className={styles.footer}>
       {renderAllRightsReserved()}
       {renderFooterMenus()}
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
