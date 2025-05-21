@@ -4,19 +4,50 @@
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 1rem;
 
-  .user {
+  .headerLeft, .headerRight {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+  }
 
-    .name {
-      font-size: 12px;
+  .headerLeft {
+    justify-content: space-between;
+  }
+
+  .headerRight {
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .name {
+        font-size: 12px;
+      }
+      .role {
+        font-size: 10px;
+      }
     }
-    .role {
-      font-size: 10px;
-    }
+  }
+}
+
+.header .brandWrapper {
+  display: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .header {
+    padding: 1rem 1rem 1rem 0;
+  }
+  .header .brandWrapper {
+    display: block;
+  }
+}
+
+@media screen and (width: 1025px) {
+  .header .brandWrapper {
+    display: none;
   }
 }
