@@ -7,7 +7,9 @@ const Header = () => {
 
   const renderBrand = () => (
     <div className={styles.brandWrapper}>
-      <h3 className={styles.brand}>NeoDog</h3>
+      <h3 className={styles.brand}>
+        {/* NeoDog */}
+      </h3>
     </div>
   )
 
@@ -39,8 +41,10 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      {renderHeaderLeft()}
-      {renderHeaderRight()}
+      <div className={styles.headerWrapper}>
+        {renderHeaderLeft()}
+        {renderHeaderRight()}
+      </div>
     </header>
   )
 }

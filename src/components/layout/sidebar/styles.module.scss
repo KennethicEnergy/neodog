@@ -28,6 +28,7 @@
     justify-content: flex-start;
     border-radius: 0.5rem;
     gap: 1rem;
+    align-items: center;
 
     &:hover {
       background:#3B82F6;
@@ -39,14 +40,6 @@
   .sidebarItem.active {
     background: #3B82F6;
     color: #FFF;
-  }
-
-  .sidebarItem {
-    align-items: start;
-  }
-
-  .sidebarBottomItem {
-    align-items: start;
   }
 }
 

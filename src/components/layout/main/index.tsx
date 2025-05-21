@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './styles.module.scss';
 import Card from '../../common/card';
+import Footer from '../footer';
+import Table from '../../common/table';
 
 const Main = () => {
   return (
@@ -11,37 +13,21 @@ const Main = () => {
         <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '250px'}}/>
         <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '250px'}}/>
       </div>
-      <div className={styles.gridRow}>
+      <div className={styles.gridRow2}>
         <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '550px'}}/>
         <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '550px'}}/>
       </div>
-      <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
+      <div className={styles.gridRow2}>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '550px'}}/>
+        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '550px'}}/>
       </div>
+
       <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+        <Table />
       </div>
-      <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-      </div>
-      <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
-      </div>
-      <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '350px'}}/>
-      </div>
-      <div className={styles.gridRow}>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
-        <Card title="Lorem Ipsum" description="Lorem ipsum, dolor sit amet" cardStyles={{height: '150px'}}/>
+
+      <div className={styles.footerRow}>
+        <Footer />
       </div>
     </main>
   )

@@ -1,0 +1,16 @@
+.footer {
+  padding: 1rem;
+  border-radius: 10px;
+  background: #FFFFFF;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+
+  .footerMenus {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+}

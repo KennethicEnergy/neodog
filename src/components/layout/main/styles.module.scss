@@ -1,7 +1,7 @@
 .main {
   height: calc(100dvh - 3.5rem);
   height: calc(100vh - 3.5rem);
-  padding: 1.5rem 1.5rem 0 1.5rem;
+  padding: 1.5rem;
   overflow: auto;
   color: #171717;
   max-width: 1280px;
@@ -13,5 +13,19 @@
     gap: 1.5rem;
     justify-content: center;
     margin-bottom: 1.5rem;
+  }
+
+  .gridRow2 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .footerRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    justify-content: center;
   }
 }

@@ -7,7 +7,7 @@ const Card = ({ title, description, cardStyles }: TCard) => {
   return (
     <div className={styles.card} style={cardStyles}>
       <h2>{title}</h2>
-      <p>{description}</p>
+      {description && <p>{description}</p>}
     </div>
   )
 }
