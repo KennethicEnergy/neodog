@@ -23,7 +23,7 @@ export const DASHBOARD_METRIC_CARDS: TMetricCardData[] = [
     value: 32,
     label: 'Upcoming Appointments',
     trend: 8,
-    icon: '/images/calendar.svg',
+    icon: '/images/calendar-with-date.svg',
     color: '#34D870'
   },
   { value: 10, label: 'Vaccination', trend: 2, icon: '/images/vaccine.svg', color: '#FF9633' }

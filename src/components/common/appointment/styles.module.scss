@@ -55,7 +55,7 @@
     gap: 1rem;
 
     .appointment {
-      padding: 1rem 1.5rem;
+      padding: 1rem 1.2rem;
       border: 1px solid #e6e6e6;
       border-radius: 20px;
       width: 100%;
@@ -63,10 +63,11 @@
       justify-content: space-between;
 
       .appointmentLeft {
-        display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.2rem;
+        gap: .2rem;
+        display: flex;
+        justify-content: space-evenly;
 
         .client {
           font-weight: 600;
@@ -81,32 +82,50 @@
 
       .appointmentRight {
         display: flex;
-        flex-direction: column;
         gap: 0.2rem;
+        align-items: center;
 
-        .date {
-          font-weight: 600;
-          font-size: 14px;
-        }
-        .status {
-          font-size: 10px;
-          padding: 0.2rem 0.5rem;
-          border-radius: 20px;
-          border: 1px solid #e6e6e6;
-          color: #ffffff;
-          background: #e6e6e6;
+        .info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          align-items: flex-end;
+
+          .dateWrapper {
+            display: flex;
+            align-items: center;
+            .date {
+              font-weight: 600;
+              font-size: 14px;
+            }
+          }
+
+          .status {
+            font-size: 10px;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            color: #ffffff;
+            background: #e6e6e6;
+            width: fit-content;
+          }
+
+          .confirmed {
+            background: #34c759e5;
+          }
+
+          .pending {
+            background: #ff9500e5;
+          }
+
+          .cancelled {
+            background: #ff3b30e5;
+          }
         }
 
-        .confirmed {
-          background: #34c759e5;
-        }
 
-        .pending {
-          background: #ff9500e5;
-        }
 
-        .cancelled {
-          background: #ff3b30e5;
+        .option {
+          cursor: pointer;
         }
       }
     }
