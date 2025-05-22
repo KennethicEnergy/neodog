@@ -10,6 +10,11 @@
     max-width: 1280px;
     margin: 0 auto;
 
+    .brand {
+      color: #3B82F6;
+      font-weight: 700;
+    }
+
     .headerLeft,
     .headerRight {
       display: flex;
@@ -43,6 +48,21 @@
 
 .header .brandWrapper {
   display: none;
+
+  .logo {
+    display: none;
+  }
+}
+
+
+@media screen and (max-width: 600px) {
+  .header .brandWrapper {
+    display: flex;
+
+    .logo {
+      display: block;
+    }
+  }
 }
 
 @media screen and (max-width: 1024px) {
@@ -54,7 +74,9 @@
     }
   }
   .header .brandWrapper {
-    display: block;
+    display: flex;
+    gap: 1rem;
+    color: #3B82F6;
   }
 }
 

@@ -2,9 +2,9 @@
 import { TMenuItem } from '@/src/types/types';
 import { SIDEBAR_MENU_ITEMS } from '@/src/utils/constants';
 import clsx from 'clsx';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import DummyIcon from '../../common/dummy-icon';
 import styles from './styles.module.scss';
 
 const Sidebar = () => {
@@ -29,7 +29,13 @@ const Sidebar = () => {
               activeIndex === itemIndex && styles.active
             )}
             onClick={() => redirect(item, index)}>
-            <DummyIcon />
+            <Image
+              className={styles.icon}
+              src={item?.icon}
+              alt={item.name}
+              width={24}
+              height={24}
+            />
             <p className={styles.itemName}>{item.name}</p>
           </div>
         );
@@ -39,7 +45,7 @@ const Sidebar = () => {
 
   const renderBrand = () => (
     <div className={styles.brandWrapper}>
-      <DummyIcon />
+      <Image src="/images/brand.svg" alt="logo" width={24} height={24} />
       <h3 className={styles.brand}>NeoDog</h3>
     </div>
   );

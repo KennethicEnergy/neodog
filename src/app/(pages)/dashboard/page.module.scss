@@ -1,3 +1,11 @@
+.metricCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
 .gridRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -12,4 +20,16 @@
   gap: 1.5rem;
   justify-content: center;
   margin-bottom: 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .metricCardGrid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 2fr));
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .metricCardGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 2fr));
+  }
 }

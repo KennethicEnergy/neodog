@@ -1,11 +1,29 @@
+
 .tableWrapper {
   border-radius: 10px;
   background: #ffffff;
   text-align: center;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  gap: 1rem;
+
+  .tableDescription {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+
+    .iconWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      padding: 0.5rem;
+    }
+  }
 
   table {
     width: 100%;

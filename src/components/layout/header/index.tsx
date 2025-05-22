@@ -1,4 +1,4 @@
-'use client';
+import Image from 'next/image';
 import DummyIcon from '../../common/dummy-icon';
 import SearchBar from '../../common/searchbar';
 import styles from './styles.module.scss';
@@ -6,6 +6,7 @@ import styles from './styles.module.scss';
 const Header = () => {
   const renderBrand = () => (
     <div className={styles.brandWrapper}>
+      <Image className={styles.logo} src="/images/brand.svg" alt="logo" width={24} height={24} />
       <h3 className={styles.brand}>NeoDog</h3>
     </div>
   );

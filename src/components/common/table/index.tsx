@@ -1,9 +1,18 @@
-import React from 'react';
+import { TTableData } from '@/src/types/types';
+import Image from 'next/image';
 import styles from './styles.module.scss';
 
-const Table = () => {
+const Table = ({ title, icon, data }: TTableData) => {
   return (
     <div className={styles.tableWrapper}>
+      <div className={styles.tableDescription}>
+        {icon && (
+          <div className={styles.iconWrapper} style={{ backgroundColor: '#C4C4C4' }}>
+            <Image src={icon} alt="icon" width={24} height={24} />
+          </div>
+        )}
+        {title && <h3>{title}</h3>}
+      </div>
       <table>
         <thead>
           <tr>

@@ -1,11 +1,10 @@
-import React from 'react';
+import Image from 'next/image';
 import styles from './styles.module.scss';
-import DummyIcon from '../dummy-icon';
 
 const SearchBar = () => {
   return (
     <div className={styles.searchbar}>
-      <DummyIcon />
+      <Image src="/images/search.svg" alt="search" width={24} height={24} />
       <input type="text" placeholder="Search Clients, Pets, Appointments" />
     </div>
   );
