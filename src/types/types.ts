@@ -13,6 +13,12 @@ export type TMetricCardData = {
   color?: string;
 };
 
+export type TAppointmentControls = {
+  title?: string;
+  icon?: string;
+  color?: string;
+};
+
 export type TCard = {
   type: string;
   data: TCardData | TMetricCardData;
@@ -28,6 +34,23 @@ export type TTableData = {
   title?: string;
   icon?: string;
   data: object[];
+};
+
+export type TAppointmentDetails = {
+  title?: string;
+  icon?: string;
+  controls?: boolean;
+  isPage?: boolean;
+  data: TAppointmentData[];
+};
+
+export type TAppointmentData = {
+  client: string;
+  pet: string;
+  task: string;
+  date: string;
+  assignedTo: string;
+  status: string;
 };
 
 export type TIcon = {

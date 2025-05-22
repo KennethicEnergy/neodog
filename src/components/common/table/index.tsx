@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 const Table = ({ title, icon, data }: TTableData) => {
   return (
     <div className={styles.tableWrapper}>
-      <div className={styles.tableDescription}>
+      <div className={styles.tableInfo}>
         <>
           {icon && <Icon icon={icon} width={12} height={12} />}
           {title && <h3>{title}</h3>}

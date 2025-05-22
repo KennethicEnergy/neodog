@@ -1,7 +1,7 @@
-import { TMetricCardData } from "@/src/types/types";
-import Image from "next/image";
-import Icon from "../icon";
-import styles from "./styles.module.scss";
+import { TMetricCardData } from '@/src/types/types';
+import Image from 'next/image';
+import Icon from '../icon';
+import styles from './styles.module.scss';
 
 const MetricCard = ({ data }: { data: TMetricCardData }) => {
   const renderTrendIcon = (icon: string) => {
@@ -31,6 +31,7 @@ const MetricCard = ({ data }: { data: TMetricCardData }) => {
       {data?.trend && data?.value && <div className={styles.metricValue}>{data?.value}</div>}
       {data?.label && <p className={styles.metricLabel}>{data.label}</p>}
     </div>
-)};
+  );
+};
 
 export default MetricCard;

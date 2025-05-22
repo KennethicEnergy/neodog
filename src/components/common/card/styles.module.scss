@@ -23,7 +23,7 @@
   .metrics {
     display: flex;
     justify-content: space-between;
-    align-items:flex-start;
+    align-items: flex-start;
     width: 100%;
 
     .trend {
@@ -38,7 +38,6 @@
         font-weight: 600;
       }
     }
-
   }
   .metricValue {
     font-weight: 600;
@@ -49,14 +48,13 @@
     font-weight: 500;
   }
 
-
   .positive {
-    background: #E9FFED;
-    color: #16A34A;
+    background: #e9ffed;
+    color: #16a34a;
   }
 
   .negative {
-    background: #FFE9E9;
-    color: #EF4444;
+    background: #ffe9e9;
+    color: #ef4444;
   }
 }
