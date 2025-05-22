@@ -8,7 +8,7 @@
 
 .appointmentGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 2fr 1fr;
   gap: 1.5rem;
   justify-content: center;
   margin-bottom: 1.5rem;
@@ -30,9 +30,18 @@
   margin-bottom: 1.5rem;
 }
 
+@media screen and (max-width: 1024px) {
+  .appointmentGrid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
 @media screen and (max-width: 768px) {
   .metricCardGrid {
     grid-template-columns: repeat(auto-fit, minmax(130px, 2fr));
+  }
+  .appointmentGrid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
 

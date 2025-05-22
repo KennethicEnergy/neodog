@@ -47,6 +47,102 @@ const Table = ({ title, icon, data }: TTableData) => {
             <td>David Miller</td>
             <td>Select</td>
           </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
+          <tr>
+            <td>April 19, 2024</td>
+            <td>Sarah Johnson</td>
+            <td>Bella</td>
+            <td>Medication</td>
+            <td>David Miller</td>
+            <td>Select</td>
+          </tr>
         </tbody>
       </table>
     </div>
