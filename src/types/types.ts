@@ -29,3 +29,11 @@ export type TTableData = {
   icon?: string;
   data: object[];
 };
+
+export type TIcon = {
+  icon?: string;
+  label?: string;
+  color?: string;
+  height?: number;
+  width?: number;
+};

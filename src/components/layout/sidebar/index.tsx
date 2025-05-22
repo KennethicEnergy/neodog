@@ -3,43 +3,35 @@ import { TMenuItem } from '@/src/types/types';
 import { SIDEBAR_MENU_ITEMS } from '@/src/utils/constants';
 import clsx from 'clsx';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from './styles.module.scss';
 
 const Sidebar = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
   const router = useRouter();
+  const pathname = usePathname();
 
-  const redirect = (item: TMenuItem, index: number) => {
-    setActiveIndex(index);
+  const redirect = (item: TMenuItem) => {
     router.push(item.route);
   };
 
-  const renderItems = (items: TMenuItem[], className: string, startIndex: number) => (
+  const isActive = (route: string) => {
+    if (route === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(route);
+  };
+
+  const renderItems = (items: TMenuItem[], className: string) => (
     <div className={styles.sidebarItems}>
-      {items.map((item, index) => {
-        const itemIndex = startIndex + index;
-        return (
-          <div
-            key={itemIndex}
-            className={clsx(
-              styles.sidebarItem,
-              className,
-              activeIndex === itemIndex && styles.active
-            )}
-            onClick={() => redirect(item, index)}>
-            <Image
-              className={styles.icon}
-              src={item?.icon}
-              alt={item.name}
-              width={24}
-              height={24}
-            />
-            <p className={styles.itemName}>{item.name}</p>
-          </div>
-        );
-      })}
+      {items.map((item, index) => (
+        <div
+          key={index}
+          className={clsx(styles.sidebarItem, className, isActive(item.route) && styles.active)}
+          onClick={() => redirect(item)}>
+          <Image className={styles.icon} src={item?.icon} alt={item.name} width={24} height={24} />
+          <p className={styles.itemName}>{item.name}</p>
+        </div>
+      ))}
     </div>
   );
 
@@ -50,10 +42,10 @@ const Sidebar = () => {
     </div>
   );
 
-  const renderMenuItems = () => renderItems(SIDEBAR_MENU_ITEMS.slice(0, 5), styles.sidebarItem, 0);
+  const renderMenuItems = () => renderItems(SIDEBAR_MENU_ITEMS.slice(0, 5), styles.sidebarItem);
 
   const renderBottomItems = () =>
-    renderItems(SIDEBAR_MENU_ITEMS.slice(5, 7), styles.sidebarBottomItem, 5);
+    renderItems(SIDEBAR_MENU_ITEMS.slice(5, 7), styles.sidebarBottomItem);
 
   return (
     <div className={styles.sidebar}>

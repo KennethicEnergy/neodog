@@ -1,17 +1,15 @@
 import { TTableData } from '@/src/types/types';
-import Image from 'next/image';
+import Icon from '../icon';
 import styles from './styles.module.scss';
 
 const Table = ({ title, icon, data }: TTableData) => {
   return (
     <div className={styles.tableWrapper}>
       <div className={styles.tableDescription}>
-        {icon && (
-          <div className={styles.iconWrapper} style={{ backgroundColor: '#C4C4C4' }}>
-            <Image src={icon} alt="icon" width={24} height={24} />
-          </div>
-        )}
-        {title && <h3>{title}</h3>}
+        <>
+          {icon && <Icon icon={icon} width={12} height={12} />}
+          {title && <h3>{title}</h3>}
+        </>
       </div>
       <table>
         <thead>
@@ -25,30 +23,6 @@ const Table = ({ title, icon, data }: TTableData) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>April 19, 2024</td>
-            <td>Sarah Johnson</td>
-            <td>Bella</td>
-            <td>Medication</td>
-            <td>David Miller</td>
-            <td>Select</td>
-          </tr>
-          <tr>
-            <td>April 19, 2024</td>
-            <td>Sarah Johnson</td>
-            <td>Bella</td>
-            <td>Medication</td>
-            <td>David Miller</td>
-            <td>Select</td>
-          </tr>
-          <tr>
-            <td>April 19, 2024</td>
-            <td>Sarah Johnson</td>
-            <td>Bella</td>
-            <td>Medication</td>
-            <td>David Miller</td>
-            <td>Select</td>
-          </tr>
           <tr>
             <td>April 19, 2024</td>
             <td>Sarah Johnson</td>
