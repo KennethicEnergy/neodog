@@ -1,6 +1,5 @@
-import React from 'react';
-import styles from './styles.module.scss';
 import DummyIcon from '../../common/dummy-icon';
+import styles from './styles.module.scss';
 
 const Footer = () => {
   const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];
@@ -23,10 +22,10 @@ const Footer = () => {
   );
 
   return (
-    <div className={styles.footer}>
+    <footer className={styles.footer}>
       {renderAllRightsReserved()}
       {renderFooterMenus()}
-    </div>
+    </footer>
   );
 };
 

@@ -15,11 +15,11 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      width: 50%;
     }
 
     .headerLeft {
       justify-content: space-between;
-      width: 30%;
     }
 
     .headerRight {
@@ -48,6 +48,10 @@
 @media screen and (max-width: 1024px) {
   .headerWrapper {
     padding: 1rem 1rem 1rem 0;
+
+    .headerLeft {
+      width: 100%;
+    }
   }
   .header .brandWrapper {
     display: block;
