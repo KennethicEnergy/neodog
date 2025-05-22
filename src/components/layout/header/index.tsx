@@ -1,12 +1,12 @@
-import React from 'react';
-import styles from './styles.module.scss';
+'use client';
 import DummyIcon from '../../common/dummy-icon';
 import SearchBar from '../../common/searchbar';
+import styles from './styles.module.scss';
 
 const Header = () => {
   const renderBrand = () => (
     <div className={styles.brandWrapper}>
-      <h3 className={styles.brand}>{/* NeoDog */}</h3>
+      <h3 className={styles.brand}>NeoDog</h3>
     </div>
   );
 

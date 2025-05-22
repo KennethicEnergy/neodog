@@ -1,0 +1,20 @@
+.page {
+  font-family: var(--font-geist-sans);
+  display: flex;
+  flex-direction: row;
+  transition: all 0.2s ease-in-out;
+
+  .content {
+    width: 100%;
+    background: #e7e7e7;
+
+    .main {
+      height: calc(100dvh - 3.5rem);
+      height: calc(100vh - 3.5rem);
+      padding: 1.5rem;
+      overflow: auto;
+      max-width: 1280px;
+      margin: auto;
+    }
+  }
+}

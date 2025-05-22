@@ -1,12 +1,11 @@
-import React from 'react';
-import styles from './styles.module.scss';
 import Card from '../../common/card';
-import Footer from '../footer';
 import Table from '../../common/table';
+import Footer from '../footer';
+import styles from './styles.module.scss';
 
 const Main = () => {
   return (
-    <main className={styles.main}>
+    <>
       <div className={styles.gridRow}>
         <Card
           title="Lorem Ipsum"
@@ -61,7 +60,7 @@ const Main = () => {
       <div className={styles.footerRow}>
         <Footer />
       </div>
-    </main>
+    </>
   );
 };
 
