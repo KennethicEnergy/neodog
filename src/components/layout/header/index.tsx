@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import DummyIcon from '../../common/dummy-icon';
+import Icon from '../../common/icon';
 import SearchBar from '../../common/searchbar';
 import styles from './styles.module.scss';
 
@@ -23,16 +23,16 @@ const Header = () => {
   const renderHeaderRight = () => {
     return (
       <div className={styles.headerRight}>
-        <DummyIcon />
+        <Icon icon="/images/icon-plus.svg" width={8} height={8} shape="circle" color="#3B82F6" />
+        <Icon icon="/images/bell.svg" width={16} height={16} color="" />
         <div className={styles.user}>
-          <DummyIcon />
+          <Icon width={24} height={24} shape="circle" />
           <div className={styles.userDetails}>
             <p className={styles.name}>David Miller</p>
             <p className={styles.role}>Admin</p>
           </div>
-          <DummyIcon />
+          <Icon icon="/images/arrow-down.svg" width={8} height={8} color="#EEEEEE" shape="circle" />
         </div>
-        <DummyIcon />
       </div>
     );
   };

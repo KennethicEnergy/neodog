@@ -165,3 +165,14 @@ export const SAMPLE_APPOINTMENT_DATA: TAppointmentData[] = [
     status: 'CANCELLED'
   }
 ];
+
+export const SAMPLE_RECENT_ACTIVITY_DATA: TAppointmentData[] = [
+  {
+    client: 'Sarah Johnson',
+    pet: 'Bella',
+    task: 'Wellness Checkup',
+    date: 'April 19, 2025',
+    assignedTo: 'David Miller',
+    status: 'CONFIRMED'
+  }
+];

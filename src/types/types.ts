@@ -55,6 +55,7 @@ export type TAppointmentData = {
 
 export type TIcon = {
   icon?: string;
+  shape?: string;
   label?: string;
   color?: string;
   height?: number;
