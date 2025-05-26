@@ -1,11 +1,13 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Icon from '../../common/icon';
 import SearchBar from '../../common/searchbar';
 import styles from './styles.module.scss';
 
 const Header = () => {
+  const router = useRouter();
   const renderBrand = () => (
-    <div className={styles.brandWrapper}>
+    <div className={styles.brandWrapper} onClick={() => router.push('/')}>
       <Image className={styles.logo} src="/images/brand.svg" alt="logo" width={24} height={24} />
       <h3 className={styles.brand}>NeoDog</h3>
     </div>

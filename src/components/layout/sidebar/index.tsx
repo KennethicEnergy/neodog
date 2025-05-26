@@ -44,7 +44,7 @@ const Sidebar = () => {
   );
 
   const renderBrand = () => (
-    <div className={styles.brandWrapper}>
+    <div className={styles.brandWrapper} onClick={() => router.push('/')}>
       <Image src="/images/brand.svg" alt="logo" width={24} height={24} />
       <h3 className={styles.brand}>NeoDog</h3>
     </div>

@@ -77,4 +77,5 @@ export type TIcon = {
   color?: string;
   height?: number;
   width?: number;
+  onClick?: () => void;
 };
