@@ -53,6 +53,23 @@ export type TAppointmentData = {
   status: string;
 };
 
+export type TActivityDetails = {
+  title?: string;
+  icon?: string;
+  controls?: boolean;
+  isPage?: boolean;
+  data: TActivitytData[];
+};
+
+export type TActivitytData = {
+  client: string;
+  pet: string;
+  task: string;
+  time: string;
+  assignedTo: string;
+  status: string;
+};
+
 export type TIcon = {
   icon?: string;
   shape?: string;

@@ -1,4 +1,3 @@
-'use client';
 import { TMenuItem } from '@/src/types/types';
 import { SIDEBAR_MENU_ITEMS } from '@/src/utils/constants';
 import clsx from 'clsx';
@@ -10,10 +9,6 @@ const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const redirect = (item: TMenuItem) => {
-    router.push(item.route);
-  };
-
   const isActive = (route: string) => {
     if (route === '/') {
       return pathname === '/';
@@ -21,17 +16,30 @@ const Sidebar = () => {
     return pathname.startsWith(route);
   };
 
+  const getIconPath = (iconPath: string, isActive: boolean) => {
+    return isActive ? iconPath.replace('/dark/', '/light/') : iconPath;
+  };
+
   const renderItems = (items: TMenuItem[], className: string) => (
     <div className={styles.sidebarItems}>
-      {items.map((item, index) => (
-        <div
-          key={index}
-          className={clsx(styles.sidebarItem, className, isActive(item.route) && styles.active)}
-          onClick={() => redirect(item)}>
-          <Image className={styles.icon} src={item?.icon} alt={item.name} width={24} height={24} />
-          <p className={styles.itemName}>{item.name}</p>
-        </div>
-      ))}
+      {items.map((item, index) => {
+        const active = isActive(item.route);
+        return (
+          <div
+            key={index}
+            className={clsx(styles.sidebarItem, className, active && styles.active)}
+            onClick={() => router.push(item.route)}>
+            <Image
+              className={styles.icon}
+              src={getIconPath(item.icon, active)}
+              alt={item.name}
+              width={24}
+              height={24}
+            />
+            <p className={styles.itemName}>{item.name}</p>
+          </div>
+        );
+      })}
     </div>
   );
 

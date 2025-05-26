@@ -1,10 +1,9 @@
-import { TAppointmentDetails } from '@/src/types/types';
-import { SAMPLE_APPOINTMENT_DATA } from '@/src/utils/constants';
+import { TActivityDetails } from '@/src/types/types';
 import Icon from '../icon';
 import SearchBar from '../searchbar';
 import styles from './styles.module.scss';
 
-const RecentActivity = ({ title, icon, data, controls, isPage }: TAppointmentDetails) => {
+const RecentActivity = ({ title, icon, data, controls, isPage }: TActivityDetails) => {
   return (
     <div className={`${styles.recentActivityWrapper} ${styles[isPage ? 'isPage' : '']}`}>
       <div className={styles.activityInfo}>
@@ -15,13 +14,13 @@ const RecentActivity = ({ title, icon, data, controls, isPage }: TAppointmentDet
         {controls && <SearchBar />}
       </div>
       <div className={styles.activities}>
-        {SAMPLE_APPOINTMENT_DATA.map((data, index) => (
+        {data.map((data, index) => (
           <div key={index} className={styles.activity}>
             <div className={styles.activityLeft}>
               <div className={styles.option}>
                 <Icon
                   icon="/images/activity-pink-scissors.svg"
-                  color="#ebebeb"
+                  color="#f3f4f6"
                   width={12}
                   height={12}
                   shape="circle"
@@ -29,25 +28,18 @@ const RecentActivity = ({ title, icon, data, controls, isPage }: TAppointmentDet
               </div>
               <div className={styles.info}>
                 <div className={styles.dateWrapper}>
-                  <Icon
-                    icon="/images/calendar-appointment-date.svg"
-                    color=""
-                    width={14}
-                    height={14}
-                  />
-                  <div className={styles.date}>{data?.date}</div>
+                  <div className={styles.date}>{data?.task}</div>
                 </div>
-                <div className={`${styles.status} ${styles[data.status.toLowerCase()]}`}>
-                  {data?.status}
-                </div>
+                <div>{data?.pet}</div>
               </div>
             </div>
 
             <div className={styles.activityRight}>
-              <div className={styles.client}>{data?.client}</div>
-              <div className={styles.petTask}>
-                {data?.pet} - {data?.task}
+              <div className={styles.time}>
+                <Icon icon="/images/clock.svg" width={14} height={14} color="" />
+                {data?.time}
               </div>
+              <div className={styles.petTask}>{data?.assignedTo}</div>
             </div>
           </div>
         ))}

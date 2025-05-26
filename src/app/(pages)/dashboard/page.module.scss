@@ -45,6 +45,12 @@
   }
 }
 
+@media screen and (max-width: 699px) {
+  .metricCardGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media screen and (max-width: 430px) {
   .metricCardGrid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 2fr));

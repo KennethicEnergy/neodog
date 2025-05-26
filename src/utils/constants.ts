@@ -1,13 +1,19 @@
-import { TAppointmentControls, TAppointmentData, TMenuItem, TMetricCardData } from '../types/types';
+import {
+  TActivitytData,
+  TAppointmentControls,
+  TAppointmentData,
+  TMenuItem,
+  TMetricCardData
+} from '../types/types';
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
-  { name: 'Dashboard', route: '/', icon: '/images/menu-dashboard.svg' },
-  { name: 'Pets & Client', route: '/pets-and-client', icon: '/images/menu-pet.svg' },
-  { name: 'Appointments', route: '/appointments', icon: '/images/menu-appointment.svg' },
-  { name: 'Services', route: '/services', icon: '/images/menu-services.svg' },
-  { name: 'Reports', route: '/reports', icon: '/images/menu-reports.svg' },
-  { name: 'Support', route: '/support', icon: '/images/menu-support.svg' },
-  { name: 'Settings', route: '/settings', icon: '/images/menu-settings.svg' }
+  { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
+  { name: 'Pets & Client', route: '/pets-and-client', icon: '/images/dark/pets-and-clients.svg' },
+  { name: 'Appointments', route: '/appointments', icon: '/images/dark/appointment.svg' },
+  { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
+  { name: 'Reports', route: '/reports', icon: '/images/dark/reports.svg' },
+  { name: 'Support', route: '/support', icon: '/images/dark/support.svg' },
+  { name: 'Settings', route: '/settings', icon: '/images/dark/settings.svg' }
 ];
 
 export const DASHBOARD_METRIC_CARDS: TMetricCardData[] = [
@@ -166,12 +172,12 @@ export const SAMPLE_APPOINTMENT_DATA: TAppointmentData[] = [
   }
 ];
 
-export const SAMPLE_RECENT_ACTIVITY_DATA: TAppointmentData[] = [
+export const SAMPLE_RECENT_ACTIVITY_DATA: TActivitytData[] = [
   {
     client: 'Sarah Johnson',
     pet: 'Bella',
-    task: 'Wellness Checkup',
-    date: 'April 19, 2025',
+    task: 'Grooming',
+    time: '10 minutes ago',
     assignedTo: 'David Miller',
     status: 'CONFIRMED'
   }

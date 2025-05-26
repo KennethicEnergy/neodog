@@ -2,7 +2,11 @@ import Appointment from '@/src/components/common/appointment';
 import Card from '@/src/components/common/card';
 import RecentActivity from '@/src/components/common/recent-activity';
 import Table from '@/src/components/common/table';
-import { DASHBOARD_METRIC_CARDS } from '@/src/utils/constants';
+import {
+  DASHBOARD_METRIC_CARDS,
+  SAMPLE_APPOINTMENT_DATA,
+  SAMPLE_RECENT_ACTIVITY_DATA
+} from '@/src/utils/constants';
 import styles from './page.module.scss';
 
 const DashboardPage = () => {
@@ -17,18 +21,18 @@ const DashboardPage = () => {
         <Appointment
           title="Upcoming Appointments"
           icon="/images/calendar-check.svg"
-          data={[]}
+          data={SAMPLE_APPOINTMENT_DATA}
           controls={true}
         />
         <RecentActivity
           title="Recent Activity"
           icon="/images/history.svg"
-          data={[]}
+          data={SAMPLE_RECENT_ACTIVITY_DATA}
           controls={true}
         />
       </div>
       <div className={styles.gridRow}>
-        <Table title="Data Table" icon="/images/vaccine.svg" data={[]} />
+        <Table title="Staff Task" icon="/images/alert.svg" data={[]} />
       </div>
     </>
   );
