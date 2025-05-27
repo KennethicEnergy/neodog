@@ -1,6 +1,6 @@
 'use client';
 import { useModalStore } from '@/src/store/modal-store';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import Icon from '../icon';
 import styles from './styles.module.scss';
 
@@ -11,15 +11,20 @@ interface BaseModalProps {
   showCloseButton?: boolean;
 }
 
-export default function BaseModal({ children, onClose, className = '', showCloseButton = true }: BaseModalProps) {
+export default function BaseModal({
+  children,
+  onClose,
+  className = '',
+  showCloseButton = true
+}: BaseModalProps) {
   const closeModal = useModalStore((state) => state.closeModal);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (onClose) {
       onClose();
     }
     closeModal();
-  };
+  }, [closeModal, onClose]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -35,7 +40,7 @@ export default function BaseModal({ children, onClose, className = '', showClose
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
-  }, []);
+  }, [handleClose]);
 
   return (
     <div className={`modal-overlay ${className}`} onClick={handleClose}>
@@ -45,16 +50,9 @@ export default function BaseModal({ children, onClose, className = '', showClose
         </div>
         {showCloseButton && (
           <div className={styles.closeButton}>
-            <Icon
-              icon="/images/close.svg"
-              width={16}
-              height={16}
-              onClick={handleClose}
-              shape=""
-              color=""
-            />
+            <Icon src="/images/close.svg" width={16} height={16} onClick={handleClose} />
           </div>
-      )}
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "clsx": "^1.1.1",
+    "eslint-config-prettier": "^10.1.5",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

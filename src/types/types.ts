@@ -73,10 +73,10 @@ export type TActivityData = {
 };
 
 export type TIcon = {
-  icon?: string;
+  src?: string;
   shape?: string;
   label?: string;
-  color?: string;
+  bgColor?: string;
   height?: number;
   width?: number;
   onClick?: () => void;

@@ -19,7 +19,7 @@ const MetricCard = ({ data }: { data: TMetricCardData }) => {
     <div className={styles.card}>
       <div className={styles.metrics}>
         {data?.icon && (
-          <Icon icon={data?.icon} label={data?.label} color={data?.color} height={12} width={14} />
+          <Icon src={data?.icon} label={data?.label} bgColor={data?.color} width={14} />
         )}
         {data?.trend && (
           <div className={`${styles.trend} ${data.trend >= 5 ? styles.positive : styles.negative}`}>

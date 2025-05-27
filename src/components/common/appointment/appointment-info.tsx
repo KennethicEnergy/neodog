@@ -14,16 +14,14 @@ const AppointmentInfo = ({
   return (
     <div className={styles.appointmentInfo}>
       <div className={styles.title}>
-        {icon && <Icon icon={icon} color="#22C55E" width={12} height={12} />}
+        {icon && <Icon src={icon} bgColor="#22C55E" />}
         {title && <h3>{title}</h3>}
       </div>
       {controls && (
         <div className={styles.controls}>
           {APPOINTMENT_FILTERS.map((filter, index) => (
             <div key={index} className={`${styles.filter} ${index === 0 && styles.active}`}>
-              {icon && filter.icon != '' && (
-                <Icon icon={filter.icon} color={filter.color} width={12} height={12} />
-              )}
+              {icon && filter.icon != '' && <Icon src={filter.icon} bgColor={filter.color} />}
               <p>{filter.title}</p>
             </div>
           ))}

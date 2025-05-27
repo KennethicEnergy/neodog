@@ -7,7 +7,7 @@ const Table = ({ title, icon, data }: TTableData) => {
     <div className={styles.tableWrapper}>
       <div className={styles.tableInfo}>
         <>
-          {icon && <Icon icon={icon} width={12} height={12} color="#FF9500" />}
+          {icon && <Icon src={icon} bgColor="#FF9500" />}
           {title && <h3>{title}</h3>}
         </>
       </div>

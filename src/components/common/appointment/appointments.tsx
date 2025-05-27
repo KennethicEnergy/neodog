@@ -16,12 +16,7 @@ const Appointments = ({ appointments }: { appointments: TAppointmentData[] }) =>
           <div className={styles.appointmentRight}>
             <div className={styles.info}>
               <div className={styles.dateWrapper}>
-                <Icon
-                  icon="/images/calendar-appointment-date.svg"
-                  color=""
-                  width={14}
-                  height={14}
-                />
+                <Icon src="/images/calendar-appointment-date.svg" width={14} height={14} />
                 <div className={styles.date}>{data?.date}</div>
               </div>
               <div className={`${styles.status} ${styles[data.status.toLowerCase()]}`}>
@@ -30,7 +25,7 @@ const Appointments = ({ appointments }: { appointments: TAppointmentData[] }) =>
             </div>
             <>
               <div className={styles.option}>
-                <Icon icon="/images/vertical-ellipsis.svg" color="" width={12} height={12} />
+                <Icon src="/images/vertical-ellipsis.svg" />
               </div>
             </>
           </div>
