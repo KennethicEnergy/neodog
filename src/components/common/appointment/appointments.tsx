@@ -40,4 +40,4 @@ const Appointments = ({ appointments }: { appointments: TAppointmentData[] }) =>
   );
 };
 
-export default Appointments
+export default Appointments;

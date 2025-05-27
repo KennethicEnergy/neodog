@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import DefaultLayout from '../components/layout/layout';
+import ModalProvider from '../components/modals/modals-provider';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <DefaultLayout>{children}</DefaultLayout>
+        <ModalProvider />
       </body>
     </html>
   );

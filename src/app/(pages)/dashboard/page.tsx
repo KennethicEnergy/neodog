@@ -17,9 +17,12 @@ const DashboardPage = () => {
           <Card key={index} type={'metric'} data={data} />
         ))}
       </div>
+      <div className={styles.gridRow}>
+        <Table title="Staff Task" icon="/images/alert.svg" data={[]} />
+      </div>
       <div className={styles.appointmentGrid}>
         <Appointment
-          title="Upcoming Appointments"
+          title="Appointments"
           icon="/images/calendar-check.svg"
           data={SAMPLE_APPOINTMENT_DATA}
           controls={true}
@@ -30,9 +33,6 @@ const DashboardPage = () => {
           data={SAMPLE_RECENT_ACTIVITY_DATA}
           controls={true}
         />
-      </div>
-      <div className={styles.gridRow}>
-        <Table title="Staff Task" icon="/images/alert.svg" data={[]} />
       </div>
     </>
   );

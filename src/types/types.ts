@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type TCardData = {
   title?: string;
   description?: string;
@@ -58,10 +60,10 @@ export type TActivityDetails = {
   icon?: string;
   controls?: boolean;
   isPage?: boolean;
-  data: TActivitytData[];
+  data: TActivityData[];
 };
 
-export type TActivitytData = {
+export type TActivityData = {
   client: string;
   pet: string;
   task: string;
@@ -78,4 +80,12 @@ export type TIcon = {
   height?: number;
   width?: number;
   onClick?: () => void;
+};
+
+// Zustand States
+export type TModalState = {
+  modals: ReactNode[];
+  openModal: (modal: ReactNode) => void;
+  closeModal: () => void;
+  closeAllModals: () => void;
 };

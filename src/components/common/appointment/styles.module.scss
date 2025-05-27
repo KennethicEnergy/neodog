@@ -1,4 +1,4 @@
-.appointmentWrapper {
+.appointmentWrapper, .appointmentPageWrapper {
   border-radius: 10px;
   background: #ffffff;
   text-align: center;
@@ -70,7 +70,7 @@
       .appointmentLeft {
         flex-direction: column;
         align-items: flex-start;
-        gap: .2rem;
+        gap: 0.2rem;
         display: flex;
         justify-content: space-evenly;
 
@@ -127,13 +127,17 @@
           }
         }
 
-
-
         .option {
           cursor: pointer;
         }
       }
     }
+  }
+}
+
+.appointmentPageWrapper {
+  &:hover {
+    transform: unset;
   }
 }
 

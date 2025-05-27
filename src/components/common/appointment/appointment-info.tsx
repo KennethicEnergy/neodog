@@ -1,8 +1,16 @@
-import { APPOINTMENT_FILTERS } from "@/src/utils/constants";
-import Icon from "../icon";
-import styles from "./styles.module.scss";
+import { APPOINTMENT_FILTERS } from '@/src/utils/constants';
+import Icon from '../icon';
+import styles from './styles.module.scss';
 
-const AppointmentInfo = ({ title, icon, controls }: { title?: string, icon?: string, controls?: boolean }) => {
+const AppointmentInfo = ({
+  title,
+  icon,
+  controls
+}: {
+  title?: string;
+  icon?: string;
+  controls?: boolean;
+}) => {
   return (
     <div className={styles.appointmentInfo}>
       <div className={styles.title}>
@@ -22,7 +30,7 @@ const AppointmentInfo = ({ title, icon, controls }: { title?: string, icon?: str
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default AppointmentInfo;
