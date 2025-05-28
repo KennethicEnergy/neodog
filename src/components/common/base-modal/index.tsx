@@ -43,9 +43,9 @@ export default function BaseModal({
   }, [handleClose]);
 
   return (
-    <div className={`modal-overlay ${className}`} onClick={handleClose}>
-      <div className="modal-content">
-        <div className="content-wrapper" onClick={(e) => e.stopPropagation()}>
+    <div className={`${styles.modalOverlay} ${className}`} onClick={handleClose}>
+      <div className={styles.modalContent}>
+        <div className={styles.contentWrapper} onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
         {showCloseButton && (

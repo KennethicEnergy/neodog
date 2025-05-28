@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useModalStore } from '../../store/modal-store';
-import '../../styles/modal.css';
+import { useModalStore } from '../store/modal-store';
+import styles from './styles.module.scss';
 
 export default function ModalProvider() {
   const [mounted, setMounted] = useState(false);
@@ -15,7 +15,7 @@ export default function ModalProvider() {
   if (!mounted || modals.length === 0) return null;
 
   return createPortal(
-    <div className="modal-container">
+    <div className={styles.modalContainer}>
       {modals.map((modal, index) => (
         <div key={index}>{modal}</div>
       ))}

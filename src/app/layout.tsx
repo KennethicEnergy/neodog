@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import DefaultLayout from '../components/layout/layout';
-import ModalProvider from '../components/modals/modals-provider';
+import ModalProvider from '../providers/modals-provider';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
