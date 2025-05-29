@@ -1,15 +1,21 @@
-import { TCard, TCardData, TMetricCardData } from '@/src/types/card';
+import { TCard, TCardData } from '@/src/types/card';
+import { TMetricCardData } from '@/src/types/metrics';
 import DefaultCard from './default-card';
 import MetricCard from './metrics-card';
 
-const Card = ({ type = 'default', data, onClick }: TCard & { onClick?: () => void }) => {
+const Card = ({
+  type = 'default',
+  data,
+  onClick,
+  component
+}: TCard & { onClick?: () => void } & { component?: React.ReactNode }) => {
   if (!data) return null;
   switch (type) {
     case 'metric':
       return <MetricCard data={data as TMetricCardData} onClick={onClick} />;
     case 'default':
     default:
-      return <DefaultCard data={data as TCardData} onClick={onClick} />;
+      return <DefaultCard data={data as TCardData} onClick={onClick} component={component} />;
   }
 };
 

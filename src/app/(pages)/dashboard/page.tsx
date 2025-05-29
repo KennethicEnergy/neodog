@@ -6,7 +6,7 @@ import RecentActivity from '@/src/components/common/recent-activity';
 import Table from '@/src/components/common/table';
 import MetricModal from '@/src/components/modals/metric-modals';
 import { useModalStore } from '@/src/store/modal-store';
-import { TMetricCardData } from '@/src/types/card';
+import { TMetricCardData } from '@/src/types/metrics';
 import {
   DASHBOARD_METRIC_CARDS,
   SAMPLE_APPOINTMENT_DATA,
@@ -19,7 +19,7 @@ const DashboardPage = () => {
   const closeModal = useModalStore((state) => state.closeModal);
 
   const handleMetricCardClick = (data: TMetricCardData) => {
-    const id = data.id;
+    // const id = data.id;
     openModal(
       <BaseModal onClose={closeModal}>
         <MetricModal {...data} />

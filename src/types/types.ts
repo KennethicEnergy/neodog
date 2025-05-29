@@ -37,3 +37,8 @@ export type TActivityDetails = {
   isPage?: boolean;
   data: TActivityData[];
 };
+
+export type TServices = {
+  name: string;
+  icon: string;
+};

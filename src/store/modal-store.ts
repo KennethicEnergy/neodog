@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { TModalState } from '../types/types';
+import { TModalState } from '../types/modal';
 
 export const useModalStore = create<TModalState>((set) => ({
   modals: [],

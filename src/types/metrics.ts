@@ -1,44 +1,54 @@
 import { TClient } from './client';
 import { TPet } from './pet';
+import { TAppointmentData } from './types';
 
 export type TMetricCardData = {
   id: number;
+  type: string;
   value?: number;
   label?: string;
   trend?: number;
   icon?: string;
   color?: string;
-  metrics?:
-    | TVaccinationMetrics[]
-    | TRevenueMetrics[]
-    | TClientMetrics[]
-    | TAppointmentMetrics[]
-    | null;
+  metrics?: TMetrics;
+};
+
+export type TMetricData =
+  | TVaccinationMetrics
+  | TRevenueMetrics
+  | TClientMetrics
+  | TAppointmentMetrics;
+
+export type TMetrics = {
+  vaccination?: TVaccinationMetrics[];
+  revenue?: TRevenueMetrics[];
+  client?: TClientMetrics[];
+  appointment?: TAppointmentMetrics[];
 };
 
 export type TVaccinationMetrics = {
-  totalVaccinations: number;
-  uptoDateVaccinations: number;
-  expiredVaccinations: number;
+  metricLabel: string;
+  metricDescription: string;
+  metricValue: number;
   pet?: TPet[];
 };
 
 export type TRevenueMetrics = {
-  totalRevenue: number;
-  averageServiceFee: number;
-  projectedRevenue: number;
+  metricLabel: string;
+  metricDescription: string;
+  metricValue: number;
 };
 
 export type TClientMetrics = {
-  totalClients: number;
-  newClients: number;
-  retentionRate: number;
+  metricLabel: string;
+  metricDescription: string;
+  metricValue: number;
   client?: TClient[];
 };
 
 export type TAppointmentMetrics = {
-  totalAppointments: number;
-  confirmedAppointments: number;
-  pendingAppointments: number;
-  cancelledAppointments: number;
+  metricLabel: string;
+  metricDescription: string;
+  metricValue: number;
+  appointments: TAppointmentData[];
 };

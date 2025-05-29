@@ -3,6 +3,7 @@ import Icon from '../icon';
 import styles from './styles.module.scss';
 
 const Table = ({ title, icon, data }: TTableData) => {
+  console.log(data);
   return (
     <div className={styles.tableWrapper}>
       <div className={styles.tableInfo}>
