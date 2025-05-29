@@ -19,11 +19,11 @@ const HeaderPopup = ({
   const router = useRouter();
 
   const redirect = (route: string) => {
-  if (route) {
-    router.push(route);
-  }
-  setPopupOpen(false);
-};
+    if (route) {
+      router.push(route);
+    }
+    setPopupOpen(false);
+  };
 
   return (
     <div className={styles.popup}>

@@ -1,4 +1,4 @@
-import { TMenuItem } from '@/src/types/types';
+import { TMenuItem } from '@/src/types/common';
 import { SIDEBAR_MENU_ITEMS } from '@/src/utils/constants';
 import clsx from 'clsx';
 import Image from 'next/image';

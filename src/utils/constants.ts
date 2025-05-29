@@ -1,10 +1,6 @@
-import {
-  TActivityData,
-  TAppointmentControls,
-  TAppointmentData,
-  TMenuItem,
-  TMetricCardData
-} from '../types/types';
+import { TMetricCardData } from '../types/card';
+import { TAppointmentControls, TMenuItem } from '../types/common';
+import { TActivityData, TAppointmentData } from '../types/types';
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
@@ -17,8 +13,16 @@ export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
 ];
 
 export const DASHBOARD_METRIC_CARDS: TMetricCardData[] = [
-  { value: 92, label: 'Total Revenue', trend: 15, icon: '/images/dollar.svg', color: '#B567FF' },
   {
+    id: 1,
+    value: 92,
+    label: 'Total Revenue',
+    trend: 15,
+    icon: '/images/dollar.svg',
+    color: '#B567FF'
+  },
+  {
+    id: 2,
     value: 124,
     label: 'Total Clients',
     trend: 12,
@@ -26,13 +30,21 @@ export const DASHBOARD_METRIC_CARDS: TMetricCardData[] = [
     color: '#5293FF'
   },
   {
+    id: 3,
     value: 32,
     label: 'Upcoming Appointments',
     trend: 8,
     icon: '/images/calendar-with-date.svg',
     color: '#34D870'
   },
-  { value: 10, label: 'Vaccination', trend: 2, icon: '/images/vaccine.svg', color: '#FF9633' }
+  {
+    id: 4,
+    value: 10,
+    label: 'Vaccinations',
+    trend: 2,
+    icon: '/images/vaccine.svg',
+    color: '#FF9633'
+  }
 ];
 
 export const APPOINTMENT_FILTERS: TAppointmentControls[] = [

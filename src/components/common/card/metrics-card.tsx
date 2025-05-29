@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Icon from '../icon';
 import styles from './styles.module.scss';
 
-const MetricCard = ({ data }: { data: TMetricCardData }) => {
+const MetricCard = ({ data, onClick }: { data: TMetricCardData; onClick?: () => void }) => {
   const renderTrendIcon = (icon: string) => {
     return (
       <Image
@@ -15,8 +15,23 @@ const MetricCard = ({ data }: { data: TMetricCardData }) => {
       />
     );
   };
+
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }>
       <div className={styles.metrics}>
         {data?.icon && (
           <Icon src={data?.icon} label={data?.label} bgColor={data?.color} width={14} />

@@ -1,49 +1,7 @@
-import { ReactNode } from 'react';
-
-export type TCardData = {
-  title?: string;
-  description?: string;
-  cardStyles?: React.CSSProperties;
-  icon?: string;
-};
-
-export type TMetricCardData = {
-  value?: number;
-  label?: string;
-  trend?: number;
-  icon?: string;
-  color?: string;
-};
-
-export type TAppointmentControls = {
-  title?: string;
-  icon?: string;
-  color?: string;
-};
-
-export type TCard = {
-  type: string;
-  data: TCardData | TMetricCardData;
-};
-
-export type TMenuItem = {
-  name: string;
-  route: string;
-  icon: string;
-};
-
 export type TTableData = {
   title?: string;
   icon?: string;
   data: object[];
-};
-
-export type TAppointmentDetails = {
-  title?: string;
-  icon?: string;
-  controls?: boolean;
-  isPage?: boolean;
-  data: TAppointmentData[];
 };
 
 export type TAppointmentData = {
@@ -55,14 +13,6 @@ export type TAppointmentData = {
   status: string;
 };
 
-export type TActivityDetails = {
-  title?: string;
-  icon?: string;
-  controls?: boolean;
-  isPage?: boolean;
-  data: TActivityData[];
-};
-
 export type TActivityData = {
   client: string;
   pet: string;
@@ -72,20 +22,18 @@ export type TActivityData = {
   status: string;
 };
 
-export type TIcon = {
-  src?: string;
-  shape?: string;
-  label?: string;
-  bgColor?: string;
-  height?: number;
-  width?: number;
-  onClick?: () => void;
+export type TAppointmentDetails = {
+  title?: string;
+  icon?: string;
+  controls?: boolean;
+  isPage?: boolean;
+  data: TAppointmentData[];
 };
 
-// Zustand States
-export type TModalState = {
-  modals: ReactNode[];
-  openModal: (modal: ReactNode) => void;
-  closeModal: () => void;
-  closeAllModals: () => void;
+export type TActivityDetails = {
+  title?: string;
+  icon?: string;
+  controls?: boolean;
+  isPage?: boolean;
+  data: TActivityData[];
 };
