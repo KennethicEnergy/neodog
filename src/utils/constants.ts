@@ -1,5 +1,5 @@
 import {
-  TActivitytData,
+  TActivityData,
   TAppointmentControls,
   TAppointmentData,
   TMenuItem,
@@ -10,7 +10,7 @@ export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
   { name: 'Pets & Client', route: '/pets-and-client', icon: '/images/dark/pets-and-clients.svg' },
   { name: 'Appointments', route: '/appointments', icon: '/images/dark/appointment.svg' },
-  { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
+  // { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
   { name: 'Reports', route: '/reports', icon: '/images/dark/reports.svg' },
   { name: 'Support', route: '/support', icon: '/images/dark/support.svg' },
   { name: 'Settings', route: '/settings', icon: '/images/dark/settings.svg' }
@@ -172,7 +172,7 @@ export const SAMPLE_APPOINTMENT_DATA: TAppointmentData[] = [
   }
 ];
 
-export const SAMPLE_RECENT_ACTIVITY_DATA: TActivitytData[] = [
+export const SAMPLE_RECENT_ACTIVITY_DATA: TActivityData[] = [
   {
     client: 'Sarah Johnson',
     pet: 'Bella',

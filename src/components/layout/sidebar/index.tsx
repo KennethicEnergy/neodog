@@ -50,10 +50,10 @@ const Sidebar = () => {
     </div>
   );
 
-  const renderMenuItems = () => renderItems(SIDEBAR_MENU_ITEMS.slice(0, 5), styles.sidebarItem);
+  const renderMenuItems = () => renderItems(SIDEBAR_MENU_ITEMS.slice(0, 4), styles.sidebarItem);
 
   const renderBottomItems = () =>
-    renderItems(SIDEBAR_MENU_ITEMS.slice(5, 7), styles.sidebarBottomItem);
+    renderItems(SIDEBAR_MENU_ITEMS.slice(4, 6), styles.sidebarBottomItem);
 
   return (
     <div className={styles.sidebar}>
