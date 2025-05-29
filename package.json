@@ -11,6 +11,8 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "chart.js": "^4.4.9",
+    "chartjs-plugin-annotation": "^3.1.0",
     "clsx": "^1.1.1",
     "eslint-config-prettier": "^10.1.5",
     "next": "15.3.2",
