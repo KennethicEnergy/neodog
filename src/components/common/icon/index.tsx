@@ -1,4 +1,4 @@
-import { TIcon } from '@/src/types/types';
+import { TIcon } from '@/src/types/icon';
 import Image from 'next/image';
 import DummyIcon from '../dummy-icon';
 import styles from './styles.module.scss';
