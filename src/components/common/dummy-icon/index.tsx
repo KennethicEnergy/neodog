@@ -1,6 +1,6 @@
 import styles from './styles.module.scss';
 
-const DummyIcon = ({ shape, onClick }: { shape: string; onClick?: () => void }) => {
+const DummyIcon = ({ shape = 'square', onClick }: { shape?: string; onClick?: () => void }) => {
   return (
     <div
       className={`${styles.dummyIcon} ${styles[shape]} ${onClick != null ? styles.clickable : ''}`}
