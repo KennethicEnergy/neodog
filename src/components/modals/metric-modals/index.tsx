@@ -3,6 +3,7 @@ import { SAMPLE_TAB_APPOINTMENT_DATA, SAMPLE_TAB_VACCINATION_DATA } from '@/src/
 import { Fragment } from 'react';
 import Charts from '../../common/charts';
 import Metrics from '../../common/metrics';
+import RevenueChart from '../../common/revenue-chart';
 import Tabs from '../../common/tabs';
 import styles from './styles.module.scss';
 
@@ -21,8 +22,12 @@ const MetricModal = (data: TMetricCardData) => {
       return tabData ? <Tabs type={data.type} data={tabData} /> : null;
     }
 
-    if (data.type === 'revenue' || data.type === 'clients') {
+    if (data.type === 'clients') {
       return <Charts type={data.type} />;
+    }
+
+    if (data.type === 'revenue') {
+      return <RevenueChart />;
     }
 
     return null;

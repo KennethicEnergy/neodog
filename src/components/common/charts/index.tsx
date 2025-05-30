@@ -37,18 +37,20 @@ const Charts = ({ type }: { type: string }) => {
           type: 'line',
           data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-              data: [4200, 4100, 3900, 4300, 3800, 4500],
-              borderColor: '#d3d3d3',
-              backgroundColor: 'rgba(211,211,211,.15)',
-              fill: true,
-              tension: 0.4,
-              pointBackgroundColor: '#d3d3d3',
-              pointBorderColor: '#d3d3d3',
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              borderWidth: 2,
-            }],
+            datasets: [
+              {
+                data: [4200, 4100, 3900, 4300, 3800, 4500],
+                borderColor: '#d3d3d3',
+                backgroundColor: 'rgba(211,211,211,.15)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#d3d3d3',
+                pointBorderColor: '#d3d3d3',
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 2
+              }
+            ]
           },
           options: {
             responsive: true,
@@ -70,38 +72,38 @@ const Charts = ({ type }: { type: string }) => {
                       position: 'start',
                       color: '#6c757d',
                       font: { weight: 'bold', size: 14 },
-                      yAdjust: -10,
-                    },
-                  },
-                },
-              },
+                      yAdjust: -10
+                    }
+                  }
+                }
+              }
             },
             scales: {
               y: {
                 min: 1000,
                 max: 5000,
                 ticks: {
-                  callback: value => `$${Number(value) / 1000}K`,
+                  callback: (value) => `$${Number(value) / 1000}K`,
                   color: '#9ca3af',
-                  font: { size: 12 },
+                  font: { size: 12 }
                 },
                 grid: {
-                  color: '#f3f4f6',
+                  color: '#f3f4f6'
                   // borderWidth: 0,    // ✅ wala nang drawBorder sa v4
-                },
+                }
               },
               x: {
                 ticks: {
                   color: '#9ca3af',
-                  font: { size: 12 },
+                  font: { size: 12 }
                 },
                 grid: {
-                  display: false,
+                  display: false
                   // borderWidth: 0,
-                },
-              },
-            },
-          },
+                }
+              }
+            }
+          }
         })
       );
     }
