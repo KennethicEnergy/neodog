@@ -10,6 +10,7 @@
   gap: 1rem;
   transition: all 0.2s ease-in-out;
   box-shadow: 2px 2px 10px #0c0d0d0d;
+  position: relative;
 
   &:hover {
     transform: scale(1.02);
@@ -23,70 +24,285 @@
     margin-bottom: 1rem;
   }
 
-  table {
+  .tableContainer {
     width: 100%;
-    border-collapse: collapse;
+    overflow: auto;
+    max-height: var(--max-height, 400px);
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    position: relative;
+
+    // Ensure smooth scrolling
+    scroll-behavior: smooth;
+
+    // Custom scrollbar styling
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+  }
+
+  table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    position: relative;
 
     thead {
-      background-color: #f0f0f0;
+      position: sticky;
       top: 0;
-      z-index: 1;
+      z-index: 10;
+      background-color: #f0f0f0;
 
       tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-      }
-    }
-
-    th {
-      padding: 1.5rem;
-      text-align: center;
-      font-weight: 600;
-
-      &:first-child {
-        border-top-left-radius: 10px;
-      }
-
-      &:last-child {
-        border-top-right-radius: 10px;
-      }
-    }
-
-    tbody {
-      display: block;
-      height: 400px;
-      overflow-y: auto;
-      width: 100%;
-
-      tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-        border-radius: 10px;
-        cursor: pointer;
-
-        &:hover {
+        th {
+          position: relative;
+          padding: 1.5rem;
+          text-align: center;
+          font-weight: 600;
+          border-bottom: 2px solid #ddd;
           background-color: #f0f0f0;
-          border-radius: unset;
+          min-width: 150px;
+          white-space: nowrap;
+          user-select: none;
+
+          &:first-child {
+            border-top-left-radius: 10px;
+          }
+
+          &:last-child {
+            border-top-right-radius: 10px;
+          }
+
+          &:not(:last-child) {
+            border-right: 1px solid #e0e0e0;
+          }
+
+          .headerContent {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+          }
+
+          .sortIcon {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+          }
+
+          &.sortable {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background-color: #e8e8e8;
+
+              .sortIcon {
+                opacity: 1;
+              }
+            }
+
+            &:active {
+              background-color: #ddd;
+            }
+          }
         }
       }
     }
 
-    thead tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
+    tbody {
+      tr {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #f8f9fa;
+        }
+
+        &:last-child {
+          td:first-child {
+            border-bottom-left-radius: 10px;
+          }
+
+          td:last-child {
+            border-bottom-right-radius: 10px;
+          }
+        }
+
+        td {
+          padding: 1.5rem;
+          border-bottom: 1px solid #e0e0e0;
+          background-color: #ffffff;
+          min-width: 150px;
+          white-space: nowrap;
+          position: relative;
+
+          &:not(:last-child) {
+            border-right: 1px solid #e0e0e0;
+          }
+        }
+      }
+    }
+  }
+
+  // Fixed columns styling
+  &.hasFixedColumns {
+    // Left-aligned fixed columns
+    .fixedColumn {
+      position: sticky;
+      z-index: 5;
+      background-color: #f9f9f9 !important;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 100%;
+        background-color: #ddd;
+      }
     }
 
-    td {
-      padding: 1.5rem;
-      border-bottom: 1px solid #e0e0e0;
+    // Right-aligned fixed columns
+    .fixedColumnRight {
+      position: sticky;
+      right: 0;
+      z-index: 5;
+      background-color: #f9f9f9 !important;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 100%;
+        background-color: #ddd;
+      }
     }
 
-    th,
-    td {
-      width: calc(100% / 6); // Equal width for 6 columns
+    thead .fixedColumn,
+    thead .fixedColumnRight {
+      z-index: 15;
+      background-color: #e8e8e8 !important;
+    }
+
+    // Dynamic positioning for left-aligned fixed columns
+    @for $i from 0 through 4 {
+      th[data-column-index="#{$i}"].fixedColumn,
+      td[data-column-index="#{$i}"].fixedColumn {
+        left: #{$i * 150px};
+      }
+    }
+  }
+
+  // Fixed rows styling
+  &.hasFixedRows {
+    .fixedRow {
+      position: sticky;
+      top: 60px; // Height of header
+      z-index: 8;
+      background-color: #f9f9f9;
+
+      td {
+        background-color: #f9f9f9 !important;
+        border-bottom: 2px solid #ddd;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: #ddd;
+      }
+    }
+
+    // Multiple fixed rows positioning
+    tbody tr:nth-child(1).fixedRow {
+      top: 60px;
+    }
+
+    tbody tr:nth-child(2).fixedRow {
+      top: 120px; // Height of header + first row
+    }
+  }
+
+  // Intersection of fixed column and fixed row
+  &.hasFixedColumns.hasFixedRows {
+    .fixedRow .fixedColumn {
+      z-index: 20;
+      background-color: #e8e8e8 !important;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+
+    .tableContainer {
+      border-radius: 5px;
+    }
+
+    table {
+      thead th,
+      tbody td {
+        padding: 1rem;
+        min-width: 120px;
+        font-size: 0.9rem;
+      }
+    }
+
+    &.hasFixedColumns {
+      // Left-aligned fixed columns
+      @for $i from 0 through 4 {
+        th[data-column-index="#{$i}"].fixedColumn,
+        td[data-column-index="#{$i}"].fixedColumn {
+          left: #{$i * 120px};
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    table {
+      thead th,
+      tbody td {
+        padding: 0.75rem;
+        min-width: 100px;
+        font-size: 0.8rem;
+      }
+    }
+
+    &.hasFixedColumns {
+      // Left-aligned fixed columns
+      @for $i from 0 through 4 {
+        th[data-column-index="#{$i}"].fixedColumn,
+        td[data-column-index="#{$i}"].fixedColumn {
+          left: #{$i * 100px};
+        }
+      }
     }
   }
 }

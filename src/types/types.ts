@@ -1,9 +1,3 @@
-export type TTableData = {
-  title?: string;
-  icon?: string;
-  data: object[];
-};
-
 export type TAppointmentData = {
   client: string;
   pet: string;

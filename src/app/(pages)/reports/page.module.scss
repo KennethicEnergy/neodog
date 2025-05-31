@@ -1,0 +1,7 @@
+.gridRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}

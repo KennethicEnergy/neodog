@@ -6,6 +6,7 @@ import {
   TRevenueMetrics,
   TVaccinationMetrics
 } from '../types/metrics';
+import { TTableRow } from '../types/table';
 import { TActivityData, TAppointmentData, TServices } from '../types/types';
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
@@ -377,3 +378,14 @@ export const SAMPLE_TAB_VACCINATION_DATA = {
     }
   ]
 };
+
+export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index) => ({
+  date: `April ${19 + (index % 10)}, 2024`,
+  client: ['Sarah Johnson', 'Mike Davis', 'Emily Chen', 'Robert Wilson', 'Lisa Anderson'][
+    index % 5
+  ],
+  pet: ['Bella', 'Max', 'Luna', 'Charlie', 'Daisy'][index % 5],
+  task: ['Medication', 'Grooming', 'Checkup', 'Vaccination', 'Training'][index % 5],
+  assignedTo: ['David Miller', 'Anna Smith', 'John Doe', 'Maria Garcia', 'Tom Brown'][index % 5],
+  status: ['Completed', 'Pending', 'In Progress', 'Cancelled', 'Scheduled'][index % 5]
+}));
