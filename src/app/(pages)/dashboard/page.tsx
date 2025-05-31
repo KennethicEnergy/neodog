@@ -4,7 +4,7 @@ import BaseModal from '@/src/components/common/base-modal';
 import Card from '@/src/components/common/card';
 import RecentActivity from '@/src/components/common/recent-activity';
 import Table from '@/src/components/common/table';
-import MetricModal from '@/src/components/modals/metric-modals';
+import MetricModal from '@/src/components/modals/metric-modal';
 import { useModalStore } from '@/src/store/modal-store';
 import { TMetricCardData } from '@/src/types/metrics';
 import {
@@ -20,7 +20,6 @@ const DashboardPage = () => {
   const closeModal = useModalStore((state) => state.closeModal);
 
   const handleMetricCardClick = (data: TMetricCardData) => {
-    // const id = data.id;
     openModal(
       <BaseModal onClose={closeModal}>
         <MetricModal {...data} />

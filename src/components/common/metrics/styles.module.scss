@@ -35,11 +35,14 @@
     font-weight: 500;
     color: #6b7280;
   }
+}
 
-  &:hover {
-  }
-
-  p {
-    text-align: left;
+@media screen and (max-width: 600px) {
+  .metrics {
+    align-items: center;
+    .label {
+      flex-direction: column-reverse;
+      gap: 0.5rem;
+    }
   }
 }
