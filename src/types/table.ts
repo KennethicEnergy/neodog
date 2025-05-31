@@ -10,5 +10,6 @@ export type TTableRow = {
 export type TTableData = {
   title?: string;
   icon?: string;
+  viewAll?: boolean;
   data: TTableRow[];
 };

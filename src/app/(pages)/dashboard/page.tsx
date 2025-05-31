@@ -42,8 +42,9 @@ const DashboardPage = () => {
 
       <div className={styles.gridRow}>
         <Table
-          title="Staff Task"
-          icon="/images/alert.svg"
+          title="Checked-In Dogs"
+          icon="/images/paw-white.svg"
+          viewAll
           data={SAMPLE_TABLE_DATA}
           fixedColumns={[5]}
         />

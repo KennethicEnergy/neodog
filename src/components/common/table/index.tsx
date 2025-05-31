@@ -1,5 +1,7 @@
+import { useModalStore } from '@/src/store/modal-store';
 import { TTableData } from '@/src/types/table';
 import { useMemo, useState } from 'react';
+import BaseModal from '../base-modal';
 import Icon from '../icon';
 import styles from './styles.module.scss';
 
@@ -21,11 +23,14 @@ const Table = ({
   title,
   icon,
   data,
+  viewAll = false,
   fixedColumns = [],
   fixedRows = [],
   maxHeight = '400px',
   enableSorting = true
 }: TableProps) => {
+  const openModal = useModalStore((state) => state.openModal);
+  const closeModal = useModalStore((state) => state.closeModal);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: null });
 
   const headers = [
@@ -129,6 +134,15 @@ const Table = ({
     return '↕';
   };
 
+  const expandView = () => {
+    console.log('Opening Table with');
+    openModal(
+      <BaseModal onClose={closeModal}>
+        <Table data={data} title="Checked-In Dogs" icon="/images/paw-white.svg" />
+      </BaseModal>
+    );
+  };
+
   return (
     <div
       className={tableClasses}
@@ -140,10 +154,15 @@ const Table = ({
         } as React.CSSProperties & Record<string, string | number>
       }>
       <div className={styles.tableInfo}>
-        <>
-          {icon && <Icon src={icon} bgColor="#FF9500" />}
+        <div>
+          {icon && <Icon src={icon} bgColor="#3b82f6" />}
           {title && <h3>{title}</h3>}
-        </>
+        </div>
+        {viewAll && (
+          <div className={styles.viewAll} onClick={expandView}>
+            View All
+          </div>
+        )}
       </div>
 
       <div className={styles.tableContainer}>
