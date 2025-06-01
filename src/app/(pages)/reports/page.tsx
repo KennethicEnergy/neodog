@@ -6,26 +6,39 @@ import styles from './page.module.scss';
 
 const ReportsPage = () => {
   return (
-    <>
+    <div className={styles.reports}>
       <div>
         <RevenueChart />
       </div>
       <div className={styles.gridRow}>
-        <Table title="Tasks" data={SAMPLE_TABLE_DATA} fixedColumns={[0]} />
+        <Table title="Table with first column fixed" data={SAMPLE_TABLE_DATA} fixedColumns={[0]} />
       </div>
 
       <div className={styles.gridRow}>
-        <Table title="Tasks" data={SAMPLE_TABLE_DATA} fixedColumns={[5]} enableSorting={false} />
+        <Table
+          title="Table with sorting and last column fixed"
+          data={SAMPLE_TABLE_DATA}
+          fixedColumns={[5]}
+          enableSorting={true}
+        />
       </div>
 
       <div className={styles.gridRow}>
-        <Table title="Tasks" data={SAMPLE_TABLE_DATA} fixedColumns={[0, 5]} />
+        <Table
+          title="Table with first and last column fixed"
+          data={SAMPLE_TABLE_DATA}
+          fixedColumns={[0, 5]}
+        />
       </div>
 
       <div className={styles.gridRow}>
-        <Table title="Tasks" data={SAMPLE_TABLE_DATA} fixedRows={[0, 2]} />
+        <Table
+          title="Table with first and third row fixed"
+          data={SAMPLE_TABLE_DATA}
+          fixedRows={[0, 2]}
+        />
       </div>
-    </>
+    </div>
   );
 };
 

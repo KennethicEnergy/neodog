@@ -1,3 +1,10 @@
+.reports {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
 .gridRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
