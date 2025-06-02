@@ -21,7 +21,6 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      width: 50%;
     }
 
     .headerLeft {
@@ -30,6 +29,41 @@
 
     .headerRight {
       justify-content: flex-end;
+
+      .notification {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        padding: 4px;
+        transition: opacity 0.2s ease;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      .count {
+        color: rgb(255, 255, 255);
+        z-index: 1;
+        justify-content: center;
+        align-items: center;
+        min-width: 16px;
+        height: 16px;
+        font-size: 10px;
+        font-weight: 600;
+        display: flex;
+        position: absolute;
+        top: 4px;
+        right: 1px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+        background: rgb(239, 68, 68);
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+        border-radius: 8px;
+        padding: 0px 4px;
+      }
 
       .user {
         display: flex;
@@ -58,6 +92,14 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .headerRight {
+    .userDetails {
+      display: none;
+    }
+  }
+}
+
 @media screen and (max-width: 600px) {
   .header .brandWrapper {
     display: flex;
@@ -73,7 +115,7 @@
     padding: 1rem 1rem 1rem 0;
 
     .headerLeft {
-      width: 100%;
+      width: 50%;
     }
   }
   .header .brandWrapper {
@@ -83,8 +125,12 @@
   }
 }
 
-@media screen and (width: 1025px) {
+@media screen and (min-width: 1025px) {
   .headerWrapper .brandWrapper {
     display: none;
+  }
+
+  .headerWrapper .headerLeft {
+    width: 30%;
   }
 }

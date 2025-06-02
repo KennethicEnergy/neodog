@@ -14,7 +14,6 @@ const Header = () => {
   const renderBrand = () => (
     <div className={styles.brandWrapper} onClick={() => router.push('/')}>
       <Image className={styles.logo} src="/images/brand.svg" alt="logo" width={24} height={24} />
-      <h3 className={styles.brand}>NeoDog</h3>
     </div>
   );
 
@@ -53,7 +52,10 @@ const Header = () => {
           onClick={() => setPopupOpen(!popupOpen)}
         />
         {popupOpen && <HeaderPopup isOpen={popupOpen} setPopupOpen={setPopupOpen} />}
-        <Icon src="/images/bell.svg" width={16} height={16} />
+        <div className={styles.notification}>
+          <span className={styles.count}>9+</span>
+          <Icon src="/images/bell.svg" width={16} height={16} />
+        </div>
         <div className={styles.user}>
           <Icon width={24} height={24} shape="circle" />
           <div className={styles.userDetails}>
