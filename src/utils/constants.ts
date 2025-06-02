@@ -380,12 +380,20 @@ export const SAMPLE_TAB_VACCINATION_DATA = {
 };
 
 export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index) => ({
-  date: `April ${19 + (index % 10)}, 2024`,
+  pet: ['Bella', 'Max', 'Luna', 'Charlie', 'Daisy'][index % 5],
   client: ['Sarah Johnson', 'Mike Davis', 'Emily Chen', 'Robert Wilson', 'Lisa Anderson'][
     index % 5
   ],
-  pet: ['Bella', 'Max', 'Luna', 'Charlie', 'Daisy'][index % 5],
+  lodging: ['Kennel A3', 'Kennel B5', 'Kennel C7', 'Kennel D9', 'Kennel E11'][index % 5],
+  locker: ['Locker 1', 'Locker 2', 'Locker 3', 'Locker 4', 'Locker 5'][index % 5],
+  checkIn: ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM'][index % 5],
+  checkOut: ['3:00 PM', '4:00 PM', '5:00 PM', '8:00 PM', '9:00 PM'][index % 5],
+  services: ['Grooming', 'Vaccination', 'Training', 'Wellness Checkup', 'Dental Cleaning'][
+    index % 5
+  ],
+  belongings: ['Collar', 'Leash', 'Leash', 'Leash', 'Leash'][index % 5],
   task: ['Medication', 'Grooming', 'Checkup', 'Vaccination', 'Training'][index % 5],
   assignedTo: ['David Miller', 'Anna Smith', 'John Doe', 'Maria Garcia', 'Tom Brown'][index % 5],
-  status: ['Completed', 'Pending', 'In Progress', 'Cancelled', 'Scheduled'][index % 5]
+  status: ['Completed', 'Pending', 'In Progress', 'Cancelled', 'Scheduled'][index % 5],
+  details: ['Details', 'Details', 'Details', 'Details', 'Details'][index % 5]
 }));

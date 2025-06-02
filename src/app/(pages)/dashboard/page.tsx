@@ -46,7 +46,7 @@ const DashboardPage = () => {
           icon="/images/paw-white.svg"
           viewAll
           data={SAMPLE_TABLE_DATA}
-          fixedColumns={[5]}
+          fixedColumns={[8]}
         />
       </div>
 

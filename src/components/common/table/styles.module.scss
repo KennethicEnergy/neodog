@@ -48,10 +48,8 @@
     border: 1px solid #e0e0e0;
     position: relative;
 
-    // Ensure smooth scrolling
     scroll-behavior: smooth;
 
-    // Custom scrollbar styling
     &::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -96,6 +94,10 @@
           min-width: 150px;
           white-space: nowrap;
           user-select: none;
+          text-transform: uppercase;
+          font-size: 13px;
+          border-left: none;
+          border-right: none;
 
           &:first-child {
             border-top-left-radius: 10px;
@@ -103,10 +105,6 @@
 
           &:last-child {
             border-top-right-radius: 10px;
-          }
-
-          &:not(:last-child) {
-            border-right: 1px solid #e0e0e0;
           }
 
           .headerContent {
@@ -163,23 +161,19 @@
 
         td {
           padding: 1.5rem;
-          border-bottom: 1px solid #e0e0e0;
           background-color: #ffffff;
           min-width: 150px;
           white-space: nowrap;
           position: relative;
-
-          &:not(:last-child) {
-            border-right: 1px solid #e0e0e0;
-          }
+          border-left: none;
+          border-right: none;
+          border-bottom: 1px solid #e5e7eb;
         }
       }
     }
   }
 
-  // Fixed columns styling
   &.hasFixedColumns {
-    // Left-aligned fixed columns
     .fixedColumn {
       position: sticky;
       z-index: 5;
@@ -197,7 +191,6 @@
       }
     }
 
-    // Right-aligned fixed columns
     .fixedColumnRight {
       position: sticky;
       right: 0;
@@ -222,7 +215,6 @@
       background-color: #e8e8e8 !important;
     }
 
-    // Dynamic positioning for left-aligned fixed columns
     @for $i from 0 through 4 {
       th[data-column-index="#{$i}"].fixedColumn,
       td[data-column-index="#{$i}"].fixedColumn {
@@ -231,11 +223,10 @@
     }
   }
 
-  // Fixed rows styling
   &.hasFixedRows {
     .fixedRow {
       position: sticky;
-      top: 60px; // Height of header
+      top: 60px;
       z-index: 8;
       background-color: #f9f9f9;
 
@@ -255,17 +246,15 @@
       }
     }
 
-    // Multiple fixed rows positioning
     tbody tr:nth-child(1).fixedRow {
       top: 60px;
     }
 
     tbody tr:nth-child(2).fixedRow {
-      top: 120px; // Height of header + first row
+      top: 120px;
     }
   }
 
-  // Intersection of fixed column and fixed row
   &.hasFixedColumns.hasFixedRows {
     .fixedRow .fixedColumn {
       z-index: 20;
@@ -273,7 +262,6 @@
     }
   }
 
-  // Responsive adjustments
   @media (max-width: 768px) {
     padding: 0.5rem;
 
@@ -291,7 +279,6 @@
     }
 
     &.hasFixedColumns {
-      // Left-aligned fixed columns
       @for $i from 0 through 4 {
         th[data-column-index="#{$i}"].fixedColumn,
         td[data-column-index="#{$i}"].fixedColumn {
@@ -312,7 +299,6 @@
     }
 
     &.hasFixedColumns {
-      // Left-aligned fixed columns
       @for $i from 0 through 4 {
         th[data-column-index="#{$i}"].fixedColumn,
         td[data-column-index="#{$i}"].fixedColumn {

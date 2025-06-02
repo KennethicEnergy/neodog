@@ -17,6 +17,7 @@ interface TableProps extends TTableData {
   fixedRows?: number | number[]; // Row indices to fix (e.g., [0, 1] or just 2 for first N rows)
   maxHeight?: string; // Custom max height for the table body
   enableSorting?: boolean; // Enable/disable sorting functionality
+  columnOverflow?: 'left' | 'right' | 'auto'; // Control overflow direction for fixed columns
 }
 
 const Table = ({
@@ -27,19 +28,23 @@ const Table = ({
   fixedColumns = [],
   fixedRows = [],
   maxHeight = '400px',
-  enableSorting = true
+  enableSorting = true,
+  columnOverflow = 'auto'
 }: TableProps) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: null });
 
   const headers = [
-    { key: 'date', label: 'Date' },
-    { key: 'client', label: 'Client' },
     { key: 'pet', label: 'Pet' },
-    { key: 'task', label: 'Task' },
-    { key: 'assignedTo', label: 'Assigned To' },
-    { key: 'status', label: 'Status' }
+    { key: 'client', label: 'Client' },
+    { key: 'lodging', label: 'Lodging' },
+    { key: 'locker', label: 'Locker' },
+    { key: 'checkIn', label: 'Check In' },
+    { key: 'checkOut', label: 'Check Out' },
+    { key: 'services', label: 'Services' },
+    { key: 'belongings', label: 'Belongings' },
+    { key: 'details', label: 'Details' }
   ];
 
   const fixedColIndices = Array.isArray(fixedColumns)
@@ -96,8 +101,20 @@ const Table = ({
 
   const isRightAlignedColumn = (index: number) => {
     const totalColumns = headers.length;
-    const halfColumns = Math.floor(totalColumns / 2);
-    return index >= halfColumns;
+    const lastColumnIndex = totalColumns - 1;
+
+    // If columnOverflow is 'auto', determine based on position
+    if (columnOverflow === 'auto') {
+      // Last column should overflow left, others based on position
+      if (index === lastColumnIndex) {
+        return true; // Last column overflows left
+      }
+      const halfColumns = Math.floor(totalColumns / 2);
+      return index >= halfColumns;
+    }
+
+    // If columnOverflow is explicitly set, use that for all fixed columns
+    return columnOverflow === 'left';
   };
 
   const generateColumnPositions = () => {
@@ -107,11 +124,16 @@ const Table = ({
     let leftOffset = 0;
     let rightOffset = 0;
 
-    fixedColIndices.forEach((colIndex) => {
+    // Sort fixed columns by their index to ensure proper positioning
+    const sortedFixedCols = [...fixedColIndices].sort((a, b) => a - b);
+
+    sortedFixedCols.forEach((colIndex) => {
       if (isRightAlignedColumn(colIndex)) {
+        // For right-aligned (overflow left) columns, position from the right
         rightPositions[`--right-col-${colIndex}`] = `${rightOffset * 150}px`;
         rightOffset++;
       } else {
+        // For left-aligned (overflow right) columns, position from the left
         leftPositions[`--left-col-${colIndex}`] = `${leftOffset * 150}px`;
         leftOffset++;
       }
@@ -172,7 +194,7 @@ const Table = ({
               {headers.map((header, index) => (
                 <th
                   key={header.key}
-                  className={`${fixedColIndices.includes(index) ? styles.fixedColumn : ''} ${enableSorting ? styles.sortable : ''}`}
+                  className={`${fixedColIndices.includes(index) ? styles.fixedColumn : ''} ${fixedColIndices.includes(index) && isRightAlignedColumn(index) ? styles.fixedColumnRight : ''} ${enableSorting ? styles.sortable : ''}`}
                   data-column-index={index}
                   onClick={() => handleSort(header.key)}>
                   <div className={styles.headerContent}>
@@ -190,36 +212,14 @@ const Table = ({
               <tr
                 key={rowIndex}
                 className={fixedRowIndices.includes(rowIndex) ? styles.fixedRow : ''}>
-                <td
-                  className={fixedColIndices.includes(0) ? styles.fixedColumn : ''}
-                  data-column-index={0}>
-                  {row.date}
-                </td>
-                <td
-                  className={fixedColIndices.includes(1) ? styles.fixedColumn : ''}
-                  data-column-index={1}>
-                  {row.client}
-                </td>
-                <td
-                  className={fixedColIndices.includes(2) ? styles.fixedColumn : ''}
-                  data-column-index={2}>
-                  {row.pet}
-                </td>
-                <td
-                  className={fixedColIndices.includes(3) ? styles.fixedColumn : ''}
-                  data-column-index={3}>
-                  {row.task}
-                </td>
-                <td
-                  className={fixedColIndices.includes(4) ? styles.fixedColumn : ''}
-                  data-column-index={4}>
-                  {row.assignedTo}
-                </td>
-                <td
-                  className={fixedColIndices.includes(5) ? styles.fixedColumn : ''}
-                  data-column-index={5}>
-                  {row.status}
-                </td>
+                {headers.map((header, colIndex) => (
+                  <td
+                    key={header.key}
+                    className={`${fixedColIndices.includes(colIndex) ? styles.fixedColumn : ''} ${fixedColIndices.includes(colIndex) && isRightAlignedColumn(colIndex) ? styles.fixedColumnRight : ''}`}
+                    data-column-index={colIndex}>
+                    {row[header.key as keyof typeof row]}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>

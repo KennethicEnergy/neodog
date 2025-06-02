@@ -1,10 +1,13 @@
 export type TTableRow = {
-  date: string;
-  client: string;
   pet: string;
-  task: string;
-  assignedTo: string;
-  status: string;
+  client: string;
+  lodging: string;
+  locker: string;
+  checkIn: string;
+  checkOut: string;
+  services: string;
+  belongings: string;
+  details: string;
 };
 
 export type TTableData = {
