@@ -19,12 +19,10 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
       <Sidebar />
       <div className={styles.content}>
         <Header />
-        <main className={styles.main}>
-          {children}
-          <div className={styles.footerRow}>
-            <Footer />
-          </div>
-        </main>
+        <main className={styles.main}>{children}</main>
+        <div className={styles.footerRow}>
+          <Footer />
+        </div>
       </div>
     </div>
   );

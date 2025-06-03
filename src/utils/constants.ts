@@ -397,3 +397,5 @@ export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, ind
   status: ['Completed', 'Pending', 'In Progress', 'Cancelled', 'Scheduled'][index % 5],
   details: ['Details', 'Details', 'Details', 'Details', 'Details'][index % 5]
 }));
+
+export const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];

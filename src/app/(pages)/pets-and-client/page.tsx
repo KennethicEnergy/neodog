@@ -1,7 +1,10 @@
-import React from 'react';
-
+import styles from './page.module.scss';
 const PetsAndClientPage = () => {
-  return <div>PetsAndClientPage</div>;
+  return (
+    <div className={styles.page}>
+      <h3>Pets And Clients</h3>
+    </div>
+  );
 };
 
 export default PetsAndClientPage;

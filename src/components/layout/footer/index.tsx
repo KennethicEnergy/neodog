@@ -1,11 +1,20 @@
+import { FOOTER_MENUS } from '@/src/utils/constants';
 import DummyIcon from '../../common/dummy-icon';
 import styles from './styles.module.scss';
 
 const Footer = () => {
-  const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];
-
   const renderAllRightsReserved = () => {
     return <div className={styles.allRightsReserved}>© 2025 NeoDog. All rights reserved.</div>;
+  };
+
+  const renderSocials = () => {
+    return (
+      <div className={styles.socials}>
+        <DummyIcon />
+        <DummyIcon />
+        <DummyIcon />
+      </div>
+    );
   };
 
   const renderFooterMenus = () => (
@@ -15,9 +24,7 @@ const Footer = () => {
           {menu}
         </div>
       ))}
-      <DummyIcon />
-      <DummyIcon />
-      <DummyIcon />
+      {renderSocials()}
     </div>
   );
 
