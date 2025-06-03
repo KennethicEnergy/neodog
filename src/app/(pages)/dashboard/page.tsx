@@ -8,6 +8,9 @@ import MetricModal from '@/src/components/modals/metric-modal';
 import { useModalStore } from '@/src/store/modal-store';
 import { TMetricCardData } from '@/src/types/metrics';
 import {
+  DOG_CHECKIN_HEADERS
+} from '@/src/types/table';
+import {
   DASHBOARD_METRIC_CARDS,
   SAMPLE_APPOINTMENT_DATA,
   SAMPLE_RECENT_ACTIVITY_DATA,
@@ -46,9 +49,30 @@ const DashboardPage = () => {
           icon="/images/paw-white.svg"
           viewAll
           data={SAMPLE_TABLE_DATA}
+          headers={DOG_CHECKIN_HEADERS}
           fixedColumns={[8]}
         />
       </div>
+      {/* <div className={styles.gridRow}>
+        <Table
+          title="Checked-In Dogs"
+          icon="/images/paw-white.svg"
+          viewAll
+          data={SAMPLE_ORDER_DATA}
+          headers={ORDER_HEADERS}
+          fixedColumns={[8]}
+        />
+      </div>
+      <div className={styles.gridRow}>
+        <Table
+          title="Checked-In Dogs"
+          icon="/images/paw-white.svg"
+          viewAll
+          data={SAMPLE_EMPLOYEE_DATA}
+          headers={EMPLOYEE_HEADERS}
+          fixedColumns={[8]}
+        />
+      </div> */}
 
       <div className={styles.appointmentGrid}>
         <Appointment

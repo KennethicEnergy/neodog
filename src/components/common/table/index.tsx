@@ -1,5 +1,4 @@
 import { useModalStore } from '@/src/store/modal-store';
-import { TTableData } from '@/src/types/table';
 import { useMemo, useState } from 'react';
 import BaseModal from '../base-modal';
 import Icon from '../icon';
@@ -12,7 +11,20 @@ interface SortConfig {
   direction: SortDirection;
 }
 
-interface TableProps extends TTableData {
+interface TableHeader {
+  key: string;
+  label: string;
+}
+
+interface BaseTableData {
+  title?: string;
+  icon?: string;
+  viewAll?: boolean;
+}
+
+interface TableProps<T extends Record<string, unknown>> extends BaseTableData {
+  data: T[]; // Generic data array
+  headers: TableHeader[]; // Dynamic headers
   fixedColumns?: number | number[]; // Column indices to fix (e.g., [0, 2, 5] or just 2 for first N columns)
   fixedRows?: number | number[]; // Row indices to fix (e.g., [0, 1] or just 2 for first N rows)
   maxHeight?: string; // Custom max height for the table body
@@ -20,32 +32,21 @@ interface TableProps extends TTableData {
   columnOverflow?: 'left' | 'right' | 'auto'; // Control overflow direction for fixed columns
 }
 
-const Table = ({
+const Table = <T extends Record<string, unknown>>({
   title,
   icon,
   data,
+  headers,
   viewAll = false,
   fixedColumns = [],
   fixedRows = [],
   maxHeight = '400px',
   enableSorting = true,
   columnOverflow = 'auto'
-}: TableProps) => {
+}: TableProps<T>) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: null });
-
-  const headers = [
-    { key: 'pet', label: 'Pet' },
-    { key: 'client', label: 'Client' },
-    { key: 'lodging', label: 'Lodging' },
-    { key: 'locker', label: 'Locker' },
-    { key: 'checkIn', label: 'Check In' },
-    { key: 'checkOut', label: 'Check Out' },
-    { key: 'services', label: 'Services' },
-    { key: 'belongings', label: 'Belongings' },
-    { key: 'details', label: 'Details' }
-  ];
 
   const fixedColIndices = Array.isArray(fixedColumns)
     ? fixedColumns
@@ -70,13 +71,22 @@ const Table = ({
     }
 
     return [...data].sort((a, b) => {
-      const aValue = a[sortConfig.key as keyof typeof a];
-      const bValue = b[sortConfig.key as keyof typeof b];
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
 
-      if (aValue < bValue) {
+      // Handle different data types for sorting
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (bValue == null) return sortConfig.direction === 'asc' ? 1 : -1;
+
+      // Convert to string for comparison if not numbers
+      const aSort = typeof aValue === 'number' ? aValue : String(aValue).toLowerCase();
+      const bSort = typeof bValue === 'number' ? bValue : String(bValue).toLowerCase();
+
+      if (aSort < bSort) {
         return sortConfig.direction === 'asc' ? -1 : 1;
       }
-      if (aValue > bValue) {
+      if (aSort > bSort) {
         return sortConfig.direction === 'asc' ? 1 : -1;
       }
       return 0;
@@ -160,9 +170,41 @@ const Table = ({
     console.log('Opening Table with');
     openModal(
       <BaseModal onClose={closeModal}>
-        <Table data={data} title="Checked-In Dogs" icon="/images/paw-white.svg" />
+        <Table data={data} headers={headers} title={title || 'Table View'} icon={icon} />
       </BaseModal>
     );
+  };
+
+  // Helper function to render cell content
+  const renderCellContent = (row: T, headerKey: string) => {
+    const value = row[headerKey];
+
+    // Handle different data types
+    if (value === null || value === undefined) {
+      return '-';
+    }
+
+    // If it's a boolean, convert to Yes/No
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+
+    // If it's a number, you might want to format it
+    if (typeof value === 'number') {
+      return value.toLocaleString();
+    }
+
+    // If it's an array, join with commas
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    // If it's an object, you might want to render specific properties
+    if (typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+
+    return String(value);
   };
 
   return (
@@ -217,7 +259,7 @@ const Table = ({
                     key={header.key}
                     className={`${fixedColIndices.includes(colIndex) ? styles.fixedColumn : ''} ${fixedColIndices.includes(colIndex) && isRightAlignedColumn(colIndex) ? styles.fixedColumnRight : ''}`}
                     data-column-index={colIndex}>
-                    {row[header.key as keyof typeof row]}
+                    {renderCellContent(row, header.key)}
                   </td>
                 ))}
               </tr>
