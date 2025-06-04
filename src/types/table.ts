@@ -109,7 +109,7 @@ export const PRODUCT_HEADERS: TableHeader[] = [
 
 // Sample data for different types
 export const SAMPLE_DOG_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index) => ({
-  pet: ['Bella', 'Max', 'Luna', 'Charlie', 'Daisy'][index % 5],
+  pet: ['Bella', 'Max', 'Luna', 'Chuckie', 'Daisy'][index % 5],
   client: ['Sarah Johnson', 'Mike Davis', 'Emily Chen', 'Robert Wilson', 'Lisa Anderson'][
     index % 5
   ],
@@ -126,7 +126,7 @@ export const SAMPLE_DOG_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index
 
 export const SAMPLE_ORDER_DATA: OrderRow[] = Array.from({ length: 10 }, (_, index) => ({
   orderId: `ORD-${1000 + index}`,
-  customerName: ['John Smith', 'Jane Doe', 'Bob Johnson', 'Alice Brown', 'Charlie Wilson'][
+  customerName: ['John Smith', 'Jane Doe', 'Bob Johnson', 'Alice Brown', 'Chuckie Wilson'][
     index % 5
   ],
   customerEmail: [
@@ -134,7 +134,7 @@ export const SAMPLE_ORDER_DATA: OrderRow[] = Array.from({ length: 10 }, (_, inde
     'jane@email.com',
     'bob@email.com',
     'alice@email.com',
-    'charlie@email.com'
+    'Chuckie@email.com'
   ][index % 5],
   orderDate: ['2024-01-15', '2024-01-16', '2024-01-17', '2024-01-18', '2024-01-19'][index % 5],
   totalAmount: [299.99, 149.5, 899.0, 45.99, 199.99][index % 5],
@@ -155,7 +155,7 @@ export const SAMPLE_ORDER_DATA: OrderRow[] = Array.from({ length: 10 }, (_, inde
 
 export const SAMPLE_EMPLOYEE_DATA: EmployeeRow[] = Array.from({ length: 8 }, (_, index) => ({
   employeeId: `EMP-${100 + index}`,
-  firstName: ['John', 'Jane', 'Bob', 'Alice', 'Charlie', 'Diana', 'Eve', 'Frank'][index],
+  firstName: ['John', 'Jane', 'Bob', 'Alice', 'Chuckie', 'Diana', 'Eve', 'Frank'][index],
   lastName: ['Smith', 'Doe', 'Johnson', 'Brown', 'Wilson', 'Davis', 'Miller', 'Garcia'][index],
   department: ['Engineering', 'Marketing', 'Sales', 'HR', 'Operations'][index % 5],
   position: [

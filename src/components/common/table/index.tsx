@@ -194,9 +194,12 @@ const Table = <T extends Record<string, unknown>>({
       return value.toLocaleString();
     }
 
-    // If it's an array, join with commas
     if (Array.isArray(value)) {
-      return value.join(', ');
+      return value.map((item, index) => (
+        <div className={styles.arrayItem} key={index}>
+          <span>{item}</span>
+        </div>
+      ));
     }
 
     // If it's an object, you might want to render specific properties

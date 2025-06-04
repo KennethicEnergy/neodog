@@ -169,6 +169,13 @@
           border-right: none;
           border-bottom: 1px solid #e5e7eb;
         }
+
+        .arrayItem {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+        }
       }
     }
   }

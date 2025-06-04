@@ -1,0 +1,292 @@
+.petsAndClient {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+
+  h3 {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .topControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .tabContainer {
+      display: flex;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      .tab {
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        color: #666;
+        min-width: 120px;
+        justify-content: center;
+
+        .tabIcon {
+          font-size: 1rem;
+          // Space for actual icons - replace with your icon components
+        }
+
+        &:hover {
+          background: rgba(82, 82, 82, 0.1);
+        }
+
+        &.active {
+          background: #525252;
+          color: #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+
+    .filterContainer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .filterButton,
+      .addButton {
+        padding: 0.75rem 1.5rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+          border-color: #525252;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .filterIcon {
+          font-size: 0.8rem;
+          // Space for actual filter icon
+        }
+      }
+
+      .addButton {
+        background: #525252;
+        color: #ffffff;
+        border-color: #525252;
+
+        &:hover {
+          background: #404040;
+        }
+      }
+    }
+  }
+
+  .content {
+    min-height: 400px;
+
+    .petsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+
+      .petCard {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .imageContainer {
+          height: 200px;
+          background: #f5f5f5;
+          position: relative;
+          overflow: hidden;
+
+          .imagePlaceholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            // Space for actual image
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+        }
+
+        .petInfo {
+          padding: 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+
+          .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            &:not(:last-child) {
+              padding-bottom: 0.5rem;
+            }
+          }
+
+          .name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+          }
+
+          .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            &.statusHealthy {
+              background: #e8f5e8;
+              color: #2d5a2d;
+            }
+
+            &.statusMedical {
+              background: #ffe8e8;
+              color: #d32f2f;
+            }
+
+            &.statusFollowUp {
+              background: #fff3e0;
+              color: #f57c00;
+            }
+          }
+
+          .breed {
+            color: #666;
+            font-weight: 500;
+          }
+
+          .age {
+            color: #888;
+            font-size: 0.9rem;
+          }
+
+          .owner,
+          .lastVisit {
+            color: #666;
+            font-size: 0.9rem;
+          }
+        }
+
+        .controls {
+          padding: 1rem 1.5rem;
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.75rem;
+
+          .profile,
+          .schedule {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+
+            &:hover {
+              border-color: #525252;
+              background: #f5f5f5;
+            }
+
+            &.profile {
+              color: #525252;
+            }
+
+            &.schedule {
+              background: #525252;
+              color: #ffffff;
+              border-color: #525252;
+
+              &:hover {
+                background: #404040;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Table component styles will be handled by your existing table styles
+    // We can add any custom overrides here if needed
+    .tableContainer {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid #f0f0f0;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    gap: 1rem;
+
+    .topControls {
+      .tabContainer {
+        .tab {
+          padding: 0.5rem 1rem;
+          min-width: 100px;
+          font-size: 0.9rem;
+        }
+      }
+
+      .filterContainer {
+        .filterButton,
+        .addButton {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}

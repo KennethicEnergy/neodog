@@ -53,7 +53,7 @@ const Header = () => {
         />
         {popupOpen && <HeaderPopup isOpen={popupOpen} setPopupOpen={setPopupOpen} />}
         <div className={styles.notification}>
-          <span className={styles.count}>9+</span>
+          <span className={styles.count}>9</span>
           <Icon src="/images/bell.svg" width={16} height={16} />
         </div>
         <div className={styles.user}>
