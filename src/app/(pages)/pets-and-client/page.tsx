@@ -1,4 +1,6 @@
 'use client';
+import Icon from '@/components/common/icon';
+import StatusTag from '@/components/common/status-tag';
 import Table from '@/components/common/table';
 import { useState } from 'react';
 import styles from './page.module.scss';
@@ -144,13 +146,15 @@ const PetsAndClientPage = () => {
   const getStatusClass = (status: string) => {
     switch (status) {
       case 'HEALTHY':
-        return styles.statusHealthy;
+        return 'success';
       case 'MEDICAL ISSUE':
-        return styles.statusMedical;
+        return 'danger';
       case 'FOLLOW-UP REQUIRED':
-        return styles.statusFollowUp;
+        return 'warning';
+      case 'ONBOARDING':
+        return 'primary';
       default:
-        return '';
+        return 'info'; // fallback
     }
   };
 
@@ -167,7 +171,7 @@ const PetsAndClientPage = () => {
         <div className={styles.petInfo}>
           <div className={styles.row}>
             <div className={styles.name}>{pet.name}</div>
-            <div className={`${styles.status} ${getStatusClass(pet.status)}`}>{pet.status}</div>
+            <StatusTag status={pet.status} bgColor={getStatusClass(pet.status)}/>
           </div>
           <div className={styles.row}>
             <div className={styles.breed}>{pet.breed}</div>
@@ -194,13 +198,21 @@ const PetsAndClientPage = () => {
         <div
           className={`${styles.tab} ${activeTab === 'pets' ? styles.active : ''}`}
           onClick={() => setActiveTab('pets')}>
-          <span className={styles.tabIcon}>🐾</span> {/* Space for pets icon */}
+          <Icon
+            src={`/images/pets-and-clients/dog-${activeTab === 'pets' ? 'light' : 'dark'}.svg`}
+            width={18}
+            height={18}
+          />
           Pets
         </div>
         <div
           className={`${styles.tab} ${activeTab === 'clients' ? styles.active : ''}`}
           onClick={() => setActiveTab('clients')}>
-          <span className={styles.tabIcon}>👥</span> {/* Space for clients icon */}
+          <Icon
+            src={`/images/pets-and-clients/client-${activeTab === 'clients' ? 'light' : 'dark'}.svg`}
+            width={18}
+            height={18}
+          />
           Clients
         </div>
       </>
@@ -211,8 +223,9 @@ const PetsAndClientPage = () => {
     return (
       <>
         <button className={styles.filterButton} onClick={() => setShowFilter(!showFilter)}>
-          <span className={styles.filterIcon}>🔽</span> {/* Space for filter icon */}
+          <Icon src={`/images/pets-and-clients/filter.svg`} width={18} height={18} />
           Filter
+          <Icon src={`/images/pets-and-clients/filter-dropdown.svg`} width={18} height={18} />
         </button>
         <button className={styles.addButton}>
           {activeTab === 'pets' ? 'Add Pet' : 'Add Client'}
@@ -224,13 +237,14 @@ const PetsAndClientPage = () => {
   const renderClientsTable = () => {
     return (
       <Table
-        title="Clients"
-        icon="/images/clients-icon.svg" // Space for your clients icon
+        // title="Clients"
+        // icon="/images/clients-icon.svg" // Space for your clients icon
         data={clientsTableData}
         headers={CLIENT_HEADERS}
         maxHeight="800px"
         enableSorting={true}
         viewAll={false}
+        tableOnly={true}
       />
     );
   };

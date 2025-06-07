@@ -36,6 +36,7 @@ export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Pets & Client', route: '/pets-and-client', icon: '/images/dark/pets-and-clients.svg' },
   { name: 'Appointments', route: '/appointments', icon: '/images/dark/appointment.svg' },
   // { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
+  { name: 'Vaccinations', route: '/vaccinations', icon: '/images/dark/reports.svg' },
   { name: 'Reports', route: '/reports', icon: '/images/dark/reports.svg' },
   { name: 'Support', route: '/support', icon: '/images/dark/support.svg' },
   { name: 'Settings', route: '/settings', icon: '/images/dark/settings.svg' }
@@ -427,4 +428,10 @@ export const HEADER_POPUP_DATA = [
   { name: 'Check-in Pet', icon: '/images/popup-check-in-pets.svg', route: '/pets-and-client' },
   { name: 'Add Client', icon: '/images/popup-client.svg', route: '/pets-and-client' },
   { name: 'Create Invoice', icon: '/images/popup-create-invoice.svg', route: '' }
+];
+
+export const FOOTER_SOCIALS = [
+  { name: 'facebook', icon: '/images/social-icons/facebook.svg', link: 'https://facebook.com' },
+  { name: 'linkedin', icon: '/images/social-icons/linkedin.svg', link: 'https://linkedin.com' },
+  { name: 'x', icon: '/images/social-icons/x.svg', link: 'https://x.com' }
 ];

@@ -28,6 +28,8 @@ const HeaderPopup = ({
     setPopupOpen(false);
   };
 
+  if (!data.length) return null;
+
   return (
     <div className={styles.popup}>
       {data.map((item, index) => (

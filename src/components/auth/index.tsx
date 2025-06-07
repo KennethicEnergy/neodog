@@ -1,4 +1,4 @@
-import { Button } from '@/components/common/Button/Button';
+import { Button } from '@/components/common/button';
 import {
   Form,
   FormControl,
@@ -6,8 +6,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '@/components/common/Form/Form';
-import { Input } from '@/components/common/Input/Input';
+} from '@/components/common/form';
+import { Input } from '@/components/common/input';
 import type { LoginCredentials, RegisterCredentials } from '@/types/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect } from 'react';
@@ -102,14 +102,32 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const [showFacilityFields, setShowFacilityFields] = React.useState(false);
 
   // Watch the initial required fields and their errors
-  const initialFields = form.watch(['first_name', 'middle_name', 'last_name', 'mobile_number', 'address', 'email', 'password', 'password_confirmation']);
+  const initialFields = form.watch([
+    'first_name',
+    'middle_name',
+    'last_name',
+    'mobile_number',
+    'address',
+    'email',
+    'password',
+    'password_confirmation'
+  ]);
   const formErrors = form.formState.errors;
 
   // Check if all initial fields are filled and valid
   useEffect(() => {
-    const allFieldsFilled = initialFields.every(field => field && field.trim() !== '');
-    const hasNoErrors = !Object.keys(formErrors).some(key => 
-      ['first_name', 'middle_name', 'last_name', 'mobile_number', 'address', 'email', 'password', 'password_confirmation'].includes(key)
+    const allFieldsFilled = initialFields.every((field) => field && field.trim() !== '');
+    const hasNoErrors = !Object.keys(formErrors).some((key) =>
+      [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'mobile_number',
+        'address',
+        'email',
+        'password',
+        'password_confirmation'
+      ].includes(key)
     );
     setTimeout(() => {
       setShowFacilityFields(allFieldsFilled && hasNoErrors);
@@ -242,7 +260,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             />
 
             {showFacilityFields && (
-              <div className={`${styles.form} ${styles.facilityFields} ${styles.facilityFieldsVisible}`}>
+              <div
+                className={`${styles.form} ${styles.facilityFields} ${styles.facilityFieldsVisible}`}>
                 <p className={styles.description}>Now Lets name your facility ✨</p>
                 <FormField
                   control={form.control}

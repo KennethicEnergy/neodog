@@ -2,6 +2,7 @@ import { useModalStore } from '@/store/modal-store';
 import { useMemo, useState } from 'react';
 import BaseModal from '../base-modal';
 import Icon from '../icon';
+import StatusTag from '../status-tag';
 import styles from './styles.module.scss';
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -30,6 +31,7 @@ interface TableProps<T extends Record<string, unknown>> extends BaseTableData {
   maxHeight?: string; // Custom max height for the table body
   enableSorting?: boolean; // Enable/disable sorting functionality
   columnOverflow?: 'left' | 'right' | 'auto'; // Control overflow direction for fixed columns
+  tableOnly?: boolean;
 }
 
 const Table = <T extends Record<string, unknown>>({
@@ -42,7 +44,8 @@ const Table = <T extends Record<string, unknown>>({
   fixedRows = [],
   maxHeight = '400px',
   enableSorting = true,
-  columnOverflow = 'auto'
+  columnOverflow = 'auto',
+  tableOnly = false,
 }: TableProps<T>) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
@@ -58,6 +61,7 @@ const Table = <T extends Record<string, unknown>>({
 
   const tableClasses = [
     styles.tableWrapper,
+    tableOnly && styles.tableOnly,
     fixedColIndices.length > 0 ? styles.hasFixedColumns : '',
     fixedRowIndices.length > 0 ? styles.hasFixedRows : '',
     enableSorting ? styles.sortingEnabled : ''
@@ -174,6 +178,19 @@ const Table = <T extends Record<string, unknown>>({
     );
   };
 
+  const getStatusClass = (status: string) => {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'INACTIVE':
+        return 'danger';
+      case 'FOLLOW-UP REQUIRED':
+        return 'warning';
+      default:
+        return 'info'; // fallback
+    }
+  };
+
   // Helper function to render cell content
   const renderCellContent = (row: T, headerKey: string) => {
     const value = row[headerKey];
@@ -199,6 +216,10 @@ const Table = <T extends Record<string, unknown>>({
           <span>{item}</span>
         </div>
       ));
+    }
+
+    if (headerKey === 'status' && typeof value === 'string') {
+      return <StatusTag status={value} bgColor={getStatusClass(value)}/>
     }
 
     // If it's an object, you might want to render specific properties

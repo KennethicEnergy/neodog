@@ -9,7 +9,7 @@ import {
   FormProvider,
   useFormContext
 } from 'react-hook-form';
-import styles from './Form.module.scss';
+import styles from './styles.module.scss';
 
 const Form = FormProvider;
 

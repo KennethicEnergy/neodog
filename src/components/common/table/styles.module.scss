@@ -1,5 +1,13 @@
 @import '../../../styles/_variables.scss';
 
+.tableOnly {
+  padding: unset !important;
+
+  .tableInfo {
+    display: none !important;
+  }
+}
+
 .tableWrapper {
   border-radius: 10px;
   background: $white;
@@ -16,7 +24,9 @@
   font-size: 14px;
 
   &:hover {
-    transform: scale(1.02);
+    // transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-hover;
   }
 
   .tableInfo {
