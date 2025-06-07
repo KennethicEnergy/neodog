@@ -1,4 +1,4 @@
-import { TMetricData } from '@/src/types/metrics';
+import { TMetricData } from '@/types/pet-management';
 import DummyIcon from '../dummy-icon';
 import styles from './styles.module.scss';
 

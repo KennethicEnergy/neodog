@@ -1,0 +1,59 @@
+@import 'src/styles/_variables.scss';
+
+.authPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: $background;
+  background-image: url('/images/brand.svg');
+  background-size: 20% 20%;
+  overflow: hidden;
+  background-repeat: repeat space;
+  animation: bgMarquee 9999999s infinite linear;
+}
+
+@keyframes bgMarquee {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 90000000%;
+  }
+}
+
+.authCard {
+  width: 100%;
+  max-width: 600px;
+  background: $white;
+  border-radius: 12px;
+  box-shadow: $box-shadow;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  margin: 1rem;
+}
+
+.formMessage {
+  color: $danger;
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.formDescription {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.95rem;
+}
+
+.authLink {
+  color: $primary;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.authLink:hover {
+  color: $primary-dark;
+}

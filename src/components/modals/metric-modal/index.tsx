@@ -1,5 +1,5 @@
-import { TMetricCardData } from '@/src/types/metrics';
-import { SAMPLE_TAB_APPOINTMENT_DATA, SAMPLE_TAB_VACCINATION_DATA } from '@/src/utils/constants';
+import { TMetricCardData } from '@/types/pet-management';
+import { SAMPLE_TAB_APPOINTMENT_DATA, SAMPLE_TAB_VACCINATION_DATA } from '@/utils/constants';
 import { Fragment } from 'react';
 import Charts from '../../common/charts';
 import Metrics from '../../common/metrics';

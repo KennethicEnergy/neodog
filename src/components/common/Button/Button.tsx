@@ -1,0 +1,51 @@
+import { Slot } from '@radix-ui/react-slot';
+import * as React from 'react';
+import styles from './Button.module.scss';
+
+export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+export type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isLoading?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      className,
+      variant = 'default',
+      size = 'default',
+      asChild = false,
+      isLoading = false,
+      disabled,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const Comp = asChild ? Slot : 'button';
+    const isDisabled = disabled || isLoading;
+
+    return (
+      <Comp
+        className={`${styles.button} ${styles[variant]} ${styles[size]} ${className || ''}`}
+        ref={ref}
+        disabled={isDisabled}
+        aria-disabled={isDisabled}
+        {...props}>
+        {isLoading ? (
+          <span className={styles.loading} aria-hidden="true">
+            <span className={styles.spinner} />
+          </span>
+        ) : null}
+        <span className={isLoading ? styles.hidden : ''}>{children}</span>
+      </Comp>
+    );
+  }
+);
+Button.displayName = 'Button';
+
+export { Button };

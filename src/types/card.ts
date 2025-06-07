@@ -1,4 +1,4 @@
-import { TMetricCardData } from './metrics';
+import { TMetricCardData } from './pet-management';
 
 export type TCard = {
   data: TCardData | TMetricCardData;

@@ -1,3 +1,6 @@
+'use client';
+import { useAuthStore } from '@/store/auth.store';
+import { HEADER_POPUP_DATA } from '@/utils/constants';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -8,8 +11,24 @@ import styles from './styles.module.scss';
 
 const Header = () => {
   const router = useRouter();
-  const [popupOpen, setPopupOpen] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null);
+  const [activePopup, setActivePopup] = useState<'add' | 'user' | null>(null);
+  const addPopupRef = useRef<HTMLDivElement>(null);
+  const userPopupRef = useRef<HTMLDivElement>(null);
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  const USER_POPUP_DATA = [
+    {
+      name: 'Logout',
+      icon: '/images/logout.svg',
+      route: '/login',
+      onClick: handleLogout
+    }
+  ];
 
   const renderBrand = () => (
     <div className={styles.brandWrapper} onClick={() => router.push('/')}>
@@ -28,30 +47,39 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        setPopupOpen(false);
+      const target = event.target as Node;
+      const isAddPopupClick = addPopupRef.current?.contains(target);
+      const isUserPopupClick = userPopupRef.current?.contains(target);
+
+      if (!isAddPopupClick && !isUserPopupClick) {
+        setActivePopup(null);
       }
     };
-    if (popupOpen) {
+
+    if (activePopup) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [popupOpen]);
+  }, [activePopup]);
 
   const renderHeaderRight = () => {
     return (
-      <div className={styles.headerRight} ref={popupRef}>
-        <Icon
-          src="/images/icon-plus.svg"
-          width={8}
-          height={8}
-          shape="circle"
-          bgColor="#3B82F6"
-          onClick={() => setPopupOpen(!popupOpen)}
-        />
-        {popupOpen && <HeaderPopup isOpen={popupOpen} setPopupOpen={setPopupOpen} />}
+      <div className={styles.headerRight}>
+        <div ref={addPopupRef} className={styles.popupContainer}>
+          <Icon
+            src="/images/icon-plus.svg"
+            width={8}
+            height={8}
+            shape="circle"
+            bgColor="blueActive"
+            onClick={() => setActivePopup(activePopup === 'add' ? null : 'add')}
+          />
+          {activePopup === 'add' && (
+            <HeaderPopup setPopupOpen={() => setActivePopup(null)} data={HEADER_POPUP_DATA} />
+          )}
+        </div>
         <div className={styles.notification}>
           <span className={styles.count}>9</span>
           <Icon src="/images/bell.svg" width={16} height={16} />
@@ -59,16 +87,24 @@ const Header = () => {
         <div className={styles.user}>
           <Icon width={24} height={24} shape="circle" />
           <div className={styles.userDetails}>
-            <p className={styles.name}>David Miller</p>
-            <p className={styles.role}>Admin</p>
+            <p className={styles.name}>{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</p>
+            <p className={styles.role}>
+              {user ? (user.account_type_id === 1 ? 'Admin' : 'User') : ''}
+            </p>
           </div>
-          <Icon
-            src="/images/arrow-down.svg"
-            width={8}
-            height={8}
-            bgColor="#EEEEEE"
-            shape="circle"
-          />
+          <div ref={userPopupRef} className={styles.popupContainer}>
+            <Icon
+              src="/images/arrow-down.svg"
+              width={8}
+              height={8}
+              bgColor="gray200"
+              shape="circle"
+              onClick={() => setActivePopup(activePopup === 'user' ? null : 'user')}
+            />
+            {user && activePopup === 'user' && (
+              <HeaderPopup setPopupOpen={() => setActivePopup(null)} data={USER_POPUP_DATA} />
+            )}
+          </div>
         </div>
       </div>
     );

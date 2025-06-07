@@ -1,4 +1,4 @@
-import { TAppointmentItem, TAppointmentTabData, TTabData } from '@/src/types/metric-tab';
+import { TAppointmentItem, TAppointmentTabData, TTabData } from '@/types/pet-management';
 import { useMemo, useState } from 'react';
 import styles from './styles.module.scss';
 

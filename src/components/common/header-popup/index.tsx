@@ -1,36 +1,39 @@
+'use client';
 import { useRouter } from 'next/navigation';
 import Icon from '../icon';
 import styles from './styles.module.scss';
 
-const samplePopupData = [
-  { name: 'New appointment', icon: '/images/popup-appointment.svg', route: '/appointments' },
-  { name: 'Check-in Pet', icon: '/images/popup-check-in-pets.svg', route: '/pets-and-client' },
-  { name: 'Add Client', icon: '/images/popup-client.svg', route: '/pets-and-client' },
-  { name: 'Create Invoice', icon: '/images/popup-create-invoice.svg', route: '' }
-];
+type PopupItem = {
+  route?: string;
+  icon: string;
+  name: string;
+  onClick?: () => void;
+};
 
 const HeaderPopup = ({
-  isOpen,
-  setPopupOpen
+  setPopupOpen,
+  data
 }: {
-  isOpen: boolean;
   setPopupOpen: (open: boolean) => void;
+  data: PopupItem[];
 }) => {
   const router = useRouter();
 
-  const redirect = (route: string) => {
-    if (route && isOpen) {
-      router.push(route);
+  const handleClick = (item: PopupItem) => {
+    if (item.onClick) {
+      item.onClick();
+    } else if (item.route) {
+      router.push(item.route);
     }
     setPopupOpen(false);
   };
 
   return (
     <div className={styles.popup}>
-      {samplePopupData.map((data, index) => (
-        <div key={index} className={styles.popupItem} onClick={() => redirect(data.route)}>
-          <Icon src={data.icon} />
-          <span>{data.name}</span>
+      {data.map((item, index) => (
+        <div key={index} className={styles.popupItem} onClick={() => handleClick(item)}>
+          <Icon src={item?.icon} />
+          <span>{item?.name}</span>
         </div>
       ))}
     </div>

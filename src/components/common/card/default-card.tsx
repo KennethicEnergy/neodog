@@ -1,4 +1,4 @@
-import { TCardData } from '@/src/types/card';
+import { TCardData } from '@/types/card';
 import styles from './styles.module.scss';
 
 const DefaultCard = ({

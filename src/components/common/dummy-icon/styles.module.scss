@@ -1,7 +1,9 @@
+@import '../../../styles/_variables.scss';
+
 .dummyIcon {
   height: 24px;
   width: 24px;
-  background: #c3c3c3;
+  background: $gray-400;
   border-radius: 5px;
 }
 

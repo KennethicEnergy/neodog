@@ -1,16 +1,18 @@
+@import '../../../styles/_variables.scss';
+
 .metrics {
   padding: 1rem;
   border-radius: 10px;
-  background: #ffffff;
+  background: $white;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  box-shadow: 2px 2px 10px #0c0d0d0d;
+  box-shadow: $box-shadow-card;
   gap: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: $transition-base;
 
   .label {
     display: flex;
@@ -27,13 +29,13 @@
   h2 {
     font-size: 20px;
     font-weight: 700;
-    color: #696969;
+    color: $text-muted;
   }
 
   p {
     font-size: 12px;
     font-weight: 500;
-    color: #6b7280;
+    color: $text-light;
   }
 }
 

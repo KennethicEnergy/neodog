@@ -1,5 +1,5 @@
-import { TCard, TCardData } from '@/src/types/card';
-import { TMetricCardData } from '@/src/types/metrics';
+import { TCard, TCardData } from '@/types/card';
+import { TMetricCardData } from '@/types/pet-management';
 import DefaultCard from './default-card';
 import MetricCard from './metrics-card';
 

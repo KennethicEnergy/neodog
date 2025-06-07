@@ -1,5 +1,5 @@
 'use client';
-import Table from '@/src/components/common/table';
+import Table from '@/components/common/table';
 import { useState } from 'react';
 import styles from './page.module.scss';
 

@@ -1,4 +1,4 @@
-import { useModalStore } from '@/src/store/modal-store';
+import { useModalStore } from '@/store/modal-store';
 import { useMemo, useState } from 'react';
 import BaseModal from '../base-modal';
 import Icon from '../icon';
@@ -167,7 +167,6 @@ const Table = <T extends Record<string, unknown>>({
   };
 
   const expandView = () => {
-    console.log('Opening Table with');
     openModal(
       <BaseModal onClose={closeModal}>
         <Table data={data} headers={headers} title={title || 'Table View'} icon={icon} />
@@ -222,7 +221,7 @@ const Table = <T extends Record<string, unknown>>({
       }>
       <div className={styles.tableInfo}>
         <div>
-          {icon && <Icon src={icon} bgColor="#3b82f6" />}
+          {icon && <Icon src={icon} bgColor="blueActive" />}
           {title && <h3>{title}</h3>}
         </div>
         {viewAll && (

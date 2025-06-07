@@ -1,4 +1,4 @@
-import { FOOTER_MENUS } from '@/src/utils/constants';
+import { FOOTER_MENUS } from '@/utils/constants';
 import DummyIcon from '../../common/dummy-icon';
 import styles from './styles.module.scss';
 

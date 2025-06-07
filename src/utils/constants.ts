@@ -5,9 +5,31 @@ import {
   TMetricCardData,
   TRevenueMetrics,
   TVaccinationMetrics
-} from '../types/metrics';
+} from '../types/pet-management';
 import { TTableRow } from '../types/table';
-import { TActivityData, TAppointmentData, TServices } from '../types/types';
+
+type TServices = {
+  name: string;
+  icon: string;
+};
+
+type TAppointmentData = {
+  client: string;
+  pet: string;
+  task: string;
+  date: string;
+  assignedTo: string;
+  status: string;
+};
+
+type TActivityData = {
+  client: string;
+  pet: string;
+  task: string;
+  time: string;
+  assignedTo: string;
+  status: string;
+};
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
@@ -399,3 +421,10 @@ export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, ind
 }));
 
 export const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];
+
+export const HEADER_POPUP_DATA = [
+  { name: 'New appointment', icon: '/images/popup-appointment.svg', route: '/appointments' },
+  { name: 'Check-in Pet', icon: '/images/popup-check-in-pets.svg', route: '/pets-and-client' },
+  { name: 'Add Client', icon: '/images/popup-client.svg', route: '/pets-and-client' },
+  { name: 'Create Invoice', icon: '/images/popup-create-invoice.svg', route: '' }
+];
