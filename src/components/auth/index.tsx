@@ -64,11 +64,7 @@ const signupSchema = z
 type LoginFormData = z.infer<typeof loginSchema>;
 type SignupFormData = z.infer<typeof signupSchema>;
 
-export const AuthForm: React.FC<AuthFormProps> = ({
-  type,
-  onSubmit,
-  isLoading,
-}) => {
+export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading }) => {
   const schema = type === 'login' ? loginSchema : signupSchema;
   const form = useForm<LoginFormData | SignupFormData>({
     resolver: zodResolver(schema),
