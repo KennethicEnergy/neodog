@@ -166,7 +166,9 @@ const ClientsAndPetsPage = () => {
     return transformedClients.filter(
       (client) =>
         client?.name?.toLowerCase().includes(query) ||
-        client?.contact?.some((contact: { value: string }) => contact?.value?.toLowerCase().includes(query)) ||
+        client?.contact?.some((contact: { value: string }) =>
+          contact?.value?.toLowerCase().includes(query)
+        ) ||
         client?.status?.toLowerCase().includes(query)
     );
   }, [searchQuery, transformedClients]);
@@ -181,18 +183,17 @@ const ClientsAndPetsPage = () => {
   };
 
   useEffect(() => {
-    const getAll = async () => {
-      activeTab === 'clients' ? await fetchClients(1, 10) : await fetchPets(1, 10);
+    const getAllClients = async () => {
+      await fetchClients(1, 10);
     };
 
-    getAll();
-  }, [fetchClients, fetchPets, activeTab]);
+    const getAllPets = async () => {
+      await fetchPets(1, 10);
+    };
 
-  useEffect(() => {
-    if (selectedClient) {
-      fetchPets(1, 10);
-    }
-  }, [selectedClient, fetchPets]);
+    getAllClients();
+    getAllPets();
+  }, [fetchClients, fetchPets, activeTab, selectedClient]);
 
   const handleBack = () => {
     setSelectedClient(null);
