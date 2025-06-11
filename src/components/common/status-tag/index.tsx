@@ -8,11 +8,7 @@ type StatusTagProps = {
 };
 
 const StatusTag = ({ status, bgColor = 'info', className }: StatusTagProps) => {
-  return (
-    <div className={clsx(styles.status, styles[bgColor], className)}>
-      {status}
-    </div>
-  );
+  return <div className={clsx(styles.status, styles[bgColor], className)}>{status}</div>;
 };
 
 export default StatusTag;

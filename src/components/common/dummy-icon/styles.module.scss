@@ -1,10 +1,11 @@
-@import '../../../styles/_variables.scss';
+@import '@/styles/variables';
 
 .dummyIcon {
   height: 24px;
   width: 24px;
   background: $gray-400;
   border-radius: 5px;
+  margin: 0.5rem;
 }
 
 .circle {

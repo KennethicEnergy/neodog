@@ -1,0 +1,85 @@
+@import '@/styles/variables';
+
+.modalContainer {
+  background: $background;
+  border-radius: 20px;
+  max-width: 600px;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.section {
+  background: $white;
+  border-radius: 14px;
+  padding: 1.5rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+.formGroup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e3e7ed;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  transition: border 0.2s;
+}
+
+.input:focus,
+.textarea:focus {
+  border: 1.5px solid #b3b9c9;
+  outline: none;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  background: $gray-500;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background: $gray-700;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.col {
+  flex: 1;
+}

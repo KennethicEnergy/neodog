@@ -1,6 +1,7 @@
 import { colors } from '@/styles/colors';
 import { TIcon } from '@/types/icon';
 import Image from 'next/image';
+import { useState } from 'react';
 import DummyIcon from '../dummy-icon';
 import styles from './styles.module.scss';
 
@@ -13,8 +14,12 @@ const Icon = ({
   width = 12,
   onClick
 }: TIcon) => {
-  if (!src) {
-    return <DummyIcon shape={shape} onClick={onClick ?? (() => {})} />;
+  const [hasError, setHasError] = useState(false);
+
+  if (!src || hasError) {
+    return (
+      <DummyIcon shape={shape} height={height} width={width} onClick={onClick ?? (() => {})} />
+    );
   }
 
   const getBackgroundColor = (colorKey: string) => {
@@ -41,6 +46,7 @@ const Icon = ({
         alt={label || ''}
         width={width}
         height={height}
+        onError={() => setHasError(true)}
       />
     </div>
   );

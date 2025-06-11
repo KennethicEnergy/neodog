@@ -1,0 +1,272 @@
+@import '@/styles/variables.scss';
+
+.clientDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 100vh;
+}
+
+.back {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  align-self: flex-start;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 2rem;
+  gap: 2rem;
+  box-shadow: $box-shadow-popup;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.since {
+  color: #888;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.contact {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.75rem;
+  div {
+    margin-bottom: 0.25rem;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  button {
+    background: #f5f5f5;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    transition: background 0.2s;
+    &:hover {
+      background: #e0e0e0;
+    }
+  }
+}
+
+.pets {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  margin-left: 2rem;
+  max-width: 300px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.pet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.addContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 100px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.petAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ddd;
+  margin: 0 auto 0.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #aaa;
+}
+
+.petName {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.petBreed {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  background: #fff;
+  padding: 0.2rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  margin-bottom: 0.5rem;
+  box-shadow: $box-shadow-popup;
+  overflow: auto;
+}
+
+.tabs button {
+  border: none;
+  font-size: 1rem;
+  color: #888;
+  font-weight: 500;
+  padding: 0.2rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.tabActive {
+  background: $dark;
+  color: $white !important;
+  box-shadow: $box-shadow-popup;
+}
+
+.activity {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  padding: 1.5rem 2rem;
+  box-shadow: $box-shadow-popup;
+}
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1rem 0;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.activityAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eee;
+  margin-right: 1rem;
+}
+
+.activityInfo {
+  flex: 1;
+}
+
+.activityTitle {
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+
+.activityDesc {
+  font-size: 0.95rem;
+  color: #888;
+}
+
+.activityDate {
+  min-width: 110px;
+  text-align: right;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.activityTime {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+    min-height: 400px;
+  }
+  .pets {
+    margin-left: 0;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .tabs {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  .tabs button {
+    width: 100%;
+    text-align: left;
+    padding-left: 1rem;
+    border-radius: 6px !important;
+  }
+}

@@ -1,0 +1,130 @@
+@import '@/styles/variables';
+
+.petCard {
+  background: $white;
+  border-radius: 12px;
+  box-shadow: $box-shadow-card;
+  overflow: hidden;
+  transition: $transition-base;
+  border: $border-width solid $border-lighter;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-hover;
+  }
+}
+
+.imageContainer {
+  height: 200px;
+  background: $background;
+  position: relative;
+  overflow: hidden;
+
+  .imagePlaceholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, $gray-200 0%, $gray-300 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.petInfo {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:not(:last-child) {
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  .name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: $dark;
+  }
+
+  .status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.statusHEALTHY {
+      background: rgba($success, 0.1);
+      color: darken($success, 10%);
+      border: 1px solid $success;
+    }
+
+    &.statusMEDICALISSUE {
+      background: rgba($danger, 0.1);
+      color: darken($danger, 10%);
+      border: 1px solid $danger;
+    }
+
+    &.statusFOLLOWUPREQUIRED {
+      background: rgba($warning, 0.1);
+      color: darken($warning, 10%);
+      border: 1px solid $warning;
+    }
+  }
+
+  .breed {
+    color: $text-light;
+    font-weight: 500;
+  }
+
+  .age {
+    color: $text-lighter;
+    font-size: 0.9rem;
+  }
+
+  .owner,
+  .lastVisit {
+    color: $text-light;
+    font-size: 0.9rem;
+  }
+}
+
+.controls {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  :global(.profile) {
+    color: $gray-700;
+    border-color: $border-light;
+    background: $white;
+
+    &:hover {
+      border-color: $gray-700;
+      background: $background;
+    }
+  }
+
+  .schedule {
+    background: $gray-700;
+    color: $white;
+    border-color: $gray-700;
+
+    &:hover {
+      background: $gray-800;
+    }
+  }
+}

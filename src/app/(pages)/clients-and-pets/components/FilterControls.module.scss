@@ -1,0 +1,73 @@
+@import '@/styles/variables';
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .filterButton,
+  .addButton {
+    padding: 0.2rem 1rem;
+    border: $border-width solid $border-light;
+    border-radius: 8px;
+    background: $white;
+    cursor: pointer;
+    transition: $transition-base;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:hover {
+      border-color: $gray-700;
+      box-shadow: $box-shadow;
+    }
+  }
+
+  .addButton {
+    background: $gray-700;
+    color: $white;
+    border-color: $gray-700;
+    padding: 0.75rem 1rem;
+    width: 120px;
+    justify-content: center;
+
+    &:hover {
+      background: $gray-800;
+    }
+  }
+}
+
+.filterButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  background: $white;
+  border: 2px solid $border-light;
+  border-radius: 2rem;
+  padding: 0.75rem 2.5rem;
+  color: $gray-700;
+  font-weight: 500;
+  box-shadow: none;
+  transition:
+    border 0.2s,
+    background 0.2s;
+  cursor: pointer;
+  outline: none;
+}
+
+.filterButton:active,
+.filterButton:focus {
+  border-color: $gray-500;
+}
+
+@media screen and (max-width: 900px) {
+  .filterContainer {
+    margin-top: 1rem;
+    width: 100%;
+    .filterButton {
+      width: 100%;
+    }
+  }
+}

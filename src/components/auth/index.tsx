@@ -68,8 +68,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   type,
   onSubmit,
   isLoading,
-  error,
-  fieldErrors
 }) => {
   const schema = type === 'login' ? loginSchema : signupSchema;
   const form = useForm<LoginFormData | SignupFormData>({
@@ -98,7 +96,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     delayError: 1000
   });
 
-  const [hasSubmitted, setHasSubmitted] = React.useState(false);
   const [showFacilityFields, setShowFacilityFields] = React.useState(false);
 
   // Watch the initial required fields and their errors
@@ -135,7 +132,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   }, [initialFields, formErrors]);
 
   const handleSubmit = async (data: LoginFormData | SignupFormData) => {
-    setHasSubmitted(true);
     if (type === 'login') {
       await onSubmit(data as LoginCredentials);
     } else {
@@ -352,7 +348,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           </>
         )}
 
-        {fieldErrors &&
+        {/* {fieldErrors &&
           Object.entries(fieldErrors).map(([field, messages]) =>
             messages.map((msg, idx) => (
               <p key={field + idx} className={styles.formFieldError}>
@@ -365,7 +361,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           <div className={styles.formMessage} role="alert">
             {error}
           </div>
-        )}
+        )} */}
 
         <Button
           type="submit"

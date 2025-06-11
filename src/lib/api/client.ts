@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://neodog.test/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://neodog-api.test/api',
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Request interceptor for adding auth token
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('auth_token');
@@ -21,12 +20,10 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor for handling errors
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized access
       localStorage.removeItem('auth_token');
       window.location.href = '/login';
     }

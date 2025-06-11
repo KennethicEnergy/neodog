@@ -176,6 +176,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false
           });
           localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth-storage');
         }
       },
 

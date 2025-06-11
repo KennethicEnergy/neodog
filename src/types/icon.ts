@@ -1,5 +1,5 @@
 export type TIcon = {
-  src?: string;
+  src?: string | null;
   shape?: string;
   label?: string;
   bgColor?: string;

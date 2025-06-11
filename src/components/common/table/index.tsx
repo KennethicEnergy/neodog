@@ -45,7 +45,7 @@ const Table = <T extends Record<string, unknown>>({
   maxHeight = '400px',
   enableSorting = true,
   columnOverflow = 'auto',
-  tableOnly = false,
+  tableOnly = false
 }: TableProps<T>) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
@@ -186,6 +186,8 @@ const Table = <T extends Record<string, unknown>>({
         return 'danger';
       case 'FOLLOW-UP REQUIRED':
         return 'warning';
+      case 'PENDING':
+        return 'primary';
       default:
         return 'info'; // fallback
     }
@@ -195,41 +197,57 @@ const Table = <T extends Record<string, unknown>>({
   const renderCellContent = (row: T, headerKey: string) => {
     const value = row[headerKey];
 
-    // Handle different data types
-    if (value === null || value === undefined) {
-      return '-';
-    }
-
-    // If it's a boolean, convert to Yes/No
-    if (typeof value === 'boolean') {
-      return value ? 'Yes' : 'No';
-    }
-
     // If it's a number, you might want to format it
     if (typeof value === 'number') {
       return value.toLocaleString();
     }
 
-    if (Array.isArray(value)) {
+    if (headerKey === 'pet' && Array.isArray(value)) {
+      return value.map((item: { image: string; name: string; breed: string }, index: number) => (
+        <div className={styles.petItem} key={index}>
+          <Icon src={item.image} height={40} width={40} shape="circle" />
+          <div className={styles.petInfo}>
+            <span className={styles.petName}>{item.name}</span>
+            <span className={styles.petBreed}>{item.breed}</span>
+          </div>
+        </div>
+      ));
+    }
+
+    if (headerKey === 'actions' && Array.isArray(value)) {
+      return (
+        <div className={styles.actionItems}>
+          {value.map((item, index) => (
+            <button className={styles.actionItem} key={index} onClick={item.onClick}>
+              <Icon src={item.icon} />
+            </button>
+          ))}
+        </div>
+      );
+    }
+
+    if (headerKey === 'contact' && Array.isArray(value)) {
+      if (!Array.isArray(value)) return 'N/A';
       return value.map((item, index) => (
         <div className={styles.arrayItem} key={index}>
-          <span>{item}</span>
+          <span>
+            {item.type === 'email' ? (
+              <Icon src="/images/contact/mail.svg" />
+            ) : (
+              <Icon src="/images/contact/phone.svg" />
+            )}
+          </span>
+          <span>{item.value}</span>
         </div>
       ));
     }
 
     if (headerKey === 'status' && typeof value === 'string') {
-      return <StatusTag status={value} bgColor={getStatusClass(value)}/>
-    }
-
-    // If it's an object, you might want to render specific properties
-    if (typeof value === 'object') {
-      return JSON.stringify(value);
+      return <StatusTag status={value} bgColor={getStatusClass(value)} />;
     }
 
     return String(value);
   };
-
   return (
     <div
       className={tableClasses}
@@ -273,6 +291,13 @@ const Table = <T extends Record<string, unknown>>({
             </tr>
           </thead>
           <tbody>
+            {sortedData.length === 0 && (
+              <tr>
+                <td colSpan={headers.length} className={styles.noData}>
+                  <div className={styles.noDataText}>No data found</div>
+                </td>
+              </tr>
+            )}
             {sortedData.map((row, rowIndex) => (
               <tr
                 key={rowIndex}

@@ -1,7 +1,7 @@
 // src/app/(pages)/(auth)/login/page.module.scss
 // or src/app/(pages)/(auth)/signup/page.module.scss
 
-@import 'src/styles/_variables.scss';
+@import '@/styles/variables';
 
 .authPage {
   display: flex;

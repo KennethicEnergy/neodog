@@ -39,7 +39,7 @@ const SignupPage = () => {
       };
       const response = await register(formattedData);
       if (response && response.success) {
-        router.push('/login');
+        router.push('/');
       }
     }
   };

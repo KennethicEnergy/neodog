@@ -33,7 +33,7 @@ type TActivityData = {
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
-  { name: 'Pets & Client', route: '/pets-and-client', icon: '/images/dark/pets-and-clients.svg' },
+  { name: 'Client & Pets', route: '/clients-and-pets', icon: '/images/dark/pets-and-clients.svg' },
   { name: 'Appointments', route: '/appointments', icon: '/images/dark/appointment.svg' },
   // { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
   { name: 'Vaccinations', route: '/vaccinations', icon: '/images/dark/reports.svg' },
@@ -403,7 +403,13 @@ export const SAMPLE_TAB_VACCINATION_DATA = {
 };
 
 export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index) => ({
-  pet: ['Bella', 'Max', 'Luna', 'Charlie', 'Daisy'][index % 5],
+  pet: [
+    [{ name: 'Bella', breed: 'Golden Retriever', image: '/images/pets/bella.svg', type: 'dog' }],
+    [{ name: 'Max', breed: 'German Shepherd', image: '/images/pets/max.svg', type: 'dog' }],
+    [{ name: 'Luna', breed: 'French Bulldog', image: '/images/pets/luna.svg', type: 'dog' }],
+    [{ name: 'Charlie', breed: 'Husky', image: '/images/pets/charlie.svg', type: 'dog' }],
+    [{ name: 'Daisy', breed: 'Beagle', image: '/images/pets/daisy.svg', type: 'dog' }]
+  ][index % 5],
   client: ['Sarah Johnson', 'Mike Davis', 'Emily Chen', 'Robert Wilson', 'Lisa Anderson'][
     index % 5
   ],
