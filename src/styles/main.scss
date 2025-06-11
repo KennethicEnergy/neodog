@@ -1,0 +1,48 @@
+@import '@/styles/variables';
+
+:root {
+  --error: #{$danger};
+  --error-light: #{$danger-light};
+}
+
+// Import component styles
+@import '../components/ui/button.scss';
+@import '../components/ui/input.scss';
+@import '../components/ui/card.scss';
+@import '../components/ui/form.scss';
+@import '../components/ui/label.scss';
+
+// Global styles
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  color: $dark;
+  background-color: $light;
+  margin: 0;
+  padding: 0;
+}
+
+// Auth pages specific styles
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $light;
+  padding: $spacing-4;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-link {
+  color: $primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

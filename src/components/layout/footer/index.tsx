@@ -1,5 +1,5 @@
-import { FOOTER_MENUS } from '@/src/utils/constants';
-import DummyIcon from '../../common/dummy-icon';
+import Icon from '@/components/common/icon';
+import { FOOTER_MENUS, FOOTER_SOCIALS } from '@/utils/constants';
 import styles from './styles.module.scss';
 
 const Footer = () => {
@@ -10,9 +10,15 @@ const Footer = () => {
   const renderSocials = () => {
     return (
       <div className={styles.socials}>
-        <DummyIcon />
-        <DummyIcon />
-        <DummyIcon />
+        {FOOTER_SOCIALS.map((social, index) => (
+          <Icon
+            key={index}
+            src={social.icon}
+            height={24}
+            width={24}
+            onClick={() => window.open(social.link, '_blank')}
+          />
+        ))}
       </div>
     );
   };

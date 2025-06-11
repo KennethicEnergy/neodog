@@ -1,5 +1,7 @@
+@import '@/styles/variables';
+
 .header {
-  background: #ffffff;
+  background: $white;
   box-shadow: 10px 5px 10px #0c0d0d0d;
 
   .headerWrapper {
@@ -12,7 +14,7 @@
     margin: 0 auto;
 
     .brand {
-      color: #3b82f6;
+      color: $blue-active;
       font-weight: 700;
     }
 
@@ -43,7 +45,7 @@
       }
 
       .count {
-        color: rgb(255, 255, 255);
+        color: $white;
         z-index: 1;
         justify-content: center;
         align-items: center;
@@ -55,11 +57,11 @@
         position: absolute;
         top: 4px;
         right: 1px;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
-        background: rgb(239, 68, 68);
+        box-shadow: $box-shadow;
+        background: $danger;
         border-width: 2px;
         border-style: solid;
-        border-color: rgb(255, 255, 255);
+        border-color: $white;
         border-image: initial;
         border-radius: 8px;
         padding: 0px 4px;
@@ -70,7 +72,7 @@
         align-items: center;
         gap: 1rem;
         padding: 0 1rem;
-        border-left: 1px solid #e0e0e0;
+        border-left: 1px solid $border-light;
 
         .name {
           font-size: 12px;
@@ -121,7 +123,7 @@
   .header .brandWrapper {
     display: flex;
     gap: 0.2rem;
-    color: #3b82f6;
+    color: $blue-active;
   }
 }
 
@@ -133,4 +135,9 @@
   .headerWrapper .headerLeft {
     width: 30%;
   }
+}
+
+.popupContainer {
+  position: relative;
+  display: inline-block;
 }

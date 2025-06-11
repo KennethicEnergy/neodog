@@ -4,22 +4,33 @@ import { useEffect, useRef } from 'react';
 import styles from './styles.module.scss';
 
 import {
-  BarController, BarElement,
+  BarController,
+  BarElement,
   CategoryScale,
   Chart,
   Legend,
   LinearScale,
-  LineController, LineElement, PointElement,
-  Title, Tooltip,
+  LineController,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip
 } from 'chart.js';
 
 import annotationPlugin from 'chartjs-plugin-annotation';
 
 // ⬇️  rehistro ng components & plugins
 Chart.register(
-  LineController, LineElement, PointElement,
-  BarController, BarElement,
-  CategoryScale, LinearScale, Title, Tooltip, Legend,
+  LineController,
+  LineElement,
+  PointElement,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
   annotationPlugin
 );
 
@@ -114,18 +125,20 @@ const Charts = ({ type }: { type: string }) => {
           type: 'bar',
           data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-              data: [45, 55, 68, 82, 88, 70],
-              backgroundColor: '#d3d3d3',
-              borderRadius: 4,
-              borderSkipped: false,
-            }],
+            datasets: [
+              {
+                data: [45, 55, 68, 82, 88, 70],
+                backgroundColor: '#d3d3d3',
+                borderRadius: 4,
+                borderSkipped: false
+              }
+            ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { display: false },
+              legend: { display: false }
             },
             scales: {
               y: {
@@ -134,50 +147,54 @@ const Charts = ({ type }: { type: string }) => {
                 ticks: {
                   stepSize: 25,
                   color: '#9ca3af',
-                  font: { size: 12 },
+                  font: { size: 12 }
                 },
                 grid: {
-                  color: '#f3f4f6',
+                  color: '#f3f4f6'
                   // borderWidth: 0,
-                },
+                }
               },
               x: {
                 ticks: {
                   color: '#9ca3af',
-                  font: { size: 12 },
+                  font: { size: 12 }
                 },
                 grid: {
-                  display: false,
+                  display: false
                   // borderWidth: 0,
-                },
-              },
-            },
-          },
+                }
+              }
+            }
+          }
         })
       );
     }
-    return () => charts.forEach(c => c.destroy());
+    return () => charts.forEach((c) => c.destroy());
   }, []);
 
   return (
     <div className={styles.page}>
       <div className={styles.dashboard}>
-        {type === 'revenue' && <div className={styles.card}>
-          <h2 className={styles.title}>Revenue Trend</h2>
-          <div className={styles.wrapper}>
-            <canvas ref={revenueRef} />
+        {type === 'revenue' && (
+          <div className={styles.card}>
+            <h2 className={styles.title}>Revenue Trend</h2>
+            <div className={styles.wrapper}>
+              <canvas ref={revenueRef} />
+            </div>
           </div>
-        </div>}
+        )}
 
-        {type === 'clients' && <div className={styles.card}>
-          <h2 className={styles.title}>Client Growth</h2>
-          <div className={styles.wrapper}>
-            <canvas ref={clientRef} />
+        {type === 'clients' && (
+          <div className={styles.card}>
+            <h2 className={styles.title}>Client Growth</h2>
+            <div className={styles.wrapper}>
+              <canvas ref={clientRef} />
+            </div>
           </div>
-        </div>}
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default Charts;

@@ -1,0 +1,37 @@
+export enum PetStatus {
+  HEALTHY = 'HEALTHY',
+  MEDICAL_ISSUE = 'MEDICAL_ISSUE',
+  FOLLOW_UP_REQUIRED = 'FOLLOW_UP_REQUIRED',
+  IN_TREATMENT = 'IN_TREATMENT'
+}
+
+export enum PetType {
+  DOG = 'DOG',
+  CAT = 'CAT',
+  BIRD = 'BIRD',
+  OTHER = 'OTHER'
+}
+
+export enum ClientStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  PENDING = 'PENDING'
+}
+
+export enum AppointmentStatus {
+  SCHEDULED = 'SCHEDULED',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  NO_SHOW = 'NO_SHOW'
+}
+
+export enum AppointmentType {
+  CHECKUP = 'CHECKUP',
+  VACCINATION = 'VACCINATION',
+  GROOMING = 'GROOMING',
+  SURGERY = 'SURGERY',
+  DENTAL = 'DENTAL',
+  FOLLOW_UP = 'FOLLOW_UP',
+  OTHER = 'OTHER'
+}

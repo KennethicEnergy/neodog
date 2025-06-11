@@ -1,0 +1,47 @@
+@import '@/styles/variables';
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.formControl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formDescription {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.formMessage {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $danger;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formFieldError {
+  color: $danger;
+  font-size: 0.875rem;
+}

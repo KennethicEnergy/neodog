@@ -6,7 +6,12 @@ export interface TableHeader {
 
 // Dog check-in data type
 export type TTableRow = {
-  pet: string;
+  pet: {
+    name: string;
+    breed: string;
+    image: string;
+    type: string;
+  }[];
   client: string;
   lodging: string;
   locker: string;
@@ -109,7 +114,13 @@ export const PRODUCT_HEADERS: TableHeader[] = [
 
 // Sample data for different types
 export const SAMPLE_DOG_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index) => ({
-  pet: ['Bella', 'Max', 'Luna', 'Chuckie', 'Daisy'][index % 5],
+  pet: [
+    [{ name: 'Bella', breed: 'Golden Retriever', image: '/images/pets/bella.svg', type: 'dog' }],
+    [{ name: 'Max', breed: 'German Shepherd', image: '/images/pets/max.svg', type: 'dog' }],
+    [{ name: 'Lola', breed: 'French Bulldog', image: '/images/pets/lola.svg', type: 'dog' }],
+    [{ name: 'Chuckie', breed: 'Husky', image: '/images/pets/rocky.svg', type: 'dog' }],
+    [{ name: 'Daisy', breed: 'Beagle', image: '/images/pets/daisy.svg', type: 'dog' }]
+  ][index % 5],
   client: ['Sarah Johnson', 'Mike Davis', 'Emily Chen', 'Robert Wilson', 'Lisa Anderson'][
     index % 5
   ],

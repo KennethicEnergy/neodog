@@ -1,4 +1,4 @@
-import { TMetricCardData } from '@/src/types/metrics';
+import { TMetricCardData } from '@/types/pet-management';
 import Image from 'next/image';
 import Icon from '../icon';
 import styles from './styles.module.scss';

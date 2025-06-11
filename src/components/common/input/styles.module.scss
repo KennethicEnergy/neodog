@@ -1,0 +1,91 @@
+@import '@/styles/variables';
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: $font-size-sm;
+  line-height: 1.25rem;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  background-color: $white;
+  color: $dark;
+  transition: $transition-base;
+
+  // File input specific styles
+  &[type='file'] {
+    padding: 0.25rem;
+    border: none;
+    background: transparent;
+    font-size: $font-size-sm;
+    font-weight: 500;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 2px rgba($primary, 0.2);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background-color: $gray-100;
+  }
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &.error {
+    border-color: $danger;
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba($danger, 0.2);
+    }
+  }
+
+  &.hasLeftIcon {
+    padding-left: 2.5rem;
+  }
+
+  &.hasRightIcon {
+    padding-right: 2.5rem;
+  }
+}
+
+.leftIcon,
+.rightIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 100%;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+.leftIcon {
+  left: 0;
+}
+
+.rightIcon {
+  right: 0;
+}
+
+.helperText {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: $text-muted;
+
+  &.error {
+    color: $danger;
+  }
+}

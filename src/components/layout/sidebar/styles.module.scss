@@ -1,14 +1,16 @@
+@import '@/styles/variables';
+
 .sidebar {
   width: 16rem;
   height: 100dvh;
   height: 100vh;
-  background: #ffffff;
+  background: $white;
   padding: 0 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   box-shadow: 10px 5px 10px #0c0d0d0d;
-  transition: all 0.2s ease-in-out;
+  transition: $transition-base;
 
   .brandWrapper {
     display: flex;
@@ -17,7 +19,7 @@
     cursor: pointer;
 
     .brand {
-      color: #3b82f6;
+      color: $blue-active;
       font-weight: 700;
     }
   }
@@ -40,12 +42,11 @@
     align-items: center;
 
     &:hover {
-      background: #3b82f6;
+      background: $blue-active;
       cursor: pointer;
-      color: #ffffff;
-      transition: all 0.2s ease-in-out;
-      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
-      box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+      color: $white;
+      transition: $transition-base;
+      box-shadow: $box-shadow;
       transform: scale(1.02);
 
       img {
@@ -54,11 +55,10 @@
     }
 
     &.active {
-      background: #3b82f6;
-      color: #ffffff;
-      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
-      box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
-      transition: all 0.2s ease-in-out;
+      background: $blue-active;
+      color: $white;
+      box-shadow: $box-shadow;
+      transition: $transition-base;
       transform: scale(1.02);
     }
   }

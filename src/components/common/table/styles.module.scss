@@ -1,6 +1,16 @@
+@import '@/styles/variables';
+
+.tableOnly {
+  padding: unset !important;
+
+  .tableInfo {
+    display: none !important;
+  }
+}
+
 .tableWrapper {
   border-radius: 10px;
-  background: #ffffff;
+  background: $white;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -8,13 +18,15 @@
   align-items: center;
   padding: 1rem;
   gap: 1rem;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 2px 2px 10px #0c0d0d0d;
+  transition: $transition-base;
+  box-shadow: $box-shadow-popup;
   position: relative;
   font-size: 14px;
 
   &:hover {
-    transform: scale(1.02);
+    // transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-hover;
   }
 
   .tableInfo {
@@ -33,7 +45,7 @@
     .viewAll {
       cursor: pointer;
       margin: 0 1rem;
-      color: #3b82f6;
+      color: $blue-active;
 
       &:hover {
         text-decoration: underline;
@@ -46,9 +58,8 @@
     overflow: auto;
     max-height: var(--max-height, 400px);
     border-radius: 10px;
-    border: 1px solid #e0e0e0;
+    border: $border-width solid $border-light;
     position: relative;
-
     scroll-behavior: smooth;
 
     &::-webkit-scrollbar {
@@ -57,16 +68,16 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: $gray-100;
       border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: $gray-400;
       border-radius: 4px;
 
       &:hover {
-        background: #a8a8a8;
+        background: $gray-500;
       }
     }
   }
@@ -82,16 +93,16 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background-color: #f0f0f0;
+      background-color: $gray-100;
 
       tr {
         th {
           position: relative;
-          padding: 1.5rem;
+          padding: 1rem;
           text-align: center;
           font-weight: 600;
-          border-bottom: 2px solid #ddd;
-          background-color: #f0f0f0;
+          border-bottom: 2px solid $gray-300;
+          background-color: $gray-100;
           min-width: 150px;
           white-space: nowrap;
           user-select: none;
@@ -125,7 +136,7 @@
             transition: background-color 0.2s ease;
 
             &:hover {
-              background-color: #e8e8e8;
+              background-color: $gray-200;
 
               .sortIcon {
                 opacity: 1;
@@ -133,7 +144,7 @@
             }
 
             &:active {
-              background-color: #ddd;
+              background-color: $gray-300;
             }
           }
         }
@@ -146,7 +157,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-          background-color: #f8f9fa;
+          background-color: $gray-100;
         }
 
         &:last-child {
@@ -160,21 +171,64 @@
         }
 
         td {
-          padding: 1.5rem;
-          background-color: #ffffff;
+          padding: 1rem;
           min-width: 150px;
           white-space: nowrap;
           position: relative;
           border-left: none;
           border-right: none;
-          border-bottom: 1px solid #e5e7eb;
+          border-bottom: 1px solid $border-light;
+        }
+
+        .petItem {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .petInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+
+            .petName {
+              font-size: 14px;
+              font-weight: 500;
+            }
+
+            .petBreed {
+              font-size: 12px;
+              color: $gray-600;
+            }
+          }
         }
 
         .arrayItem {
           display: flex;
           align-items: center;
+          gap: 0.5rem;
+        }
+
+        .actionItems {
+          display: flex;
+          align-items: center;
           justify-content: center;
           gap: 0.5rem;
+
+          .actionItem {
+            background-color: $gray-100;
+            border: 1px solid $border-light;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+
+            &:hover {
+              background-color: $gray-200;
+            }
+          }
         }
       }
     }
@@ -184,7 +238,7 @@
     .fixedColumn {
       position: sticky;
       z-index: 5;
-      background-color: #f9f9f9 !important;
+      background-color: $gray-100 !important;
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 
       &::after {
@@ -194,7 +248,7 @@
         right: 0;
         width: 1px;
         height: 100%;
-        background-color: #ddd;
+        background-color: $gray-300;
       }
     }
 
@@ -202,7 +256,7 @@
       position: sticky;
       right: 0;
       z-index: 5;
-      background-color: #f9f9f9 !important;
+      background-color: $gray-100 !important;
       box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
 
       &::after {
@@ -212,14 +266,14 @@
         left: 0;
         width: 1px;
         height: 100%;
-        background-color: #ddd;
+        background-color: $gray-300;
       }
     }
 
     thead .fixedColumn,
     thead .fixedColumnRight {
       z-index: 15;
-      background-color: #e8e8e8 !important;
+      background-color: $gray-200 !important;
     }
 
     @for $i from 0 through 4 {
@@ -235,11 +289,11 @@
       position: sticky;
       top: 60px;
       z-index: 8;
-      background-color: #f9f9f9;
+      background-color: $gray-100;
 
       td {
-        background-color: #f9f9f9 !important;
-        border-bottom: 2px solid #ddd;
+        background-color: $gray-100 !important;
+        border-bottom: 2px solid $gray-300;
       }
 
       &::after {
@@ -249,7 +303,7 @@
         left: 0;
         width: 100%;
         height: 1px;
-        background-color: #ddd;
+        background-color: $gray-300;
       }
     }
 
@@ -265,7 +319,7 @@
   &.hasFixedColumns.hasFixedRows {
     .fixedRow .fixedColumn {
       z-index: 20;
-      background-color: #e8e8e8 !important;
+      background-color: $gray-200 !important;
     }
   }
 
@@ -313,4 +367,19 @@
       }
     }
   }
+}
+
+.noDataText {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: $gray-600;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: $gray-100;
+  height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $border-light;
 }

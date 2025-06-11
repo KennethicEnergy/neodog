@@ -1,0 +1,81 @@
+@import '@/styles/variables';
+
+@keyframes growForm {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.timeInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.nameInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.formFieldError {
+  color: red;
+  font-size: 0.95em;
+  margin-top: 2px;
+}
+
+.formMessage {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.facilityFields {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.facilityFieldsVisible {
+  animation: growForm 0.3s ease-out forwards;
+  visibility: visible;
+}
+
+.facilityFieldsVisible > * {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.facilityFieldsVisible p {
+  font-weight: 500;
+  color: #666;
+}

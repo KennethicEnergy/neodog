@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
         destination: '/dashboard'
       }
     ];
+  },
+  sassOptions: {
+    includePaths: ['./src']
+  },
+  images: {
+    domains: ['images.unsplash.com']
   }
 };
 

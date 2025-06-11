@@ -1,19 +1,23 @@
+@import '@/styles/variables';
+
 .card {
   padding: 1rem;
   border-radius: 10px;
-  background: #ffffff;
+  background: $white;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  box-shadow: 2px 2px 10px #0c0d0d0d;
+  box-shadow: $box-shadow-card;
   gap: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: $transition-base;
 
   &:hover {
-    transform: scale(1.02);
+    // transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-hover;
   }
 
   p {
@@ -49,12 +53,12 @@
   }
 
   .positive {
-    background: #e9ffed;
-    color: #16a34a;
+    background: rgba($success, 0.1);
+    color: $success;
   }
 
   .negative {
-    background: #ffe9e9;
-    color: #ef4444;
+    background: rgba($danger, 0.1);
+    color: $danger;
   }
 }

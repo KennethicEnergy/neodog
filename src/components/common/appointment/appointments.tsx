@@ -1,4 +1,4 @@
-import { TAppointmentData } from '@/src/types/types';
+import { Appointment as TAppointmentData } from '@/types/pet-management';
 import Icon from '../icon';
 import styles from './styles.module.scss';
 
@@ -8,16 +8,18 @@ const Appointments = ({ appointments }: { appointments: TAppointmentData[] }) =>
       {appointments.map((data, index) => (
         <div key={index} className={styles.appointment}>
           <div className={styles.appointmentLeft}>
-            <div className={styles.client}>{data?.client}</div>
+            <div className={styles.client}>{data?.clientId}</div>
             <div className={styles.petTask}>
-              {data?.pet} - {data?.task}
+              {data?.petId} - {data?.type}
             </div>
           </div>
           <div className={styles.appointmentRight}>
             <div className={styles.info}>
               <div className={styles.dateWrapper}>
                 <Icon src="/images/calendar-appointment-date.svg" width={14} height={14} />
-                <div className={styles.date}>{data?.date}</div>
+                <div className={styles.date}>
+                  {data?.date ? new Date(data.date).toLocaleDateString() : ''}
+                </div>
               </div>
               <div className={`${styles.status} ${styles[data.status.toLowerCase()]}`}>
                 {data?.status}

@@ -1,5 +1,5 @@
 'use client';
-import { useModalStore } from '@/src/store/modal-store';
+import { useModalStore } from '@/store/modal-store';
 import { ReactNode, useCallback, useEffect } from 'react';
 import Icon from '../icon';
 import styles from './styles.module.scss';

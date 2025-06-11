@@ -1,8 +1,11 @@
+@import '@/styles/variables';
+
 .dummyIcon {
   height: 24px;
   width: 24px;
-  background: #c3c3c3;
+  background: $gray-400;
   border-radius: 5px;
+  margin: 0.5rem;
 }
 
 .circle {

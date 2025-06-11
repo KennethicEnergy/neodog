@@ -1,0 +1,41 @@
+@import '@/styles/variables';
+
+.card {
+  background-color: $white;
+  border-radius: $border-radius;
+  border: $border-width solid $border-color;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+}
+
+.header {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.description {
+  font-size: $font-size-sm;
+  color: $secondary;
+  margin: 0;
+}
+
+.content {
+  padding: 1.5rem;
+  padding-top: 0;
+}
+
+.footer {
+  padding: 1.5rem;
+  padding-top: 0;
+  display: flex;
+  align-items: center;
+}

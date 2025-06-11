@@ -1,15 +1,17 @@
+@import '@/styles/variables';
+
 .tabs {
   padding: 1rem;
   border-radius: 10px;
-  background: #ffffff;
+  background: $white;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  box-shadow: 2px 2px 10px #0c0d0d0d;
+  box-shadow: $box-shadow-card;
   gap: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: $transition-base;
   min-height: 400px;
 }
 
@@ -19,24 +21,23 @@
   width: 100%;
   justify-content: space-evenly;
   padding: 0.2rem;
-  background: #ebebeb;
+  background: $gray-200;
   border-radius: 10px;
-  border: 1px solid #9b9b9b;
+  border: 1px solid $gray-600;
 
   .filter {
     padding: 1rem;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: $transition-base;
     width: 100%;
     font-size: 12px;
     font-weight: 600;
-    color: #9b9b9b;
+    color: $gray-600;
 
     &.active {
-      background: #ffffff;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      background: $white;
+      box-shadow: $box-shadow;
     }
   }
 }
@@ -46,13 +47,13 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  color: #9b9b9b;
+  color: $gray-600;
   overflow: auto;
   max-height: 250px;
 
   .content {
     padding: 1rem;
-    border: 1px solid #9b9b9b;
+    border: 1px solid $gray-600;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;

@@ -1,5 +1,5 @@
-import { TMenuItem } from '@/src/types/common';
-import { SIDEBAR_MENU_ITEMS } from '@/src/utils/constants';
+import { TMenuItem } from '@/types/common';
+import { SIDEBAR_MENU_ITEMS } from '@/utils/constants';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';

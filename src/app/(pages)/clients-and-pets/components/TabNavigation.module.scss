@@ -1,0 +1,43 @@
+@import '@/styles/variables';
+
+.tabContainer {
+  display: flex;
+  background: $white;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+
+  .tab {
+    padding: 0.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: $transition-base;
+    background: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    color: $text-light;
+    min-width: 200px;
+    justify-content: center;
+
+    &:hover {
+      background: rgba($gray-700, 0.1);
+    }
+
+    &.active {
+      background: $gray-700;
+      color: $white;
+      box-shadow: $box-shadow;
+    }
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .tabContainer {
+    width: 100%;
+    .tab {
+      width: 50%;
+    }
+  }
+}

@@ -5,15 +5,38 @@ import {
   TMetricCardData,
   TRevenueMetrics,
   TVaccinationMetrics
-} from '../types/metrics';
+} from '../types/pet-management';
 import { TTableRow } from '../types/table';
-import { TActivityData, TAppointmentData, TServices } from '../types/types';
+
+type TServices = {
+  name: string;
+  icon: string;
+};
+
+type TAppointmentData = {
+  client: string;
+  pet: string;
+  task: string;
+  date: string;
+  assignedTo: string;
+  status: string;
+};
+
+type TActivityData = {
+  client: string;
+  pet: string;
+  task: string;
+  time: string;
+  assignedTo: string;
+  status: string;
+};
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
-  { name: 'Pets & Client', route: '/pets-and-client', icon: '/images/dark/pets-and-clients.svg' },
+  { name: 'Client & Pets', route: '/clients-and-pets', icon: '/images/dark/pets-and-clients.svg' },
   { name: 'Appointments', route: '/appointments', icon: '/images/dark/appointment.svg' },
   // { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
+  { name: 'Vaccinations', route: '/vaccinations', icon: '/images/dark/reports.svg' },
   { name: 'Reports', route: '/reports', icon: '/images/dark/reports.svg' },
   { name: 'Support', route: '/support', icon: '/images/dark/support.svg' },
   { name: 'Settings', route: '/settings', icon: '/images/dark/settings.svg' }
@@ -380,7 +403,13 @@ export const SAMPLE_TAB_VACCINATION_DATA = {
 };
 
 export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, index) => ({
-  pet: ['Bella', 'Max', 'Luna', 'Charlie', 'Daisy'][index % 5],
+  pet: [
+    [{ name: 'Bella', breed: 'Golden Retriever', image: '/images/pets/bella.svg', type: 'dog' }],
+    [{ name: 'Max', breed: 'German Shepherd', image: '/images/pets/max.svg', type: 'dog' }],
+    [{ name: 'Luna', breed: 'French Bulldog', image: '/images/pets/luna.svg', type: 'dog' }],
+    [{ name: 'Charlie', breed: 'Husky', image: '/images/pets/charlie.svg', type: 'dog' }],
+    [{ name: 'Daisy', breed: 'Beagle', image: '/images/pets/daisy.svg', type: 'dog' }]
+  ][index % 5],
   client: ['Sarah Johnson', 'Mike Davis', 'Emily Chen', 'Robert Wilson', 'Lisa Anderson'][
     index % 5
   ],
@@ -399,3 +428,16 @@ export const SAMPLE_TABLE_DATA: TTableRow[] = Array.from({ length: 15 }, (_, ind
 }));
 
 export const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];
+
+export const HEADER_POPUP_DATA = [
+  { name: 'New appointment', icon: '/images/popup-appointment.svg', route: '/appointments' },
+  { name: 'Check-in Pet', icon: '/images/popup-check-in-pets.svg', route: '/pets-and-client' },
+  { name: 'Add Client', icon: '/images/popup-client.svg', route: '/pets-and-client' },
+  { name: 'Create Invoice', icon: '/images/popup-create-invoice.svg', route: '' }
+];
+
+export const FOOTER_SOCIALS = [
+  { name: 'facebook', icon: '/images/social-icons/facebook.svg', link: 'https://facebook.com' },
+  { name: 'linkedin', icon: '/images/social-icons/linkedin.svg', link: 'https://linkedin.com' },
+  { name: 'x', icon: '/images/social-icons/x.svg', link: 'https://x.com' }
+];

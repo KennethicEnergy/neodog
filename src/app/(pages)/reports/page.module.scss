@@ -1,9 +1,10 @@
+@import '@/styles/variables';
+
 .reports {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
 
 .gridRow {
   display: grid;

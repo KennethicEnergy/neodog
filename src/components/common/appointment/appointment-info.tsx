@@ -1,4 +1,4 @@
-import { APPOINTMENT_FILTERS } from '@/src/utils/constants';
+import { APPOINTMENT_FILTERS } from '@/utils/constants';
 import Icon from '../icon';
 import styles from './styles.module.scss';
 
@@ -14,7 +14,7 @@ const AppointmentInfo = ({
   return (
     <div className={styles.appointmentInfo}>
       <div className={styles.title}>
-        {icon && <Icon src={icon} bgColor="#22C55E" />}
+        {icon && <Icon src={icon} bgColor="success" />}
         {title && <h3>{title}</h3>}
       </div>
       {controls && (
