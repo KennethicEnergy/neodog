@@ -8,6 +8,7 @@ import {
   CardTitle
 } from '@/components/common/card/Card';
 import { useAuthStore } from '@/store/auth.store';
+import { useToastStore } from '@/store/toast.store';
 import type { LoginCredentials, RegisterCredentials } from '@/types/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -16,7 +17,8 @@ import styles from './page.module.scss';
 
 const SignupPage = () => {
   const router = useRouter();
-  const { register, isLoading, error, isAuthenticated } = useAuthStore();
+  const { register, isLoading, isAuthenticated } = useAuthStore();
+  const addToast = useToastStore((state) => state.addToast);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -39,7 +41,20 @@ const SignupPage = () => {
       };
       const response = await register(formattedData);
       if (response && response.success) {
+        addToast({
+          scheme: 'success',
+          title: 'Success',
+          message: 'Successfully signed up',
+          timeout: 2000
+        });
         router.push('/');
+      } else if (response && response.message) {
+        addToast({
+          scheme: 'danger',
+          title: 'Signup Error',
+          message: response.message,
+          timeout: 4000
+        });
       }
     }
   };
@@ -53,7 +68,6 @@ const SignupPage = () => {
         </CardHeader>
         <CardContent>
           <AuthForm type="signup" onSubmit={handleSubmit} isLoading={isLoading} />
-          {error && <p className={styles.formMessage}>{error}</p>}
           <p className={styles.formDescription}>
             Already have an account?{' '}
             <Link href="/login" className={styles.authLink}>

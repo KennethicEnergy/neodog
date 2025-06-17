@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import ToastProvider from '@/providers/toast-provider';
 import DefaultLayout from '../components/layout/layout';
 import ModalProvider from '../providers/modals-provider';
 import '../styles/globals.css';
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <DefaultLayout>{children}</DefaultLayout>
+        <ToastProvider />
         <ModalProvider />
       </body>
     </html>

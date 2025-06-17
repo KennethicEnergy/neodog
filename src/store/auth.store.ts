@@ -9,6 +9,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  success: string | null;
   login: (credentials: LoginCredentials) => Promise<{ success: boolean; message?: string }>;
   register: (
     credentials: RegisterCredentials
@@ -16,6 +17,7 @@ interface AuthState {
   logout: () => Promise<void>;
   getUser: () => Promise<void>;
   clearError: () => void;
+  clearSuccess: () => void;
 }
 
 type ErrorWithResponse = { response: { data?: { message?: string } } };
@@ -28,10 +30,11 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      success: null,
 
       login: async (credentials: LoginCredentials) => {
         try {
-          set({ isLoading: true, error: null });
+          set({ isLoading: true, error: null, success: null });
           const response = await authApi.login(credentials);
           if (
             response.data.code === 200 &&
@@ -44,7 +47,8 @@ export const useAuthStore = create<AuthState>()(
               token,
               user,
               isAuthenticated: true,
-              isLoading: false
+              isLoading: false,
+              success: response.data.message || 'Login successful!'
             });
             return { success: true };
           } else {
@@ -53,7 +57,8 @@ export const useAuthStore = create<AuthState>()(
               user: null,
               isAuthenticated: false,
               isLoading: false,
-              error: response.data.message
+              error: response.data.message,
+              success: null
             });
             return { success: false, message: response.data.message };
           }
@@ -63,7 +68,8 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             isAuthenticated: false,
             error: error instanceof Error ? error.message : 'An error occurred',
-            isLoading: false
+            isLoading: false,
+            success: null
           });
           return { success: false, message: 'An error occurred' };
         }
@@ -180,7 +186,8 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      clearError: () => set({ error: null })
+      clearError: () => set({ error: null }),
+      clearSuccess: () => set({ success: null })
     }),
     {
       name: 'auth-storage',

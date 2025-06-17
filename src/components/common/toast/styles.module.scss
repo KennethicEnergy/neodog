@@ -1,0 +1,120 @@
+@import '@/styles/variables';
+
+.toast {
+  min-width: 280px;
+  max-width: 360px;
+  padding: $spacing-4 $spacing-4 $spacing-3 $spacing-4;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow-popup;
+  background: $white;
+  color: $black;
+  margin-bottom: $spacing-3;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+  position: relative;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: currentColor;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    animation: toastLoader var(--toast-loader-duration, 4s) linear forwards;
+    pointer-events: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-2;
+}
+
+.title {
+  font-weight: 600;
+  font-size: $font-size-base;
+}
+
+.dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 $spacing-1;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.message {
+  font-size: $font-size-base;
+  color: $text-light;
+}
+
+.primary {
+  border: 1px solid rgba(0, 112, 243, 0.8);
+  background-color: #e6f0fb;
+  color: $primary;
+}
+.success {
+  border: 1px solid rgba(40, 167, 69, 0.8);
+  background-color: #e6f9ef;
+  color: $success;
+}
+.danger {
+  border: 1px solid rgba(220, 53, 69, 0.8);
+  background-color: #fdeaea;
+  color: $danger;
+}
+.warning {
+  border: 1px solid rgba(255, 193, 7, 0.8);
+  background-color: #fff8e1;
+  color: $warning;
+}
+
+.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fadeOut {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastLoader {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+.toastPortal {
+  position: fixed;
+  top: 3rem;
+  right: 2rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.toastWrapper {
+  pointer-events: auto;
+}
