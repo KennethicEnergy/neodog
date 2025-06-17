@@ -100,7 +100,10 @@
           position: relative;
           padding: 1rem;
           text-align: center;
-          font-weight: 600;
+          font-weight: 700;
+          font-size: 12px;
+          line-height: 20px;
+          color: #5a5a5a;
           border-bottom: 2px solid $gray-300;
           background-color: $gray-100;
           min-width: 150px;
@@ -173,11 +176,18 @@
         td {
           padding: 1rem;
           min-width: 150px;
+          overflow: scroll;
           white-space: nowrap;
           position: relative;
           border-left: none;
           border-right: none;
           border-bottom: 1px solid $border-light;
+          text-transform: capitalize;
+        }
+
+        .name {
+          text-align: left;
+          margin-left: 1rem;
         }
 
         .petItem {
@@ -207,6 +217,10 @@
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          text-transform: lowercase;
+          min-width: 100px;
+          max-width: 180px;
+          overflow: scroll;
         }
 
         .actionItems {

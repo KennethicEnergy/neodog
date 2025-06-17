@@ -1,4 +1,5 @@
 import BaseModal from '@/components/common/base-modal';
+import { Button } from '@/components/common/button';
 import Icon from '@/components/common/icon';
 import AddClient from '@/components/modals/add-client';
 import AddPet from '@/components/modals/add-pet';
@@ -31,9 +32,9 @@ const FilterControls = ({ activeTab, showFilter, onFilterToggle }: FilterControl
         Filter
         <Icon src={`/images/pets-and-clients/filter-dropdown.svg`} width={18} height={18} />
       </button>
-      <button className={styles.addButton} onClick={openAddModal}>
+      <Button className={styles.addButton} onClick={openAddModal} variant="dark" size="default">
         {activeTab === 'pets' ? 'Add Pet' : 'Add Client'}
-      </button>
+      </Button>
     </div>
   );
 };

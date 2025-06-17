@@ -1,4 +1,5 @@
 import { useClientStore } from '@/store/client.store';
+import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
@@ -22,6 +23,7 @@ interface PetForm {
 }
 
 const AddPet = ({ clientId }: { clientId?: string }) => {
+  const closeModal = useModalStore((state) => state.closeModal);
   const [form, setForm] = useState<PetForm>({
     client_id: clientId || '',
     name: '',
@@ -50,6 +52,8 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     fetchReferences
   } = usePetStore();
 
+  const [ageError, setAgeError] = useState('');
+
   useEffect(() => {
     fetchReferences();
   }, [fetchReferences]);
@@ -58,11 +62,24 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    if (name === 'age') {
+      // Only allow digits
+      if (!/^\d*$/.test(value)) {
+        setAgeError('Age must be a number');
+      } else {
+        setAgeError('');
+      }
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!/^\d+$/.test(form.age)) {
+      setAgeError('Age must be a number');
+      return;
+    }
+    setAgeError('');
     const result = await createPet(form);
     if (result.success) {
       setForm({
@@ -82,6 +99,7 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
         diet_notes: '',
         notes: ''
       });
+      closeModal();
     }
   };
 
@@ -211,12 +229,17 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
               <input
                 id="age"
                 className={styles.input}
-                type="text"
+                type="number"
                 name="age"
                 value={form.age}
                 onChange={handleChange}
+                pattern="\\d*"
+                inputMode="numeric"
+                min="0"
                 required
+                aria-invalid={!!ageError}
               />
+              {ageError && <div style={{ color: 'red', fontSize: 12 }}>{ageError}</div>}
             </div>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="color">

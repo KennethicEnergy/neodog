@@ -129,16 +129,16 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
               : 'N/A'}
           </div>
           <div className={styles.contact}>
-            <div>
-              <b>Email:</b> {client.email}
+            <div className={styles.contactItem}>
+              <Icon src="/images/contact/mail.svg" height={16} width={16} /> {client.email}
             </div>
-            <div>
-              <b>Phone:</b> {client.mobile_number}
+            <div className={styles.contactItem}>
+              <Icon src="/images/contact/phone.svg" height={16} width={16} /> {client.mobile_number}
             </div>
-            <div>
-              <b>Address:</b> {client.address}
+            <div className={styles.contactItem}>
+              <Icon src="/images/contact/location.svg" height={16} width={16} /><p>{client.address}
               {client.city ? `, ${client.city}` : ''}
-              {client.state ? `, ${client.state}` : ''}
+              {client.state ? `, ${client.state}` : ''}</p>
             </div>
           </div>
           <div className={styles.actions}>
@@ -171,7 +171,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
 
       <div className={styles.tabs} role="tablist">
         {TABS.map((tab) => (
-          <button
+          <div
             key={tab}
             className={selectedTab === tab ? styles.tabActive : ''}
             onClick={() => setSelectedTab(tab)}
@@ -179,7 +179,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
             aria-selected={selectedTab === tab}
             tabIndex={selectedTab === tab ? 0 : -1}>
             {tab}
-          </button>
+          </div>
         ))}
       </div>
 

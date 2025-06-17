@@ -15,7 +15,7 @@
 }
 
 .imageContainer {
-  height: 200px;
+  height: 150px;
   background: $background;
   position: relative;
   overflow: hidden;
@@ -37,7 +37,7 @@
 }
 
 .petInfo {
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
 
@@ -55,6 +55,7 @@
     font-weight: 600;
     font-size: 1.1rem;
     color: $dark;
+    text-transform: capitalize;
   }
 
   .status {
@@ -98,21 +99,28 @@
   .lastVisit {
     color: $text-light;
     font-size: 0.9rem;
+    text-transform: capitalize;
   }
 }
 
 .controls {
-  padding: 1rem 1.5rem;
+  padding: 1rem;
+  padding-top: unset;
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
 
-  :global(.profile) {
+  .profile, .schedule {
+    width: 100%;
+  }
+
+  .profile {
     color: $gray-700;
     border-color: $border-light;
     background: $white;
 
     &:hover {
+      cursor: pointer;
       border-color: $gray-700;
       background: $background;
     }
@@ -124,6 +132,7 @@
     border-color: $gray-700;
 
     &:hover {
+      cursor: pointer;
       background: $gray-800;
     }
   }

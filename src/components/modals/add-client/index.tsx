@@ -1,8 +1,10 @@
 import { useClientStore } from '@/store/client.store';
+import { useModalStore } from '@/store/modal-store';
 import React, { useState } from 'react';
 import styles from './styles.module.scss';
 
 const AddClient = () => {
+  const closeModal = useModalStore((state) => state.closeModal);
   const [form, setForm] = useState({
     first_name: '',
     middle_name: '',
@@ -15,14 +17,28 @@ const AddClient = () => {
     zipcode: ''
   });
   const { createClient, isLoading } = useClientStore();
+  const [mobileError, setMobileError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (name === 'mobile_number') {
+      // Only allow digits
+      if (!/^\d*$/.test(value)) {
+        setMobileError('Mobile number must be numeric');
+      } else {
+        setMobileError('');
+      }
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!/^\d+$/.test(form.mobile_number)) {
+      setMobileError('Mobile number must be numeric');
+      return;
+    }
+    setMobileError('');
     const result = await createClient(form);
     if (result.success) {
       setForm({
@@ -36,6 +52,7 @@ const AddClient = () => {
         state: '',
         zipcode: ''
       });
+      closeModal();
     }
   };
 
@@ -83,12 +100,16 @@ const AddClient = () => {
               <input
                 id="mobile_number"
                 className={styles.input}
-                type="text"
+                type="tel"
                 name="mobile_number"
                 value={form.mobile_number}
                 onChange={handleChange}
+                pattern="\\d*"
+                inputMode="numeric"
                 required
+                aria-invalid={!!mobileError}
               />
+              {mobileError && <div style={{ color: 'red', fontSize: 12 }}>{mobileError}</div>}
             </div>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="email">
