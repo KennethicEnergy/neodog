@@ -48,6 +48,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  text-transform: capitalize;
 }
 
 .since {
@@ -60,8 +61,15 @@
   font-size: 1rem;
   color: #444;
   margin-bottom: 0.75rem;
-  div {
+
+  .contactItem {
+    display: flex;
+    align-items: center;
     margin-bottom: 0.25rem;
+
+    p {
+      text-transform: capitalize;
+    }
   }
 }
 
@@ -162,9 +170,8 @@
 
 .tabs {
   display: flex;
-  gap: 1rem;
   background: #fff;
-  padding: 0.2rem;
+  padding: 0.3rem;
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
   margin-bottom: 0.5rem;
@@ -172,21 +179,26 @@
   overflow: auto;
 }
 
-.tabs button {
+.tabs div {
   border: none;
   font-size: 1rem;
   color: #888;
   font-weight: 500;
-  padding: 0.2rem 0.75rem;
+  padding: 0.5rem;
   border-radius: 10px;
   cursor: pointer;
   min-width: 150px;
+  display: flex ;
+  align-items: center;
+  justify-content: center;
+  text-wrap: nowrap;
+  min-width: 200px;
 }
 
 .tabActive {
-  background: $dark;
+  background: $gray-600;
   color: $white !important;
-  box-shadow: $box-shadow-popup;
+  box-shadow: 0px 1px 2px 0px #0000004D;
 }
 
 .activity {

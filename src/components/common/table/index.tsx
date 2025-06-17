@@ -202,6 +202,10 @@ const Table = <T extends Record<string, unknown>>({
       return value.toLocaleString();
     }
 
+    if (headerKey === 'name' && typeof value === 'string') {
+      return <div className={styles.name}>{value}</div>;
+    }
+
     if (headerKey === 'pet' && Array.isArray(value)) {
       return value.map((item: { image: string; name: string; breed: string }, index: number) => (
         <div className={styles.petItem} key={index}>

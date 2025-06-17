@@ -46,22 +46,22 @@ const PetCard = ({ pet }: PetCardProps) => {
           <span className={styles.name}>{pet.name}</span>
           <StatusTag status={pet.status} bgColor={getStatusClass(pet.status)} />
         </div>
-        <div className={styles.row}>
+        {/* <div className={styles.row}>
           <span className={styles.breed}>{pet.breed}</span>
           <span className={styles.age}>{pet.age}</span>
-        </div>
+        </div> */}
         <div className={styles.row}>
-          <span className={styles.owner}>Owner: {pet.owner}</span>
+          <span className={styles.owner}>{pet.owner}</span>
         </div>
-        <div className={styles.row}>
+        {/* <div className={styles.row}>
           <span className={styles.lastVisit}>Last Visit: {pet.lastVisit}</span>
-        </div>
+        </div> */}
       </div>
       <div className={styles.controls}>
-        <Button variant="outline" size="sm" className={styles.profile}>
+        <Button variant="white" size="sm" className={styles.profile}>
           Profile
         </Button>
-        <Button variant="default" size="sm" className={styles.schedule}>
+        <Button variant="dark" size="sm" className={styles.schedule}>
           Schedule
         </Button>
       </div>
