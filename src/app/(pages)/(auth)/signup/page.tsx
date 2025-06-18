@@ -10,6 +10,7 @@ import {
 import { useAuthStore } from '@/store/auth.store';
 import { useToastStore } from '@/store/toast.store';
 import type { LoginCredentials, RegisterCredentials } from '@/types/api';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -62,8 +63,12 @@ const SignupPage = () => {
   return (
     <div className={styles.authPage}>
       <Card className={styles.authCard}>
+        <div className={styles.brandWrapper}>
+          <Image src="/images/brand.svg" alt="logo" width={24} height={24} />
+          <h2 className={styles.brand}>NeoDog</h2>
+        </div>
         <CardHeader>
-          <CardTitle>Create an account 🐾</CardTitle>
+          <CardTitle>Create an account</CardTitle>
           <CardDescription>Sign up to get started</CardDescription>
         </CardHeader>
         <CardContent>
