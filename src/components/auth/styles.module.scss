@@ -35,12 +35,6 @@
   width: 100%;
 }
 
-.timeInputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
 .nameInputs {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -76,6 +70,11 @@
 }
 
 .facilityFieldsVisible p {
+  font-weight: 500;
+  color: #666;
+}
+
+.description {
   font-weight: 500;
   color: #666;
 }

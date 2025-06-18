@@ -63,7 +63,7 @@ const SignupPage = () => {
     <div className={styles.authPage}>
       <Card className={styles.authCard}>
         <CardHeader>
-          <CardTitle>Create an account</CardTitle>
+          <CardTitle>Create an account 🐾</CardTitle>
           <CardDescription>Sign up to get started</CardDescription>
         </CardHeader>
         <CardContent>
