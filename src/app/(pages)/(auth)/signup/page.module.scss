@@ -6,20 +6,6 @@
   justify-content: center;
   min-height: 100vh;
   background: $background;
-  background-image: url('/images/brand.svg');
-  background-size: 20% 20%;
-  overflow: hidden;
-  background-repeat: repeat space;
-  animation: bgMarquee 9999999s infinite linear;
-}
-
-@keyframes bgMarquee {
-  from {
-    background-position: 0%;
-  }
-  to {
-    background-position: 90000000%;
-  }
 }
 
 .authCard {

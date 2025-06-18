@@ -1,18 +1,15 @@
 import { Button } from '@/components/common/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/common/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/common/form';
 import { Input } from '@/components/common/input';
 import type { LoginCredentials, RegisterCredentials } from '@/types/api';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+// import FacilityOperatingDays, { type FacilityOperatingDaysValue } from './FacilityOperatingDays';
+import OperatingDaysSelector, {
+  type SimpleOperatingDaysValue
+} from '../common/operating-days-selector';
 import styles from './styles.module.scss';
 
 interface AuthFormProps {
@@ -93,6 +90,20 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
   });
 
   const [showFacilityFields, setShowFacilityFields] = React.useState(false);
+  // Comment out FacilityOperatingDays state and use FacilityOperatingDaysSimple state
+  // const [facilityDays, setFacilityDays] = useState<FacilityOperatingDaysValue>({ ... });
+  const [facilityDaysSimple, setFacilityDaysSimple] = useState<SimpleOperatingDaysValue>({
+    selectedDays: {
+      sun: false,
+      mon: false,
+      tue: false,
+      wed: false,
+      thu: false,
+      fri: false,
+      sat: false
+    },
+    time: { from: '', to: '' }
+  });
 
   // Watch the initial required fields and their errors
   const initialFields = form.watch([
@@ -131,7 +142,17 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
     if (type === 'login') {
       await onSubmit(data as LoginCredentials);
     } else {
-      await onSubmit(data as RegisterCredentials);
+      const { time } = facilityDaysSimple;
+      await onSubmit({
+        ...(data as RegisterCredentials),
+        operating_hours_from: time.from,
+        operating_hours_to: time.to,
+        facility_operating_days: facilityDaysSimple
+      } as RegisterCredentials & {
+        operating_hours_from: string;
+        operating_hours_to: string;
+        facility_operating_days: SimpleOperatingDaysValue;
+      });
     }
   };
 
@@ -280,36 +301,17 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
                     </FormItem>
                   )}
                 />
-                <div className={styles.timeInputs}>
-                  <FormField
-                    control={form.control}
-                    name="operating_hours_from"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Open From</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} disabled={isLoading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="operating_hours_to"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Open Until</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} disabled={isLoading} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
               </div>
+            )}
+
+            {type === 'signup' && showFacilityFields && (
+              <OperatingDaysSelector
+                value={facilityDaysSimple}
+                onChange={setFacilityDaysSimple}
+                isLoading={isLoading}
+                startLabel="Open From"
+                endLabel="Open Until"
+              />
             )}
           </>
         )}

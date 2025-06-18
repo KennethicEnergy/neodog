@@ -42,7 +42,7 @@ const LoginPage = () => {
     <div className={styles.authPage}>
       <Card className={styles.authCard}>
         <CardHeader>
-          <CardTitle>Welcome back</CardTitle>
+          <CardTitle>Welcome back 🐾</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
