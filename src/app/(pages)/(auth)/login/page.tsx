@@ -9,6 +9,7 @@ import {
 } from '@/components/common/card/Card';
 import { useAuthStore } from '@/store/auth.store';
 import { useToastStore } from '@/store/toast.store';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.scss';
@@ -41,8 +42,12 @@ const LoginPage = () => {
   return (
     <div className={styles.authPage}>
       <Card className={styles.authCard}>
+        <div className={styles.brandWrapper}>
+          <Image src="/images/brand.svg" alt="logo" width={24} height={24} />
+          <h2 className={styles.brand}>NeoDog</h2>
+        </div>
         <CardHeader>
-          <CardTitle>Welcome back 🐾</CardTitle>
+          <CardTitle>Welcome back</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
