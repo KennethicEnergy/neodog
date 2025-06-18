@@ -28,10 +28,9 @@ const ClientsTable = ({ clients }: ClientsTableProps) => {
       <Table
         data={clients}
         headers={CLIENT_HEADERS}
-        maxHeight="800px"
         enableSorting={true}
         viewAll={false}
-        tableOnly={true}
+        tableOnly
       />
     </div>
   );
