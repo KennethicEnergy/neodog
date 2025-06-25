@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+// Determine the API URL based on environment
+const getApiUrl = () => {
+  // In Vercel, use the environment variable
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  // Fallback for local development
+  if (process.env.NODE_ENV === 'development') {
+    return 'https://neodog-api.test/api';
+  }
+
+  // Production fallback
+  return 'https://api.neodog.app/api';
+};
+
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://neodog-api.test/api',
+  baseURL: getApiUrl(),
   headers: {
     'Content-Type': 'application/json'
   }
