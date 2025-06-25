@@ -5,13 +5,13 @@ import { getOperatingDaysSummary } from './utils';
 export * from './types';
 
 const daysOfWeek = [
-  { key: 'sun', label: 'S', name: 'Sunday' },
-  { key: 'mon', label: 'M', name: 'Monday' },
-  { key: 'tue', label: 'T', name: 'Tuesday' },
-  { key: 'wed', label: 'W', name: 'Wednesday' },
-  { key: 'thu', label: 'T', name: 'Thursday' },
-  { key: 'fri', label: 'F', name: 'Friday' },
-  { key: 'sat', label: 'S', name: 'Saturday' }
+  { key: 'sun', label: 'SUN', name: 'Sunday' },
+  { key: 'mon', label: 'MON', name: 'Monday' },
+  { key: 'tue', label: 'TUE', name: 'Tuesday' },
+  { key: 'wed', label: 'WED', name: 'Wednesday' },
+  { key: 'thu', label: 'THU', name: 'Thursday' },
+  { key: 'fri', label: 'FRI', name: 'Friday' },
+  { key: 'sat', label: 'SAT', name: 'Saturday' }
 ];
 
 const OperatingDaysSelector: React.FC<Props> = ({
