@@ -5,7 +5,13 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:dev": "env-cmd -f ./env/.env.local next build",
+    "build:staging": "env-cmd -f ./env/.env.staging next build",
+    "build:prod": "env-cmd -f ./env/.env.production next build",
     "start": "next start",
+    "start:dev": "env-cmd -f ./env/.env.local next dev --turbopack --port 3001",
+    "start:staging": "env-cmd -f ./env/.env.staging next dev --turbopack --port 3001",
+    "start:prod": "env-cmd -f ./env/.env.production next dev --turbopack --port 3001",
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -18,6 +24,7 @@
     "chart.js": "^4.4.9",
     "chartjs-plugin-annotation": "^3.1.0",
     "clsx": "^1.1.1",
+    "env-cmd": "^10.1.0",
     "eslint-config-prettier": "^10.1.5",
     "next": "15.3.2",
     "react": "^19.0.0",

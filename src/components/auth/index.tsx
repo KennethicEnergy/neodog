@@ -33,8 +33,8 @@ const signupSchema = z
   .object({
     facility_name: z.string().min(1, 'Facility name is required'),
     facility_address: z.string().min(1, 'Facility address is required'),
-    operating_hours_from: z.string().min(1, 'Operating hours from is required'),
-    operating_hours_to: z.string().min(1, 'Operating hours to is required'),
+    operating_hours_from: z.string().optional(),
+    operating_hours_to: z.string().optional(),
     first_name: z.string().min(1, 'First name is required'),
     middle_name: z.string().min(1, 'Middle name is required'),
     last_name: z.string().min(1, 'Last name is required'),
@@ -104,6 +104,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
     },
     time: { from: '', to: '' }
   });
+  const [operatingDaysError, setOperatingDaysError] = React.useState<string>('');
 
   // Watch the initial required fields and their errors
   const initialFields = form.watch([
@@ -139,20 +140,33 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
   }, [initialFields, formErrors]);
 
   const handleSubmit = async (data: LoginFormData | SignupFormData) => {
+    console.log('@@ data', data);
     if (type === 'login') {
       await onSubmit(data as LoginCredentials);
     } else {
       const { time } = facilityDaysSimple;
+
+      // Clear previous errors
+      setOperatingDaysError('');
+
+      // Validate that at least one day is selected
+      const hasSelectedDays = Object.values(facilityDaysSimple.selectedDays).some((day) => day);
+      if (!hasSelectedDays) {
+        setOperatingDaysError('Please select at least one operating day');
+        return;
+      }
+
+      // Validate that time values are provided
+      if (!time.from || !time.to) {
+        setOperatingDaysError('Please provide operating hours');
+        return;
+      }
+
       await onSubmit({
         ...(data as RegisterCredentials),
         operating_hours_from: time.from,
-        operating_hours_to: time.to,
-        facility_operating_days: facilityDaysSimple
-      } as RegisterCredentials & {
-        operating_hours_from: string;
-        operating_hours_to: string;
-        facility_operating_days: SimpleOperatingDaysValue;
-      });
+        operating_hours_to: time.to
+      } as RegisterCredentials);
     }
   };
 
@@ -305,13 +319,18 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
             )}
 
             {type === 'signup' && showFacilityFields && (
-              <OperatingDaysSelector
-                value={facilityDaysSimple}
-                onChange={setFacilityDaysSimple}
-                isLoading={isLoading}
-                startLabel="Open From"
-                endLabel="Open Until"
-              />
+              <>
+                <OperatingDaysSelector
+                  value={facilityDaysSimple}
+                  onChange={setFacilityDaysSimple}
+                  isLoading={isLoading}
+                  startLabel="Open From"
+                  endLabel="Open Until"
+                />
+                {operatingDaysError && (
+                  <p className={styles.formFieldError}>{operatingDaysError}</p>
+                )}
+              </>
             )}
           </>
         )}

@@ -431,8 +431,8 @@ export const FOOTER_MENUS = ['Terms', 'Privacy', 'Help'];
 
 export const HEADER_POPUP_DATA = [
   { name: 'New appointment', icon: '/images/popup-appointment.svg', route: '/appointments' },
-  { name: 'Check-in Pet', icon: '/images/popup-check-in-pets.svg', route: '/pets-and-client' },
-  { name: 'Add Client', icon: '/images/popup-client.svg', route: '/pets-and-client' },
+  { name: 'Check-in Pet', icon: '/images/popup-check-in-pets.svg', route: '/clients-and-pets' },
+  { name: 'Add Client', icon: '/images/popup-client.svg', route: '/clients-and-pets' },
   { name: 'Create Invoice', icon: '/images/popup-create-invoice.svg', route: '' }
 ];
 

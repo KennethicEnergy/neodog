@@ -1,5 +1,6 @@
 'use client';
 import BaseModal from '@/components/common/base-modal';
+import Icon from '@/components/common/icon';
 import SearchBar from '@/components/common/searchbar';
 import { Client as BaseClient } from '@/services/client.api';
 import { Pet } from '@/services/pet.api';
@@ -11,6 +12,7 @@ import ClientDetailView from './components/ClientDetailView';
 import ClientsTable from './components/ClientsTable';
 import FilterControls from './components/FilterControls';
 import PetsGrid from './components/PetsGrid';
+import PetsTable from './components/PetsTable';
 import TabNavigation from './components/TabNavigation';
 import styles from './page.module.scss';
 
@@ -37,6 +39,7 @@ const ClientsAndPetsPage = () => {
   const { fetchClients, clients } = useClientStore();
   const { fetchPets, pets } = usePetStore();
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [petsView, setPetsView] = useState<'list' | 'tiles'>('tiles');
 
   const ctaButton = (c: Client, type: 'view' | 'edit' | 'delete') => {
     if (type === 'view') {
@@ -94,8 +97,34 @@ const ClientsAndPetsPage = () => {
               year: 'numeric'
             })
           : 'No visits',
-        status: 'HEALTHY', // You might want to add a status field to your API response
-        image: null
+        status: 'HEALTHY',
+        image: null,
+        actions: [
+          {
+            name: 'View',
+            type: 'view',
+            icon: '/images/actions/view.svg',
+            onClick: () => {
+              /* handle view pet */
+            }
+          },
+          {
+            name: 'Edit',
+            type: 'edit',
+            icon: '/images/actions/edit.svg',
+            onClick: () => {
+              /* handle edit pet */
+            }
+          },
+          {
+            name: 'Delete',
+            type: 'delete',
+            icon: '/images/actions/trash.svg',
+            onClick: () => {
+              /* handle delete pet */
+            }
+          }
+        ]
       };
     });
   }, [pets]);
@@ -213,18 +242,49 @@ const ClientsAndPetsPage = () => {
                 onFilterToggle={() => setShowFilter(!showFilter)}
               />
             </div>
-            <div className={styles.searchContainer}>
-              <SearchBar
-                onSearch={handleSearch}
-                placeholder={activeTab === 'clients' ? 'Search Clients' : 'Search Pets'}
-                value={searchQuery}
-              />
-            </div>
+            {activeTab === 'clients' ? (
+              <div className={styles.searchContainer}>
+                <SearchBar
+                  onSearch={handleSearch}
+                  placeholder={'Search Clients'}
+                  value={searchQuery}
+                />
+              </div>
+            ) : (
+              <div className={styles.toggleGroup}>
+                <button
+                  className={`${styles.toggleButton} ${petsView === 'list' ? styles.active : ''}`}
+                  onClick={() => setPetsView('list')}
+                  aria-label="List View"
+                  type="button">
+                  <Icon
+                    src={`/images/tabs/list-${petsView === 'list' ? 'active' : 'inactive'}.svg`}
+                    width={16}
+                    height={16}
+                  />
+                  <span className={styles.toggleLabel}>List</span>
+                </button>
+                <button
+                  className={`${styles.toggleButton} ${petsView === 'tiles' ? styles.active : ''}`}
+                  onClick={() => setPetsView('tiles')}
+                  aria-label="Tiles View"
+                  type="button">
+                  <Icon
+                    src={`/images/tabs/tile-${petsView === 'tiles' ? 'active' : 'inactive'}.svg`}
+                    width={16}
+                    height={16}
+                  />
+                  <p className={styles.toggleLabel}>Tiles</p>
+                </button>
+              </div>
+            )}
           </div>
 
           <div className={styles.content}>
             {activeTab === 'clients' ? (
               <ClientsTable clients={filteredClients} />
+            ) : petsView === 'list' ? (
+              <PetsTable pets={filteredPets} />
             ) : (
               <PetsGrid pets={filteredPets} />
             )}

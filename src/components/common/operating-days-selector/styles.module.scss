@@ -35,16 +35,17 @@
 }
 
 .dayButton, .selectedDayButton {
-  flex: 1 1 0;
-  min-width: 0;
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: none;
-  font-size: 1rem;
   text-align: center;
-  transition: background 0.2s, color 0.2s;
   box-sizing: border-box;
+  border: none;
+  border-radius: 50%;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  font-weight: 600;
+  padding: 1.5rem 1rem;
+  font-size: 1rem;
+  transition: background .2s, color .2s;
 }
 
 .dayButton {
