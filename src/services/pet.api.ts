@@ -12,7 +12,7 @@ export interface Pet {
   color: string;
   pet_size_id: string;
   microchip_number: string;
-  photo?: string;
+  photo?: File;
   belongings: string;
   allergies_notes: string;
   medication_notes: string;
@@ -44,7 +44,7 @@ export interface PetReferenceResponse {
 }
 
 export const petApi = {
-  create: async (data: Partial<Pet> | FormData) => {
+  createPet: async (data: Partial<Pet> | FormData) => {
     return apiClient.post('/facility/pet-management/create', data);
   },
 

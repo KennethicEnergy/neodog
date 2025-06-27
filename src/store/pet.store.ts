@@ -61,6 +61,18 @@ export const usePetStore = create<PetState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await petApi.getAll(page, paginate);
+
+      // Check if the response contains an error code
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to fetch pets';
+        set({
+          error: message,
+          isLoading: false
+        });
+        return;
+      }
+
+      // Success case
       set({ pets: response?.data?.result?.pets?.data as Pet[], isLoading: false });
     } catch (error: unknown) {
       set({
@@ -73,7 +85,29 @@ export const usePetStore = create<PetState>((set, get) => ({
   createPet: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await petApi.create(data);
+      const response = await petApi.createPet(data);
+
+      // Check if the response contains an error code
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to create pet';
+        let fieldErrors: Record<string, string[]> | undefined;
+
+        if (response.data.result && typeof response.data.result === 'object') {
+          fieldErrors = response.data.result;
+        }
+
+        set({
+          error: message,
+          isLoading: false
+        });
+        return {
+          success: false,
+          message,
+          fieldErrors
+        };
+      }
+
+      // Success case
       set((state) => ({
         pets: [response.data.result as Pet, ...state.pets],
         isLoading: false
@@ -113,7 +147,22 @@ export const usePetStore = create<PetState>((set, get) => ({
   updatePet: async (id, data) => {
     set({ isLoading: true, error: null });
     try {
-      await petApi.update(id, data);
+      const response = await petApi.update(id, data);
+
+      // Check if the response contains an error code
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to update pet';
+        set({
+          error: message,
+          isLoading: false
+        });
+        return {
+          success: false,
+          message
+        };
+      }
+
+      // Success case
       set((state) => ({
         pets: state.pets.map((p) => (p.id === id ? { ...p, ...data } : p)),
         isLoading: false
@@ -135,6 +184,18 @@ export const usePetStore = create<PetState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await petApi.findById(id);
+
+      // Check if the response contains an error code
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to find pet';
+        set({
+          error: message,
+          isLoading: false
+        });
+        return;
+      }
+
+      // Success case
       set({ pet: response.data.result as Pet, isLoading: false });
     } catch (error: unknown) {
       set({
@@ -147,7 +208,22 @@ export const usePetStore = create<PetState>((set, get) => ({
   deletePet: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      await petApi.deleteById(id);
+      const response = await petApi.deleteById(id);
+
+      // Check if the response contains an error code
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to delete pet';
+        set({
+          error: message,
+          isLoading: false
+        });
+        return {
+          success: false,
+          message
+        };
+      }
+
+      // Success case
       set((state) => ({
         pets: state.pets.filter((p) => p.id !== id),
         isLoading: false
@@ -174,6 +250,20 @@ export const usePetStore = create<PetState>((set, get) => ({
         petApi.getPetSizeReferences()
       ]);
 
+      // Check if any response contains an error code
+      const responses = [sexRes, classificationRes, sizeRes];
+      for (const response of responses) {
+        if (response.data.code && response.data.code >= 400) {
+          const message = response.data.message || 'Failed to fetch references';
+          set({
+            error: message,
+            isLoading: false
+          });
+          return;
+        }
+      }
+
+      // Success case
       set({
         petSexReferences: sexRes.data.result.map((ref) => ({
           ...ref,

@@ -6,7 +6,7 @@ export interface ToastItem {
   id: string;
   scheme: ToastScheme;
   title: string;
-  message: string;
+  message: string | string[];
   timeout?: number;
 }
 

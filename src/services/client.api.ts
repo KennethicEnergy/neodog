@@ -23,7 +23,7 @@ export interface ClientResponse {
 }
 
 export const clientApi = {
-  create: async (data: Partial<Client>) => {
+  createClient: async (data: Partial<Client>) => {
     return apiClient.post('/facility/client-management/create', data);
   },
   getAll: async (page = 1, paginate = 1) => {

@@ -7,7 +7,7 @@ export type ToastScheme = 'primary' | 'success' | 'danger' | 'warning';
 interface ToastProps {
   scheme: ToastScheme;
   title: string;
-  message: string;
+  message: string | string[];
   onDismiss?: () => void;
   timeout?: number;
 }
@@ -45,6 +45,23 @@ const Toast: React.FC<ToastProps> = ({ scheme, title, message, onDismiss, timeou
 
   if (!visible) return null;
 
+  // Handle message rendering - support both string and array of strings
+  const renderMessage = () => {
+    if (Array.isArray(message)) {
+      return (
+        <div className={styles.message}>
+          {message.map((msg, index) => (
+            <div key={index} className={styles.messageLine}>
+              {message.length > 1 && '• '}
+              {msg}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return <div className={styles.message}>{message}</div>;
+  };
+
   return (
     <div
       className={`${styles.toast} ${styles[scheme]} ${fading ? styles.fadeOut : styles.fadeIn}`}
@@ -61,7 +78,7 @@ const Toast: React.FC<ToastProps> = ({ scheme, title, message, onDismiss, timeou
           &times;
         </button>
       </div>
-      <div className={styles.message}>{message}</div>
+      {renderMessage()}
     </div>
   );
 };

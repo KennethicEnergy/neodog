@@ -5,7 +5,6 @@ import { useToastStore } from '@/store/toast.store';
 
 const ToastProvider = () => {
   const { toasts, removeToast } = useToastStore();
-
   if (!toasts.length) return null;
 
   return (

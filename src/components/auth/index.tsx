@@ -36,7 +36,7 @@ const signupSchema = z
     operating_hours_from: z.string().optional(),
     operating_hours_to: z.string().optional(),
     first_name: z.string().min(1, 'First name is required'),
-    middle_name: z.string().min(1, 'Middle name is required'),
+    middle_name: z.string().optional(),
     last_name: z.string().min(1, 'Last name is required'),
     mobile_number: z.string().min(1, 'Mobile number is required'),
     address: z.string().min(1, 'Address is required'),

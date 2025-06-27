@@ -11,8 +11,11 @@
   margin-bottom: $spacing-3;
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.3s, transform 0.3s;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
   position: relative;
+  z-index: 1000;
 
   &::after {
     content: '';
@@ -62,6 +65,14 @@
   color: $text-light;
 }
 
+.messageLine {
+  margin-bottom: $spacing-1;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
 .primary {
   border: 1px solid rgba(0, 112, 243, 0.8);
   background-color: #e6f0fb;
@@ -94,13 +105,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes toastLoader {
-  from { width: 100%; }
-  to { width: 0%; }
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
 
 .toastPortal {

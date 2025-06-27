@@ -1,3 +1,4 @@
+import { createMultiMessageToast } from '@/components/common/toast';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
@@ -148,13 +149,7 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
       // Handle validation errors
       if (result.fieldErrors) {
         const errorMessages = Object.values(result.fieldErrors).flat();
-        const errorMessage = errorMessages.join(', ');
-        addToast({
-          scheme: 'danger',
-          title: 'Validation Error',
-          message: errorMessage,
-          timeout: 5000
-        });
+        addToast(createMultiMessageToast('danger', 'Validation Error', errorMessages, 5000));
       } else if (result.message) {
         addToast({
           scheme: 'danger',
@@ -368,7 +363,6 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
                 name="photo"
                 accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml,image/webp"
                 onChange={handleFileChange}
-                required
               />
               <small style={{ fontSize: '12px', color: '#666' }}>
                 Accepted formats: JPEG, PNG, JPG, GIF, SVG, WebP (max 2MB)
