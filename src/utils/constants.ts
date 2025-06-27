@@ -32,14 +32,26 @@ type TActivityData = {
 };
 
 export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
-  { name: 'Dashboard', route: '/', icon: '/images/dark/dashboard.svg' },
-  { name: 'Client & Pets', route: '/clients-and-pets', icon: '/images/dark/pets-and-clients.svg' },
-  { name: 'Appointments', route: '/appointments', icon: '/images/dark/appointment.svg' },
-  // { name: 'Services', route: '/services', icon: '/images/dark/services.svg' },
-  { name: 'Vaccinations', route: '/vaccinations', icon: '/images/dark/reports.svg' },
-  { name: 'Reports', route: '/reports', icon: '/images/dark/reports.svg' },
-  { name: 'Support', route: '/support', icon: '/images/dark/support.svg' },
-  { name: 'Settings', route: '/settings', icon: '/images/dark/settings.svg' }
+  { name: 'Dashboard', route: '/', icon: '/images/sidebar-icons/dashboard-dark.svg' },
+  {
+    name: 'Client & Pets',
+    route: '/clients-and-pets',
+    icon: '/images/sidebar-icons/pets-and-clients-dark.svg'
+  },
+  {
+    name: 'Appointments',
+    route: '/appointments',
+    icon: '/images/sidebar-icons/appointment-dark.svg'
+  },
+  // { name: 'Services', route: '/services', icon: '/images/sidebar-icons/services-dark.svg' },
+  {
+    name: 'Vaccinations',
+    route: '/vaccinations',
+    icon: '/images/sidebar-icons/vaccination-dark.svg'
+  },
+  { name: 'Reports', route: '/reports', icon: '/images/sidebar-icons/reports-dark.svg' },
+  { name: 'Support', route: '/support', icon: '/images/sidebar-icons/support-dark.svg' },
+  { name: 'Settings', route: '/settings', icon: '/images/sidebar-icons/settings-dark.svg' }
 ];
 
 export const DASHBOARD_METRIC_CARDS: TMetricCardData[] = [

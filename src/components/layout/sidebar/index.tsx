@@ -17,7 +17,10 @@ const Sidebar = () => {
   };
 
   const getIconPath = (iconPath: string, isActive: boolean) => {
-    return isActive ? iconPath.replace('/dark/', '/light/') : iconPath;
+    if (isActive) {
+      return iconPath.replace('-dark.svg', '-light.svg');
+    }
+    return iconPath;
   };
 
   const renderItems = (items: TMenuItem[], className: string) => (
@@ -50,10 +53,10 @@ const Sidebar = () => {
     </div>
   );
 
-  const renderMenuItems = () => renderItems(SIDEBAR_MENU_ITEMS.slice(0, 4), styles.sidebarItem);
+  const renderMenuItems = () => renderItems(SIDEBAR_MENU_ITEMS.slice(0, 5), styles.sidebarItem);
 
   const renderBottomItems = () =>
-    renderItems(SIDEBAR_MENU_ITEMS.slice(4, 6), styles.sidebarBottomItem);
+    renderItems(SIDEBAR_MENU_ITEMS.slice(5, 7), styles.sidebarBottomItem);
 
   return (
     <div className={styles.sidebar}>
