@@ -35,6 +35,7 @@ const signupSchema = z
     facility_address: z.string().min(1, 'Facility address is required'),
     operating_hours_from: z.string().optional(),
     operating_hours_to: z.string().optional(),
+    operating_days: z.string().min(1, 'Operating days are required'),
     first_name: z.string().min(1, 'First name is required'),
     middle_name: z.string().optional(),
     last_name: z.string().min(1, 'Last name is required'),
@@ -73,6 +74,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
             facility_address: '',
             operating_hours_from: '',
             operating_hours_to: '',
+            operating_days: '',
             first_name: '',
             middle_name: '',
             last_name: '',
@@ -139,6 +141,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
     }, 1000);
   }, [initialFields, formErrors]);
 
+  // Sync operating days with form state
+  useEffect(() => {
+    if (type === 'signup' && showFacilityFields) {
+      form.setValue('operating_days', JSON.stringify(facilityDaysSimple.selectedDays));
+    }
+  }, [facilityDaysSimple.selectedDays, type, showFacilityFields, form]);
+
   const handleSubmit = async (data: LoginFormData | SignupFormData) => {
     if (type === 'login') {
       await onSubmit(data as LoginCredentials);
@@ -164,7 +173,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
       await onSubmit({
         ...(data as RegisterCredentials),
         operating_hours_from: time.from,
-        operating_hours_to: time.to
+        operating_hours_to: time.to,
+        operating_days: JSON.stringify(facilityDaysSimple.selectedDays)
       } as RegisterCredentials);
     }
   };

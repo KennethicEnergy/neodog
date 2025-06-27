@@ -1,6 +1,16 @@
 .dateRangePickerWrapper {
   position: relative;
   display: inline-block;
+
+  // Remove default background for react-day-picker range and selected states
+  :global(.rdp-day),
+  :global(.rdp-today),
+  :global(.rdp-selected),
+  :global(.rdp-range_start),
+  :global(.rdp-range_end),
+  :global(.rdp-range_middle) {
+    background-color: transparent !important;
+  }
 }
 
 .datePickerButton {
@@ -46,12 +56,4 @@
     0 1.5px 6px rgba(0, 0, 0, 0.08);
   padding: 16px;
   z-index: 1000;
-}
-
-:global(.rdp-range_middle) {
-}
-
-:global(.rdp-range_start),
-:global(.rdp-range_end) {
-  background-color: transparent !important;
 }

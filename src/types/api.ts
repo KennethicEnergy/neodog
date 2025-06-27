@@ -8,6 +8,7 @@ export interface RegisterCredentials {
   facility_address: string;
   operating_hours_from: string;
   operating_hours_to: string;
+  operating_days: string;
   first_name: string;
   middle_name: string;
   last_name: string;
