@@ -140,7 +140,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
   }, [initialFields, formErrors]);
 
   const handleSubmit = async (data: LoginFormData | SignupFormData) => {
-    console.log('@@ data', data);
     if (type === 'login') {
       await onSubmit(data as LoginCredentials);
     } else {

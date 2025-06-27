@@ -259,8 +259,6 @@ const Table = <T extends Record<string, unknown>>({
       );
     }
 
-    console.log('@@ headerKey', headerKey);
-
     if (
       (headerKey === 'currentCount' ||
         headerKey === 'dueSoonCount' ||
