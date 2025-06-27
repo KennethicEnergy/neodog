@@ -136,6 +136,13 @@
     min-height: 2rem;
   }
 
+  &.md {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+
   &.lg {
     padding: 0.75rem 1.5rem;
     font-size: $font-size-base;
