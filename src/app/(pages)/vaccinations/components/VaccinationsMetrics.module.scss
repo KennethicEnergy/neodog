@@ -1,0 +1,59 @@
+@import '@/styles/variables';
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.25rem;
+  min-height: 120px;
+  box-shadow: $box-shadow-card;
+  border: none;
+  background: $white;
+  padding: 1.5rem 2rem;
+  border-radius: 24px;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 24px rgba(59, 130, 246, 0.08);
+  }
+}
+
+.metricIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.metricValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $gray-700;
+  margin-bottom: 0.1rem;
+  line-height: 1.1;
+}
+
+.metricLabel {
+  font-size: 1.1rem;
+  color: $gray-600;
+  font-weight: 500;
+  text-align: left;
+  line-height: 1.1;
+}

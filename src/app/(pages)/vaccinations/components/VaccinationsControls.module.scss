@@ -1,0 +1,40 @@
+@import '@/styles/variables';
+
+.topControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+}
+
+.newVaccineBtn {
+  background: $gray-700;
+  color: $white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: $box-shadow;
+
+  &:hover {
+    background: $gray-800;
+  }
+}
+
+.searchContainer {
+  width: 30%;
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+}

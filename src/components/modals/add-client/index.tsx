@@ -104,7 +104,7 @@ const AddClient = () => {
                 name="mobile_number"
                 value={form.mobile_number}
                 onChange={handleChange}
-                pattern="\\d*"
+                pattern="\d*"
                 inputMode="numeric"
                 required
                 aria-invalid={!!mobileError}

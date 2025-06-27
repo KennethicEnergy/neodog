@@ -250,8 +250,30 @@ const Table = <T extends Record<string, unknown>>({
       return <StatusTag status={value} bgColor={getStatusClass(value)} />;
     }
 
+    if (headerKey === 'ownerAndContact' && Array.isArray(value)) {
+      return (
+        <div className={styles.ownerAndContact}>
+          <span className={styles.ownerName}>{value[0]}</span>
+          <span className={styles.ownerContact}>{value[1]}</span>
+        </div>
+      );
+    }
+
+    console.log('@@ headerKey', headerKey);
+
+    if (
+      (headerKey === 'currentCount' ||
+        headerKey === 'dueSoonCount' ||
+        headerKey === 'overdueCount' ||
+        headerKey === 'missingCount') &&
+      typeof value === 'string'
+    ) {
+      return <StatusTag status={value} bgColor={getStatusClass(value)} />;
+    }
+
     return String(value);
   };
+
   return (
     <div
       className={tableClasses}

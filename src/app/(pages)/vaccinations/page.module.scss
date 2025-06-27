@@ -1,0 +1,22 @@
+@import '@/styles/variables';
+
+.vaccinationsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $dark;
+    margin-bottom: 1rem;
+  }
+}
+
+.tableWrapper {
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+}

@@ -75,7 +75,6 @@ const DashboardPage = () => {
           maxHeight="400px"
           data={SAMPLE_DOG_DATA}
           headers={DOG_CHECKIN_HEADERS}
-          fixedColumns={[8]}
         />
       </div>
       {/* <div className={styles.gridRow}>

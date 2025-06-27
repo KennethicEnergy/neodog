@@ -1,6 +1,7 @@
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
+import { useToastStore } from '@/store/toast.store';
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 
@@ -14,7 +15,8 @@ interface PetForm {
   age: string;
   color: string;
   pet_size_id: string;
-  chip_number: string;
+  microchip_number: string;
+  photo: File | null;
   belongings: string;
   allergies_notes: string;
   medication_notes: string;
@@ -24,6 +26,7 @@ interface PetForm {
 
 const AddPet = ({ clientId }: { clientId?: string }) => {
   const closeModal = useModalStore((state) => state.closeModal);
+  const addToast = useToastStore((state) => state.addToast);
   const [form, setForm] = useState<PetForm>({
     client_id: clientId || '',
     name: '',
@@ -34,7 +37,8 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     age: '',
     color: '',
     pet_size_id: '',
-    chip_number: '',
+    microchip_number: '',
+    photo: null,
     belongings: '',
     allergies_notes: '',
     medication_notes: '',
@@ -73,6 +77,25 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      // Check file size (2MB = 2 * 1024 * 1024 bytes)
+      if (file.size > 2 * 1024 * 1024) {
+        addToast({
+          scheme: 'danger',
+          title: 'File Too Large',
+          message: 'Photo must be less than 2MB',
+          timeout: 3000
+        });
+        e.target.value = '';
+        setForm((prev) => ({ ...prev, photo: null }));
+        return;
+      }
+    }
+    setForm((prev) => ({ ...prev, photo: file }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!/^\d+$/.test(form.age)) {
@@ -80,8 +103,28 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
       return;
     }
     setAgeError('');
-    const result = await createPet(form);
+
+    // Create FormData for file upload
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== null && value !== '') {
+        if (key === 'photo' && value instanceof File) {
+          formData.append(key, value);
+        } else if (key !== 'photo') {
+          formData.append(key, String(value));
+        }
+      }
+    });
+
+    const result = await createPet(formData);
+    console.log(result);
     if (result.success) {
+      addToast({
+        scheme: 'success',
+        title: 'Success',
+        message: 'Pet created successfully',
+        timeout: 3000
+      });
       setForm({
         client_id: '',
         name: '',
@@ -92,7 +135,8 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
         age: '',
         color: '',
         pet_size_id: '',
-        chip_number: '',
+        microchip_number: '',
+        photo: null,
         belongings: '',
         allergies_notes: '',
         medication_notes: '',
@@ -100,6 +144,25 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
         notes: ''
       });
       closeModal();
+    } else {
+      // Handle validation errors
+      if (result.fieldErrors) {
+        const errorMessages = Object.values(result.fieldErrors).flat();
+        const errorMessage = errorMessages.join(', ');
+        addToast({
+          scheme: 'danger',
+          title: 'Validation Error',
+          message: errorMessage,
+          timeout: 5000
+        });
+      } else if (result.message) {
+        addToast({
+          scheme: 'danger',
+          title: 'Error',
+          message: result.message,
+          timeout: 5000
+        });
+      }
     }
   };
 
@@ -278,18 +341,38 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
               </select>
             </div>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="chip_number">
-                Chip Number
+              <label className={styles.label} htmlFor="microchip_number">
+                Microchip Number
               </label>
               <input
-                id="chip_number"
+                id="microchip_number"
                 className={styles.input}
                 type="text"
-                name="chip_number"
-                value={form.chip_number}
+                name="microchip_number"
+                value={form.microchip_number}
                 onChange={handleChange}
                 required
               />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="photo">
+                Photo
+              </label>
+              <input
+                id="photo"
+                className={styles.input}
+                type="file"
+                name="photo"
+                accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml,image/webp"
+                onChange={handleFileChange}
+                required
+              />
+              <small style={{ fontSize: '12px', color: '#666' }}>
+                Accepted formats: JPEG, PNG, JPG, GIF, SVG, WebP (max 2MB)
+              </small>
             </div>
           </div>
 

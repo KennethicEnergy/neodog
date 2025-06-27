@@ -37,7 +37,11 @@ interface PetState {
   petClassificationReferences: PetClassificationReference[];
   petSizeReferences: PetSizeReference[];
   fetchPets: (page?: number, paginate?: number) => Promise<void>;
-  createPet: (data: Partial<Pet>) => Promise<{ success: boolean; message?: string }>;
+  createPet: (data: Partial<Pet> | FormData) => Promise<{
+    success: boolean;
+    message?: string;
+    fieldErrors?: Record<string, string[]>;
+  }>;
   updatePet: (id: number, data: Partial<Pet>) => Promise<{ success: boolean; message?: string }>;
   findPet: (id: number) => Promise<void>;
   deletePet: (id: number) => Promise<{ success: boolean; message?: string }>;
@@ -77,13 +81,31 @@ export const usePetStore = create<PetState>((set, get) => ({
       await get().fetchPets(1, 10);
       return { success: true };
     } catch (error: unknown) {
+      let message = 'Failed to create pet';
+      let fieldErrors: Record<string, string[]> | undefined;
+
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as {
+          response: { data?: { message?: string; result?: Record<string, string[]> } };
+        };
+        if (apiError.response?.data) {
+          message = apiError.response.data.message || message;
+          if (apiError.response.data.result && typeof apiError.response.data.result === 'object') {
+            fieldErrors = apiError.response.data.result;
+          }
+        }
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
       set({
-        error: error instanceof Error ? error.message : 'Failed to create pet',
+        error: message,
         isLoading: false
       });
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create pet'
+        message,
+        fieldErrors
       };
     }
   },

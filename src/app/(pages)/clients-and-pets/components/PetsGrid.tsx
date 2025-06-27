@@ -31,8 +31,8 @@ const PetsGrid = ({ pets }: PetsGridProps) => {
 
   return (
     <div className={styles.petsGrid}>
-      {pets.map((pet) => (
-        <PetCard key={pet.id} pet={pet} />
+      {pets.map((pet, index) => (
+        <PetCard key={index} pet={pet} />
       ))}
     </div>
   );

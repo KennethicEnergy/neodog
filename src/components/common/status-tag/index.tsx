@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import styles from './styles.module.scss';
 
 type StatusTagProps = {
-  status: string;
+  status: string | number;
   bgColor?: 'info' | 'primary' | 'success' | 'danger' | 'warning';
   className?: string;
 };
