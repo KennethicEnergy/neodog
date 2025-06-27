@@ -1,6 +1,8 @@
 'use client';
+import BaseModal from '@/components/common/base-modal';
+import AddClient from '@/components/modals/add-client';
 import { useAuthStore } from '@/store/auth.store';
-import { HEADER_POPUP_DATA } from '@/utils/constants';
+import { useModalStore } from '@/store/modal-store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -14,12 +16,46 @@ const Header = () => {
   const [activePopup, setActivePopup] = useState<'add' | 'user' | null>(null);
   const addPopupRef = useRef<HTMLDivElement>(null);
   const userPopupRef = useRef<HTMLDivElement>(null);
+  const openModal = useModalStore((state) => state.openModal);
+  const closeModal = useModalStore((state) => state.closeModal);
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
     logout();
     router.push('/login');
   };
+
+  const openAddModal = () => {
+    openModal(
+      <BaseModal onClose={closeModal}>
+        <AddClient />
+      </BaseModal>
+    );
+  };
+
+  const HEADER_POPUP_DATA = [
+    {
+      name: 'New appointment',
+      icon: '/images/popup-appointment.svg',
+      route: '/appointments'
+    },
+    {
+      name: 'Check-in Pet',
+      icon: '/images/popup-check-in-pets.svg',
+      route: '/clients-and-pets'
+    },
+    {
+      name: 'Add Client',
+      icon: '/images/popup-client.svg',
+      route: '/clients-and-pets',
+      onClick: openAddModal
+    },
+    {
+      name: 'Create Invoice',
+      icon: '/images/popup-create-invoice.svg',
+      route: ''
+    }
+  ];
 
   const USER_POPUP_DATA = [
     {

@@ -4,9 +4,9 @@ import Icon from '../icon';
 import styles from './styles.module.scss';
 
 type PopupItem = {
-  route?: string;
   icon: string;
   name: string;
+  route?: string;
   onClick?: () => void;
 };
 
