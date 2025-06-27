@@ -3,13 +3,6 @@ import { useMemo, useState } from 'react';
 import { VaccinationsControls, VaccinationsMetrics, VaccinationsTable } from './components';
 import styles from './page.module.scss';
 
-const SUMMARY_CARDS = [
-  { label: 'Current', value: 27, icon: '/images/vaccinations/current.svg', color: 'gray400' },
-  { label: 'Due Soon', value: 4, icon: '/images/vaccinations/due-soon.svg', color: 'gray400' },
-  { label: 'Overdue', value: 7, icon: '/images/vaccinations/overdue.svg', color: 'gray400' },
-  { label: 'Missing', value: 6, icon: '/images/vaccinations/missing.svg', color: 'gray400' }
-];
-
 // Mock data transformation to match the screenshot
 const MOCK_VACCINATIONS = [
   {
@@ -92,6 +85,17 @@ const MOCK_VACCINATIONS = [
   }
 ];
 
+// Function to calculate metrics from vaccinations data
+const calculateMetrics = (vaccinations: typeof MOCK_VACCINATIONS) => {
+  return vaccinations.reduce((acc: { current: number; dueSoon: number; overdue: number; missing: number }, vaccination) => {
+    acc.current += parseInt(vaccination.currentCount);
+    acc.dueSoon += parseInt(vaccination.dueSoonCount);
+    acc.overdue += parseInt(vaccination.overdueCount);
+    acc.missing += parseInt(vaccination.missingCount);
+    return acc;
+  }, { current: 0, dueSoon: 0, overdue: 0, missing: 0 });
+};
+
 // Transform MOCK_VACCINATIONS to match the style of transformedPets
 const transformedVaccinations = MOCK_VACCINATIONS.map((v) => ({
   ownerAndContact: v.ownerAndContact,
@@ -125,6 +129,37 @@ const transformedVaccinations = MOCK_VACCINATIONS.map((v) => ({
 const VaccinationsPage = () => {
   const [search, setSearch] = useState('');
 
+  // Calculate metrics dynamically using useMemo
+  const metrics = useMemo(() => {
+    const calculatedMetrics = calculateMetrics(MOCK_VACCINATIONS);
+    return [
+      {
+        label: 'Current',
+        value: calculatedMetrics.current,
+        icon: '/images/vaccinations/current.svg',
+        color: 'gray400'
+      },
+      {
+        label: 'Due Soon',
+        value: calculatedMetrics.dueSoon,
+        icon: '/images/vaccinations/due-soon.svg',
+        color: 'gray400'
+      },
+      {
+        label: 'Overdue',
+        value: calculatedMetrics.overdue,
+        icon: '/images/vaccinations/overdue.svg',
+        color: 'gray400'
+      },
+      {
+        label: 'Missing',
+        value: calculatedMetrics.missing,
+        icon: '/images/vaccinations/missing.svg',
+        color: 'gray400'
+      }
+    ];
+  }, [MOCK_VACCINATIONS]);
+
   const filteredData = useMemo(() => {
     if (!search) return transformedVaccinations;
     const q = search.toLowerCase();
@@ -143,7 +178,7 @@ const VaccinationsPage = () => {
   return (
     <div className={styles.vaccinationsPage}>
       <h3>Vaccination Management</h3>
-      <VaccinationsMetrics metrics={SUMMARY_CARDS} />
+      <VaccinationsMetrics metrics={metrics} />
       <VaccinationsControls onSearch={setSearch} onNewVaccine={handleNewVaccine} />
       <div className={styles.tableWrapper}>
         <VaccinationsTable vaccinations={filteredData} />
