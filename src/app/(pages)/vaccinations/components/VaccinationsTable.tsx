@@ -25,11 +25,7 @@ const VACCINATION_HEADERS = [
 ];
 
 const VaccinationsTable = ({ vaccinations }: VaccinationsTableProps) => {
-  return (
-    <div>
-      <Table data={vaccinations} headers={VACCINATION_HEADERS} enableSorting={true} tableOnly />
-    </div>
-  );
+  return <Table data={vaccinations} headers={VACCINATION_HEADERS} enableSorting={true} tableOnly />;
 };
 
 export default VaccinationsTable;

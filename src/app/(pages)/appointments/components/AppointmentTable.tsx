@@ -1,67 +1,17 @@
 import Table from '@/components/common/table';
 
-const mockAppointments = [
-  {
-    client: 'Sarah Johnson',
-    pets: 'Bella, Luna, Molly',
-    service: 'Wellness Checkup',
-    date: 'April 18, 2025 9:00 AM',
-    status: 'CONFIRMED',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    client: 'Emily Davis',
-    pets: 'Daisy',
-    service: 'Follow-up Visit',
-    date: 'April 19, 2025 10:30 AM',
-    status: 'CONFIRMED',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    client: 'James Smith',
-    pets: 'Max',
-    service: 'Dental Cleaning',
-    date: 'April 19, 2025 1:00 PM',
-    status: 'CONFIRMED',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    client: 'Ashley Martinez',
-    pets: 'Lola',
-    service: 'Grooming',
-    date: 'April 20, 2025 3:00 PM',
-    status: 'PENDING',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    client: 'Michael Brown',
-    pets: 'Rocky',
-    service: 'Vaccination',
-    date: 'April 21, 2025 9:00 AM',
-    status: 'CANCELLED',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  }
-];
+interface Appointment extends Record<string, unknown> {
+  client: string;
+  pets: string;
+  service: string;
+  date: string;
+  status: string;
+  actions: { icon: string; onClick: () => void }[];
+}
+
+interface AppointmentTableProps {
+  appointments: Appointment[];
+}
 
 const headers = [
   { key: 'client', label: 'CLIENT' },
@@ -72,11 +22,11 @@ const headers = [
   { key: 'actions', label: 'ACTIONS' }
 ];
 
-const AppointmentTable = () => {
+const AppointmentTable = ({ appointments }: AppointmentTableProps) => {
   return (
     <div>
       <Table
-        data={mockAppointments}
+        data={appointments}
         headers={headers}
         enableSorting={true}
         tableOnly={true}

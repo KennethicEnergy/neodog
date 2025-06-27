@@ -1,10 +1,9 @@
 @import '@/styles/variables';
 
-
 .appointments {
-  padding: 2rem;
-  background: #f7f7f7;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .header {
@@ -34,6 +33,7 @@
 .filters {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -53,8 +53,23 @@
 }
 
 .tableWrapper {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 1.5rem;
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.searchContainer {
+  width: 30%;
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+}
+
+.filtersRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
