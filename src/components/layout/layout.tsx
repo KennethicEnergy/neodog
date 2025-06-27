@@ -23,7 +23,8 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
     } catch (error) {
       setError('Failed to authenticate. Please try again.');
       console.error('Authentication error:', error);
-      localStorage.removeItem('auth_token');
+      localStorage.removeItem('token');
+      localStorage.removeItem('auth-storage');
       setLoading(false);
       return null;
     }
@@ -33,7 +34,7 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
     const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup');
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'auth_token' || e.key === 'auth-storage') {
+      if (e.key === 'token' || e.key === 'auth-storage') {
         setLoading(false);
         router.push('/login');
         window.location.reload();
@@ -42,22 +43,29 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
 
     window.addEventListener('storage', handleStorageChange);
 
-    try {
-      const token = localStorage.getItem('auth_token');
-      const persisted = localStorage.getItem('auth-storage');
-      const hasUser = persisted && JSON.parse(persisted).user;
+    const initAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const persisted = localStorage.getItem('auth-storage');
+        const hasUser = persisted && JSON.parse(persisted).user;
 
-      if (isAuthPage || !token || !hasUser) {
+        if (isAuthPage || !token || !hasUser) {
+          setLoading(false);
+          return;
+        }
+
+        const res = await checkAuth();
+        console.log('@@ checkAuth, getUser', res);
+      } catch (e) {
+        console.error('Error in checkAuth:', e);
+        localStorage.removeItem('token');
+        localStorage.removeItem('auth-storage');
         setLoading(false);
-        return;
+        router.push('/login');
       }
+    };
 
-      checkAuth();
-    } catch (e) {
-      console.error('Error in checkAuth:', e);
-      setLoading(false);
-      router.push('/login');
-    }
+    initAuth();
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
@@ -78,10 +86,15 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
   }, [loading, isAuthenticated, error, pathname, router]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      checkAuth();
-      setLoading(false);
-    }
+    const handleAuthenticated = async () => {
+      if (isAuthenticated) {
+        const res = await checkAuth();
+        console.log('@@ useEffect user', res);
+        setLoading(false);
+      }
+    };
+
+    handleAuthenticated();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 

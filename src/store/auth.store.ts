@@ -15,7 +15,7 @@ interface AuthState {
     credentials: RegisterCredentials
   ) => Promise<{ success: boolean; fieldErrors?: Record<string, string[]>; message?: string }>;
   logout: () => Promise<void>;
-  getUser: () => Promise<void>;
+  getUser: () => Promise<User | null>;
   clearError: () => void;
   clearSuccess: () => void;
 }
@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
             response.data.result.user
           ) {
             const { token, user } = response.data.result;
-            localStorage.setItem('auth_token', token);
+            localStorage.setItem('token', token);
             set({
               token,
               user,
@@ -85,7 +85,7 @@ export const useAuthStore = create<AuthState>()(
             response.data.result.user
           ) {
             const { token, user } = response.data.result;
-            localStorage.setItem('auth_token', token);
+            localStorage.setItem('token', token);
             set({
               token,
               user,
@@ -132,7 +132,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true, error: null });
           await authApi.logout();
-          localStorage.removeItem('auth_token');
+          localStorage.removeItem('token');
           set({
             token: null,
             user: null,
@@ -154,7 +154,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true, error: null });
           const response = await authApi.getUser();
-          const token = localStorage.getItem('auth_token');
+          const token = localStorage.getItem('token');
 
           if (token && response && response) {
             set({
@@ -163,6 +163,7 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false
             });
+            return response;
           } else {
             set({
               token: null,
@@ -171,7 +172,8 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
               error: 'Invalid user data'
             });
-            localStorage.removeItem('auth_token');
+            localStorage.removeItem('token');
+            return null;
           }
         } catch (error) {
           set({
@@ -181,8 +183,9 @@ export const useAuthStore = create<AuthState>()(
             error: error instanceof Error ? error.message : 'An error occurred',
             isLoading: false
           });
-          localStorage.removeItem('auth_token');
+          localStorage.removeItem('token');
           localStorage.removeItem('auth-storage');
+          return null;
         }
       },
 
