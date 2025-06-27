@@ -96,6 +96,9 @@ const AppointmentsPage = () => {
 
   return (
     <div className={styles.appointments}>
+      <div className={styles.header}>
+        <h2 className={styles.headerTitle}>Appointments</h2>
+      </div>
       <AppointmentHeader />
       <AppointmentFilters onSearch={handleSearch} />
       <div className={styles.tableWrapper}>
