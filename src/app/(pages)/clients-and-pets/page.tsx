@@ -1,20 +1,23 @@
 'use client';
 import BaseModal from '@/components/common/base-modal';
 import Icon from '@/components/common/icon';
+import Loader from '@/components/common/loader';
 import SearchBar from '@/components/common/searchbar';
 import { Client as BaseClient } from '@/services/client.api';
 import { Pet } from '@/services/pet.api';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import ClientDetailView from './components/ClientDetailView';
-import ClientsTable from './components/ClientsTable';
 import FilterControls from './components/FilterControls';
-import PetsGrid from './components/PetsGrid';
-import PetsTable from './components/PetsTable';
 import TabNavigation from './components/TabNavigation';
 import styles from './page.module.scss';
+
+// Dynamic imports for better performance
+const ClientsTable = lazy(() => import('./components/ClientsTable'));
+const PetsTable = lazy(() => import('./components/PetsTable'));
+const PetsGrid = lazy(() => import('./components/PetsGrid'));
 
 interface Client extends BaseClient {
   pets_count?: number;
@@ -36,10 +39,13 @@ const ClientsAndPetsPage = () => {
   const [activeTab, setActiveTab] = useState<'pets' | 'clients'>('clients');
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { fetchClients, clients } = useClientStore();
-  const { fetchPets, pets } = usePetStore();
+  const { fetchClients, clients, isLoading: clientsLoading } = useClientStore();
+  const { fetchPets, pets, isLoading: petsLoading } = usePetStore();
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [petsView, setPetsView] = useState<'list' | 'tiles'>('tiles');
+
+  // Combined loading state
+  const isLoading = clientsLoading || petsLoading;
 
   const ctaButton = (c: Client, type: 'view' | 'edit' | 'delete') => {
     if (type === 'view') {
@@ -220,8 +226,11 @@ const ClientsAndPetsPage = () => {
       await fetchPets(1, 10);
     };
 
-    getAllClients();
-    getAllPets();
+    if (activeTab === 'clients') {
+      getAllClients();
+    } else {
+      getAllPets();
+    }
   }, [fetchClients, fetchPets, activeTab, selectedClient]);
 
   const handleBack = () => {
@@ -281,12 +290,27 @@ const ClientsAndPetsPage = () => {
           </div>
 
           <div className={styles.content}>
-            {activeTab === 'clients' ? (
-              <ClientsTable clients={filteredClients} />
-            ) : petsView === 'list' ? (
-              <PetsTable pets={filteredPets} />
+            {isLoading ? (
+              <div className={styles.loadingWrapper}>
+                <Loader />
+                <p>Loading {activeTab === 'clients' ? 'clients' : 'pets'}...</p>
+              </div>
             ) : (
-              <PetsGrid pets={filteredPets} />
+              <Suspense
+                fallback={
+                  <div className={styles.loadingWrapper}>
+                    <Loader />
+                    <p>Loading {activeTab === 'clients' ? 'clients table' : 'pets view'}...</p>
+                  </div>
+                }>
+                {activeTab === 'clients' ? (
+                  <ClientsTable clients={filteredClients} />
+                ) : petsView === 'list' ? (
+                  <PetsTable pets={filteredPets} />
+                ) : (
+                  <PetsGrid pets={filteredPets} />
+                )}
+              </Suspense>
             )}
           </div>
         </>

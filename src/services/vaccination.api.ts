@@ -1,4 +1,5 @@
 import apiClient from '@/lib/api/client';
+import type { Client } from './client.api';
 
 export interface Vaccination {
   id: number;
@@ -44,7 +45,13 @@ export interface PetReferenceResponse {
   code: number;
   title: string;
   message: string;
-  result: PetReference[];
+  result: {
+    pets: {
+      current_page: number;
+      data: { name: string; photo_path: string | null; client: Client | null }[];
+      // ...other pagination fields
+    };
+  };
 }
 
 export interface VaccinationTypeReferenceResponse {
@@ -62,8 +69,7 @@ export interface VaccinationStatusReferenceResponse {
 }
 
 export const vaccinationApi = {
-  // Main vaccination management endpoints
-  getAll: async (search?: string, page = 1, paginate = 10) => {
+  getAll: async (search?: string, page = 1, paginate = 999) => {
     const params = new URLSearchParams({
       paginate: paginate.toString(),
       page: page.toString()
@@ -78,8 +84,16 @@ export const vaccinationApi = {
     return apiClient.get(`/facility/vaccination-management/show/${id}`);
   },
 
-  create: async (data: Partial<Vaccination>) => {
-    return apiClient.post('/facility/vaccination-management/create', data);
+  create: async (data: Partial<Vaccination> | FormData) => {
+    let headers = undefined;
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      headers = { 'Content-Type': 'multipart/form-data' };
+    }
+    return apiClient.post(
+      '/facility/vaccination-management/create',
+      data,
+      headers ? { headers } : undefined
+    );
   },
 
   update: async (id: number, data: Partial<Vaccination>) => {
@@ -104,9 +118,9 @@ export const vaccinationApi = {
     );
   },
 
-  getVaccinationTypeReferences: async () => {
+  getVaccinationNameReferences: async () => {
     return apiClient.get<VaccinationTypeReferenceResponse>(
-      '/facility/vaccination-management/get-vaccination-type-references'
+      '/facility/vaccination-management/get-vaccination-name-references'
     );
   },
 

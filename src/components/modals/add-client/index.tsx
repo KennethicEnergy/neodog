@@ -1,6 +1,7 @@
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Loader from '../../common/loader';
 import styles from './styles.module.scss';
 
 const AddClient = () => {
@@ -16,8 +17,25 @@ const AddClient = () => {
     state: '',
     zipcode: ''
   });
-  const { createClient, isLoading } = useClientStore();
+  const { createClient, isLoading, fetchClients } = useClientStore();
   const [mobileError, setMobileError] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  // Load clients data when modal opens
+  useEffect(() => {
+    const loadInitialData = async () => {
+      setInitialLoading(true);
+      try {
+        await fetchClients(1, 10);
+      } catch (error) {
+        console.error('Error loading clients:', error);
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, [fetchClients]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -56,6 +74,17 @@ const AddClient = () => {
     }
   };
 
+  if (initialLoading) {
+    return (
+      <div className={styles.modalContainer}>
+        <div className={styles.loadingWrapper}>
+          <Loader />
+          <p>Loading form...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.modalContainer}>
       <h2 className={styles.header}>Add Client</h2>
@@ -74,6 +103,7 @@ const AddClient = () => {
                 name="first_name"
                 value={form.first_name}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -88,6 +118,7 @@ const AddClient = () => {
                 name="last_name"
                 value={form.last_name}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -106,6 +137,7 @@ const AddClient = () => {
                 onChange={handleChange}
                 pattern="\d*"
                 inputMode="numeric"
+                disabled={isLoading}
                 required
                 aria-invalid={!!mobileError}
               />
@@ -122,6 +154,7 @@ const AddClient = () => {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -138,6 +171,7 @@ const AddClient = () => {
                 name="address"
                 value={form.address}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -154,6 +188,7 @@ const AddClient = () => {
                 name="city"
                 value={form.city}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -168,6 +203,7 @@ const AddClient = () => {
                 name="state"
                 value={form.state}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -182,18 +218,24 @@ const AddClient = () => {
                 name="zipcode"
                 value={form.zipcode}
                 onChange={handleChange}
+                disabled={isLoading}
                 required
               />
             </div>
           </div>
           <div className={styles.buttonContainer}>
-            <button className={styles.button} type="submit" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add Client'}
+            <button className={styles.button} type="submit" disabled={isLoading || initialLoading}>
+              {isLoading ? (
+                <>
+                  <Loader />
+                  <span>Adding Client...</span>
+                </>
+              ) : (
+                'Add Client'
+              )}
             </button>
           </div>
         </div>
-        {/* {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
-        {success && <div style={{ color: 'green', marginBottom: 8 }}>{success}</div>} */}
       </form>
     </div>
   );

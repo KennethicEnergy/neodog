@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 // import FacilityOperatingDays, { type FacilityOperatingDaysValue } from './FacilityOperatingDays';
+import Loader from '../common/loader';
 import OperatingDaysSelector, {
   type SimpleOperatingDaysValue
 } from '../common/operating-days-selector';
@@ -394,7 +395,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, isLoading })
           className={styles.fullWidth}
           disabled={isLoading}
           aria-label={type === 'login' ? 'Sign In' : 'Sign Up'}>
-          {isLoading ? 'Loading...' : type === 'login' ? 'Sign In' : 'Sign Up'}
+          {isLoading ? <Loader /> : type === 'login' ? 'Sign In' : 'Sign Up'}
         </Button>
       </form>
     </Form>

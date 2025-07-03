@@ -42,7 +42,7 @@ const Header = () => {
     {
       name: 'Check-in Pet',
       icon: '/images/popup-check-in-pets.svg',
-      route: '/clients-and-pets'
+      route: '/appointments'
     },
     {
       name: 'Add Client',

@@ -1,137 +1,141 @@
 'use client';
-import { useMemo, useState } from 'react';
+import BaseModal from '@/components/common/base-modal';
+import Loader from '@/components/common/loader';
+import AddVaccine from '@/components/modals/add-vaccine';
+import { vaccinationApi } from '@/services/vaccination.api';
+import { useModalStore } from '@/store/modal-store';
+import { useEffect, useMemo, useState } from 'react';
 import { VaccinationsControls, VaccinationsMetrics, VaccinationsTable } from './components';
 import styles from './page.module.scss';
 
-// Mock data transformation to match the screenshot
-const MOCK_VACCINATIONS = [
-  {
-    ownerAndContact: ['Sarah Johnson', '555 123-4567'],
-    pet: 'Bella',
-    currentCount: '5',
-    dueSoonCount: '1',
-    overdueCount: '0',
-    missingCount: '2',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    ownerAndContact: ['Ella Dawson', '889 982 6331'],
-    pet: 'Champ',
-    currentCount: '3',
-    dueSoonCount: '0',
-    overdueCount: '2',
-    missingCount: '0',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    ownerAndContact: ['James Smith', '663 858 2328'],
-    pet: 'Max',
-    currentCount: '4',
-    dueSoonCount: '2',
-    overdueCount: '0',
-    missingCount: '3',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    ownerAndContact: ['Ashley Martinez', '542 796 3885'],
-    pet: 'Lola',
-    currentCount: '6',
-    dueSoonCount: '0',
-    overdueCount: '1',
-    missingCount: '0',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  },
-  {
-    ownerAndContact: ['Emily Davis', '841 582 0376'],
-    pet: 'Daisy',
-    currentCount: '4',
-    dueSoonCount: '0',
-    overdueCount: '1',
-    missingCount: '0',
-    actions: [
-      { icon: '/images/eye.svg', onClick: () => {} },
-      { icon: '/images/edit.svg', onClick: () => {} },
-      { icon: '/images/delete.svg', onClick: () => {} }
-    ]
-  },
-  {
-    ownerAndContact: ['Michael Brown', '270 188 6337'],
-    pet: 'Rocky',
-    currentCount: '5',
-    dueSoonCount: '1',
-    overdueCount: '3',
-    missingCount: '1',
-    actions: [
-      { icon: '/images/actions/view.svg', onClick: () => {} },
-      { icon: '/images/actions/edit.svg', onClick: () => {} },
-      { icon: '/images/actions/trash.svg', onClick: () => {} }
-    ]
-  }
-];
-
-// Function to calculate metrics from vaccinations data
-const calculateMetrics = (vaccinations: typeof MOCK_VACCINATIONS) => {
-  return vaccinations.reduce((acc: { current: number; dueSoon: number; overdue: number; missing: number }, vaccination) => {
-    acc.current += parseInt(vaccination.currentCount);
-    acc.dueSoon += parseInt(vaccination.dueSoonCount);
-    acc.overdue += parseInt(vaccination.overdueCount);
-    acc.missing += parseInt(vaccination.missingCount);
-    return acc;
-  }, { current: 0, dueSoon: 0, overdue: 0, missing: 0 });
+type VaccinationApiType = {
+  id: number;
+  name: string;
+  client: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    mobile_number: string;
+    email: string;
+  };
+  vaccination_current_count: number;
+  vaccination_due_count: number;
+  vaccination_overdue_count: number;
+  vaccination_missing_count: number;
 };
 
-// Transform MOCK_VACCINATIONS to match the style of transformedPets
-const transformedVaccinations = MOCK_VACCINATIONS.map((v) => ({
-  ownerAndContact: v.ownerAndContact,
-  pet: v.pet,
-  currentCount: v.currentCount,
-  dueSoonCount: v.dueSoonCount,
-  overdueCount: v.overdueCount,
-  missingCount: v.missingCount,
-  actions: [
-    {
-      name: 'View',
-      type: 'view',
-      icon: '/images/actions/view.svg',
-      onClick: () => {}
-    },
-    {
-      name: 'Edit',
-      type: 'edit',
-      icon: '/images/actions/edit.svg',
-      onClick: () => {}
-    },
-    {
-      name: 'Delete',
-      type: 'delete',
-      icon: '/images/actions/trash.svg',
-      onClick: () => {}
-    }
-  ]
-}));
+type VaccinationTableRow = {
+  ownerAndContact: string[];
+  pet: string;
+  currentCount: string;
+  dueSoonCount: string;
+  overdueCount: string;
+  missingCount: string;
+  actions: object[];
+};
+
+function transformVaccinationData(data: VaccinationApiType[]): VaccinationTableRow[] {
+  console.log('transformVaccinationData input:', data);
+  const result = data.map((pet) => ({
+    ownerAndContact: [
+      `${pet.client.first_name} ${pet.client.last_name}`,
+      pet.client.mobile_number || pet.client.email || ''
+    ],
+    pet: pet.name,
+    currentCount: pet.vaccination_current_count.toString(),
+    dueSoonCount: pet.vaccination_due_count.toString(),
+    overdueCount: pet.vaccination_overdue_count.toString(),
+    missingCount: pet.vaccination_missing_count.toString(),
+    actions: [
+      {
+        name: 'View',
+        type: 'view',
+        icon: '/images/actions/view.svg',
+        onClick: () => {}
+      },
+      {
+        name: 'Edit',
+        type: 'edit',
+        icon: '/images/actions/edit.svg',
+        onClick: () => {}
+      },
+      {
+        name: 'Delete',
+        type: 'delete',
+        icon: '/images/actions/trash.svg',
+        onClick: () => {}
+      }
+    ]
+  }));
+  console.log('transformVaccinationData output:', result);
+  return result;
+}
 
 const VaccinationsPage = () => {
   const [search, setSearch] = useState('');
+  const [vaccinations, setVaccinations] = useState<VaccinationApiType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const openModal = useModalStore((state) => state.openModal);
+  const closeModal = useModalStore((state) => state.closeModal);
 
-  // Calculate metrics dynamically using useMemo
+  useEffect(() => {
+    setLoading(true);
+    vaccinationApi
+      .getAll()
+      .then((vaccRes) => {
+        console.log('Raw API response:', vaccRes);
+        console.log('Response data:', vaccRes.data);
+
+        // Extract pets data from the new API response structure
+        const responseData = vaccRes.data;
+        const vaccData = responseData?.result?.pets?.data || [];
+
+        console.log('Extracted vaccData:', vaccData);
+        console.log('vaccData length:', vaccData.length);
+        setVaccinations(vaccData);
+      })
+      .catch((error) => {
+        console.error('API Error:', error);
+        setVaccinations([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  console.log('vaccinations', vaccinations);
+
+  const transformedVaccinations = useMemo(() => {
+    const result = transformVaccinationData(vaccinations);
+    console.log('transformedVaccinations', result);
+    return result;
+  }, [vaccinations]);
+
+  const filteredData = useMemo(() => {
+    if (!search) return transformedVaccinations;
+    const q = search.toLowerCase();
+    const result = transformedVaccinations.filter(
+      (v) =>
+        v.ownerAndContact.some((item) => item.toLowerCase().includes(q)) ||
+        v.pet.toLowerCase().includes(q)
+    );
+    console.log('filteredData', result);
+    return result;
+  }, [search, transformedVaccinations]);
+
+  const calculateMetrics = (vaccinations: VaccinationTableRow[]) => {
+    return vaccinations.reduce(
+      (acc, v) => {
+        acc.current += parseInt(v.currentCount);
+        acc.dueSoon += parseInt(v.dueSoonCount);
+        acc.overdue += parseInt(v.overdueCount);
+        acc.missing += parseInt(v.missingCount);
+        return acc;
+      },
+      { current: 0, dueSoon: 0, overdue: 0, missing: 0 }
+    );
+  };
+
   const metrics = useMemo(() => {
-    const calculatedMetrics = calculateMetrics(MOCK_VACCINATIONS);
+    const calculatedMetrics = calculateMetrics(transformedVaccinations);
     return [
       {
         label: 'Current',
@@ -158,22 +162,17 @@ const VaccinationsPage = () => {
         color: 'gray400'
       }
     ];
-  }, [MOCK_VACCINATIONS]);
-
-  const filteredData = useMemo(() => {
-    if (!search) return transformedVaccinations;
-    const q = search.toLowerCase();
-    return transformedVaccinations.filter(
-      (v) =>
-        v.ownerAndContact.some((item) => item.toLowerCase().includes(q)) ||
-        v.pet.toLowerCase().includes(q)
-    );
-  }, [search]);
+  }, [transformedVaccinations]);
 
   const handleNewVaccine = () => {
-    // TODO: Implement new vaccine functionality
-    console.log('New vaccine record clicked');
+    openModal(
+      <BaseModal onClose={closeModal}>
+        <AddVaccine />
+      </BaseModal>
+    );
   };
+
+  console.log('filteredData', filteredData);
 
   return (
     <div className={styles.vaccinationsPage}>
@@ -181,7 +180,13 @@ const VaccinationsPage = () => {
       <VaccinationsMetrics metrics={metrics} />
       <VaccinationsControls onSearch={setSearch} onNewVaccine={handleNewVaccine} />
       <div className={styles.tableWrapper}>
-        <VaccinationsTable vaccinations={filteredData} />
+        {loading && (
+          <div className={styles.loadingWrapper}>
+            <Loader />
+            <p>Loading vaccinations...</p>
+          </div>
+        )}
+        {!loading && <VaccinationsTable vaccinations={filteredData} />}
       </div>
     </div>
   );

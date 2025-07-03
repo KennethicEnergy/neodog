@@ -1,3 +1,4 @@
+import Loader from '@/components/common/loader';
 import { createMultiMessageToast } from '@/components/common/toast';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
@@ -47,10 +48,10 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     notes: ''
   });
 
-  const { clients } = useClientStore();
+  const { clients, isLoading: clientsLoading } = useClientStore();
   const {
     createPet,
-    isLoading,
+    isLoading: petsLoading,
     petSexReferences,
     petClassificationReferences,
     petSizeReferences,
@@ -58,10 +59,36 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
   } = usePetStore();
 
   const [ageError, setAgeError] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  // Combined loading states
+  const isLoading = petsLoading || clientsLoading;
+  const isInitialLoading =
+    initialLoading ||
+    (petSexReferences.length === 0 &&
+      petClassificationReferences.length === 0 &&
+      petSizeReferences.length === 0);
 
   useEffect(() => {
-    fetchReferences();
-  }, [fetchReferences]);
+    const loadInitialData = async () => {
+      setInitialLoading(true);
+      try {
+        await fetchReferences();
+      } catch (error) {
+        console.error('Error loading references:', error);
+        addToast({
+          scheme: 'danger',
+          title: 'Error',
+          message: 'Failed to load form data. Please try again.',
+          timeout: 4000
+        });
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, [fetchReferences, addToast]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -161,6 +188,17 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     }
   };
 
+  if (isInitialLoading) {
+    return (
+      <div className={styles.modalContainer}>
+        <div className={styles.loadingWrapper}>
+          <Loader />
+          <p>Loading form data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.modalContainer}>
       <h2 className={styles.header}>Add Pet</h2>
@@ -179,7 +217,7 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
                 name="client_id"
                 value={form.client_id}
                 onChange={handleChange}
-                disabled={!!clientId}
+                disabled={!!clientId || isLoading}
                 required>
                 <option value="">Select Owner</option>
                 {clients?.map((client) => (
@@ -457,12 +495,19 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
             </div>
           </div>
 
-          {/* {error && <div className={styles.error}>{error}</div>}
-          {success && <div className={styles.success}>{success}</div>} */}
-
           <div className={styles.buttonContainer}>
-            <button className={styles.button} type="submit" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add Pet'}
+            <button
+              className={styles.button}
+              type="submit"
+              disabled={isLoading || isInitialLoading}>
+              {isLoading ? (
+                <>
+                  <Loader />
+                  <span>Adding Pet...</span>
+                </>
+              ) : (
+                'Add Pet'
+              )}
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/store/auth.store';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Loader from '../common/loader';
 import Footer from './footer';
 import Header from './header';
 import styles from './layout.module.scss';
@@ -18,13 +19,12 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
     try {
       setLoading(true);
       setError(null);
+      const user = await getUser();
       setLoading(false);
-      return await getUser();
+      return user;
     } catch (error) {
       setError('Failed to authenticate. Please try again.');
       console.error('Authentication error:', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('auth-storage');
       setLoading(false);
       return null;
     }
@@ -58,8 +58,6 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
         console.log('@@ checkAuth, getUser', res);
       } catch (e) {
         console.error('Error in checkAuth:', e);
-        localStorage.removeItem('token');
-        localStorage.removeItem('auth-storage');
         setLoading(false);
         router.push('/login');
       }
@@ -106,7 +104,10 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
   if (loading) {
     return (
       <div className={styles.page}>
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>
+          <Loader />
+          <p>Loading...</p>
+        </div>
       </div>
     );
   }
