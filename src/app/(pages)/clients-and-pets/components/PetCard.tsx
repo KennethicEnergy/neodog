@@ -1,5 +1,4 @@
 import { Button } from '@/components/common/button';
-import StatusTag from '@/components/common/status-tag';
 import Image from 'next/image';
 import styles from './PetCard.module.scss';
 
@@ -19,20 +18,20 @@ interface PetCardProps {
 }
 
 const PetCard = ({ pet }: PetCardProps) => {
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case 'HEALTHY':
-        return 'success';
-      case 'MEDICAL ISSUE':
-        return 'danger';
-      case 'FOLLOW-UP REQUIRED':
-        return 'warning';
-      case 'PENDING':
-        return 'primary';
-      default:
-        return 'info'; // fallback
-    }
-  };
+  // const getStatusClass = (status: string) => {
+  //   switch (status) {
+  //     case 'HEALTHY':
+  //       return 'success';
+  //     case 'MEDICAL ISSUE':
+  //       return 'danger';
+  //     case 'FOLLOW-UP REQUIRED':
+  //       return 'warning';
+  //     case 'PENDING':
+  //       return 'primary';
+  //     default:
+  //       return 'info'; // fallback
+  //   }
+  // };
 
   return (
     <div className={styles.petCard}>
@@ -44,7 +43,7 @@ const PetCard = ({ pet }: PetCardProps) => {
       <div className={styles.petInfo}>
         <div className={styles.row}>
           <span className={styles.name}>{pet.name}</span>
-          <StatusTag status={pet.status} bgColor={getStatusClass(pet.status)} />
+          {/* <StatusTag status={pet.status} bgColor={getStatusClass(pet.status)} /> */}
         </div>
         {/* <div className={styles.row}>
           <span className={styles.breed}>{pet.breed}</span>

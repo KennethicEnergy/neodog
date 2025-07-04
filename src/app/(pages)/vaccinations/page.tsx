@@ -19,7 +19,7 @@ type VaccinationApiType = {
     email: string;
   };
   vaccination_current_count: number;
-  vaccination_due_count: number;
+  vaccination_due_soon_count: number;
   vaccination_overdue_count: number;
   vaccination_missing_count: number;
 };
@@ -43,7 +43,7 @@ function transformVaccinationData(data: VaccinationApiType[]): VaccinationTableR
     ],
     pet: pet.name,
     currentCount: pet.vaccination_current_count.toString(),
-    dueSoonCount: pet.vaccination_due_count.toString(),
+    dueSoonCount: pet.vaccination_due_soon_count.toString(),
     overdueCount: pet.vaccination_overdue_count.toString(),
     missingCount: pet.vaccination_missing_count.toString(),
     actions: [
