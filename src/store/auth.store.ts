@@ -1,5 +1,6 @@
 import { authApi } from '@/services/auth.api';
 import type { LoginCredentials, RegisterCredentials, User } from '@/types/api';
+import { clearAuth } from '@/utils/auth';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -132,7 +133,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true, error: null });
           await authApi.logout();
-          localStorage.removeItem('token');
+          clearAuth();
           set({
             token: null,
             user: null,
@@ -156,7 +157,7 @@ export const useAuthStore = create<AuthState>()(
           const response = await authApi.getUser();
           const token = localStorage.getItem('token');
 
-          if (token && response && response) {
+          if (response && response.id) {
             set({
               token,
               user: response,
@@ -172,7 +173,7 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
               error: 'Invalid user data'
             });
-            localStorage.removeItem('token');
+            clearAuth();
             return null;
           }
         } catch (error) {
@@ -183,8 +184,7 @@ export const useAuthStore = create<AuthState>()(
             error: error instanceof Error ? error.message : 'An error occurred',
             isLoading: false
           });
-          localStorage.removeItem('token');
-          localStorage.removeItem('auth-storage');
+          clearAuth();
           return null;
         }
       },
