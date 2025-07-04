@@ -74,6 +74,27 @@
         padding: 0 1rem;
         border-left: 1px solid $border-light;
 
+        .userInitials {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: $white;
+          font-size: 10px;
+          font-weight: 600;
+          text-transform: uppercase;
+
+          &.userLoggedIn {
+            background-color: $blue-active;
+          }
+
+          &.userGuest {
+            background-color: $gray-200;
+          }
+        }
+
         .name {
           font-size: 12px;
         }

@@ -101,8 +101,6 @@ const VaccinationsPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  console.log('vaccinations', vaccinations);
-
   const transformedVaccinations = useMemo(() => {
     const result = transformVaccinationData(vaccinations);
     console.log('transformedVaccinations', result);
@@ -117,7 +115,6 @@ const VaccinationsPage = () => {
         v.ownerAndContact.some((item) => item.toLowerCase().includes(q)) ||
         v.pet.toLowerCase().includes(q)
     );
-    console.log('filteredData', result);
     return result;
   }, [search, transformedVaccinations]);
 
@@ -172,12 +169,10 @@ const VaccinationsPage = () => {
     );
   };
 
-  console.log('filteredData', filteredData);
-
   return (
     <div className={styles.vaccinationsPage}>
       <h3>Vaccination Management</h3>
-      <VaccinationsMetrics metrics={metrics} />
+      <VaccinationsMetrics metrics={metrics} loading={loading} />
       <VaccinationsControls onSearch={setSearch} onNewVaccine={handleNewVaccine} />
       <div className={styles.tableWrapper}>
         {loading && (

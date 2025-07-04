@@ -1,11 +1,14 @@
+import { Client } from '@/services/client.api';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
+import { useToastStore } from '@/store/toast.store';
 import React, { useEffect, useState } from 'react';
 import Loader from '../../common/loader';
 import styles from './styles.module.scss';
 
-const AddClient = () => {
+const AddClient = ({ client }: { client?: Client }) => {
   const closeModal = useModalStore((state) => state.closeModal);
+  const addToast = useToastStore((state) => state.addToast);
   const [form, setForm] = useState({
     first_name: '',
     middle_name: '',
@@ -17,16 +20,32 @@ const AddClient = () => {
     state: '',
     zipcode: ''
   });
-  const { createClient, isLoading, fetchClients } = useClientStore();
+  const { createClient, updateClient, isLoading, fetchClients } = useClientStore();
   const [mobileError, setMobileError] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
+  const isEditing = !!client;
 
-  // Load clients data when modal opens
+  // Load clients data when modal opens and pre-populate form if editing
   useEffect(() => {
     const loadInitialData = async () => {
       setInitialLoading(true);
       try {
         await fetchClients(1, 10);
+
+        // Pre-populate form if editing an existing client
+        if (client) {
+          setForm({
+            first_name: client.first_name || '',
+            middle_name: client.middle_name || '',
+            last_name: client.last_name || '',
+            mobile_number: client.mobile_number || '',
+            email: client.email || '',
+            address: client.address || '',
+            city: client.city || '',
+            state: client.state || '',
+            zipcode: client.zip || ''
+          });
+        }
       } catch (error) {
         console.error('Error loading clients:', error);
       } finally {
@@ -35,7 +54,7 @@ const AddClient = () => {
     };
 
     loadInitialData();
-  }, [fetchClients]);
+  }, [fetchClients, client]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -57,8 +76,22 @@ const AddClient = () => {
       return;
     }
     setMobileError('');
-    const result = await createClient(form);
+
+    let result;
+    if (isEditing && client) {
+      result = await updateClient(client.id, form);
+    } else {
+      result = await createClient(form);
+    }
+
     if (result.success) {
+      const clientName = `${form.first_name} ${form.middle_name ? form.middle_name + ' ' : ''}${form.last_name}`;
+      addToast({
+        scheme: 'success',
+        title: isEditing ? 'Client Updated' : 'Client Created',
+        message: `${clientName} was ${isEditing ? 'updated' : 'created'} successfully.`,
+        timeout: 2000
+      });
       setForm({
         first_name: '',
         middle_name: '',
@@ -71,6 +104,13 @@ const AddClient = () => {
         zipcode: ''
       });
       closeModal();
+    } else {
+      addToast({
+        scheme: 'danger',
+        title: isEditing ? 'Update Failed' : 'Creation Failed',
+        message: result.message || `Failed to ${isEditing ? 'update' : 'create'} client.`,
+        timeout: 4000
+      });
     }
   };
 
@@ -87,10 +127,10 @@ const AddClient = () => {
 
   return (
     <div className={styles.modalContainer}>
-      <h2 className={styles.header}>Add Client</h2>
+      <h3 className={styles.header}>{isEditing ? 'Edit Client' : 'Add Client'}</h3>
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
-          <div className={styles.sectionTitle}>Client Information</div>
+          <p className={styles.sectionTitle}>Client Information</p>
           <div className={styles.formGroup}>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="first_name">
@@ -105,6 +145,20 @@ const AddClient = () => {
                 onChange={handleChange}
                 disabled={isLoading}
                 required
+              />
+            </div>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="middle_name">
+                Middle Name
+              </label>
+              <input
+                id="middle_name"
+                className={styles.input}
+                type="text"
+                name="middle_name"
+                value={form.middle_name}
+                onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             <div className={styles.col}>
@@ -228,8 +282,10 @@ const AddClient = () => {
               {isLoading ? (
                 <>
                   <Loader />
-                  <span>Adding Client...</span>
+                  <span>{isEditing ? 'Updating Client...' : 'Adding Client...'}</span>
                 </>
+              ) : isEditing ? (
+                'Update Client'
               ) : (
                 'Add Client'
               )}

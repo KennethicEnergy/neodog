@@ -3,11 +3,13 @@ import BaseModal from '@/components/common/base-modal';
 import Icon from '@/components/common/icon';
 import Loader from '@/components/common/loader';
 import SearchBar from '@/components/common/searchbar';
+import AddClient from '@/components/modals/add-client';
 import { Client as BaseClient } from '@/services/client.api';
 import { Pet } from '@/services/pet.api';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
+import { useToastStore } from '@/store/toast.store';
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import ClientDetailView from './components/ClientDetailView';
 import FilterControls from './components/FilterControls';
@@ -39,8 +41,9 @@ const ClientsAndPetsPage = () => {
   const [activeTab, setActiveTab] = useState<'pets' | 'clients'>('clients');
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { fetchClients, clients, isLoading: clientsLoading } = useClientStore();
+  const { fetchClients, clients, isLoading: clientsLoading, deleteClient } = useClientStore();
   const { fetchPets, pets, isLoading: petsLoading } = usePetStore();
+  const addToast = useToastStore((state) => state.addToast);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [petsView, setPetsView] = useState<'list' | 'tiles'>('tiles');
 
@@ -53,7 +56,11 @@ const ClientsAndPetsPage = () => {
       return;
     }
     if (type === 'edit') {
-      // handle edit if needed
+      openModal(
+        <BaseModal onClose={closeModal}>
+          <AddClient client={c} />
+        </BaseModal>
+      );
       return;
     }
     if (type === 'delete') {
@@ -72,18 +79,42 @@ const ClientsAndPetsPage = () => {
               <button className={styles.cancelButton} onClick={closeModal}>
                 Cancel
               </button>
-              <button
-                className={styles.deleteButton}
-                onClick={() => {
-                  // TODO: Implement delete functionality
-                  closeModal();
-                }}>
+              <button className={styles.deleteButton} onClick={() => handleDeleteClient(c)}>
                 Delete
               </button>
             </div>
           </div>
         </BaseModal>
       );
+    }
+  };
+
+  const handleDeleteClient = async (c: Client) => {
+    try {
+      const result = await deleteClient(c.id);
+      if (result.success) {
+        closeModal();
+        addToast({
+          scheme: 'success',
+          title: 'Client Deleted',
+          message: `${c.first_name} ${c.middle_name ? c.middle_name + ' ' : ''}${c.last_name} was deleted successfully.`,
+          timeout: 2000
+        });
+      } else {
+        addToast({
+          scheme: 'danger',
+          title: 'Delete Failed',
+          message: result.message || 'Failed to delete client.',
+          timeout: 4000
+        });
+      }
+    } catch (error) {
+      addToast({
+        scheme: 'danger',
+        title: 'Delete Error',
+        message: error instanceof Error ? error.message : 'Error deleting client.',
+        timeout: 4000
+      });
     }
   };
 

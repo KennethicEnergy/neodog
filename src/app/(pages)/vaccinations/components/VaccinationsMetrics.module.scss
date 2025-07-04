@@ -50,6 +50,24 @@
   line-height: 1.1;
 }
 
+.skeletonValue {
+  width: 60px;
+  height: 2rem;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .metricLabel {
   font-size: 1.1rem;
   color: $gray-600;

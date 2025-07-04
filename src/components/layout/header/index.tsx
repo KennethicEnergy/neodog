@@ -121,7 +121,10 @@ const Header = () => {
           <Icon src="/images/bell.svg" width={16} height={16} />
         </div>
         <div className={styles.user}>
-          <Icon width={24} height={24} shape="circle" />
+          <div
+            className={`${styles.userInitials} ${user ? styles.userLoggedIn : styles.userGuest}`}>
+            {user ? `${user.first_name?.charAt(0) || ''}${user.last_name?.charAt(0) || ''}` : 'G'}
+          </div>
           <div className={styles.userDetails}>
             <p className={styles.name}>{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</p>
             <p className={styles.role}>

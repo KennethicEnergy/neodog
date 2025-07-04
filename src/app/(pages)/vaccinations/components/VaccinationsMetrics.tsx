@@ -11,9 +11,10 @@ interface MetricCard {
 
 interface VaccinationsMetricsProps {
   metrics: MetricCard[];
+  loading?: boolean;
 }
 
-const VaccinationsMetrics = ({ metrics }: VaccinationsMetricsProps) => {
+const VaccinationsMetrics = ({ metrics, loading = false }: VaccinationsMetricsProps) => {
   return (
     <div className={styles.metricsGrid}>
       {metrics.map((card) => (
@@ -29,7 +30,9 @@ const VaccinationsMetrics = ({ metrics }: VaccinationsMetricsProps) => {
             />
           </div>
           <div className={styles.metricContent}>
-            <div className={styles.metricValue}>{card.value}</div>
+            <div className={styles.metricValue}>
+              {loading ? <div className={styles.skeletonValue}></div> : card.value}
+            </div>
             <div className={styles.metricLabel}>{card.label}</div>
           </div>
         </div>
