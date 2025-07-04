@@ -1,39 +1,18 @@
 import BaseModal from '@/components/common/base-modal';
-import Icon from '@/components/common/icon';
-import StatusTag from '@/components/common/status-tag';
+import Loader from '@/components/common/loader';
 import AddPet from '@/components/modals/add-pet';
+import { vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
-import React, { useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import styles from './ClientDetailView.module.scss';
+import { useTabLoading } from './hooks/useTabLoading';
+import { ClientInfo, ClientPets, ClientTabs } from './index';
+import { Client, Pet, VaccinationData } from './types';
 
-interface Client {
-  id: number;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  mobile_number: string;
-  address: string;
-  email: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  created_at?: string;
-  updated_at?: string;
-  pets_count?: number;
-  last_visit?: string;
-  status?: string;
-}
-
-interface Pet {
-  id: number;
-  name: string;
-  breed: string;
-  age: string;
-  owner: string;
-  lastVisit: string;
-  status: string;
-  image: string | null;
-}
+// Lazy load tab components for better performance
+const LazyActivityTab = React.lazy(() => import('./ActivityTab'));
+const LazyVaccinationTab = React.lazy(() => import('./VaccinationTab'));
+const LazyPlaceholderTab = React.lazy(() => import('./PlaceholderTab'));
 
 interface ClientDetailViewProps {
   client: Client;
@@ -41,65 +20,129 @@ interface ClientDetailViewProps {
   onBack: () => void;
 }
 
-const getStatusClass = (status?: string) => {
-  switch (status?.toLowerCase()) {
-    case 'active':
-      return 'success';
-    case 'inactive':
-      return 'info';
-    default:
-      return 'info';
-  }
-};
-
-const TABS = [
-  'Activity',
-  'Appointments',
-  'Vaccination Records',
-  'Tasks Log',
-  'Documents',
-  'Financial',
-  'Notes'
-];
-
-// Mock recent activity for demo purposes
-const recentActivity = [
-  {
-    title: 'Annual Check-up',
-    description: 'For Bella',
-    date: 'April 18, 2025',
-    time: '11:00 AM'
-  },
-  {
-    title: 'Vaccination Updated',
-    description: 'Rabies Vaccine For Bella',
-    date: 'April 18, 2025',
-    time: '10:00 AM'
-  },
-  {
-    title: 'Invoice Paid',
-    description: '$120.00 For Annual Check-Up',
-    date: 'April 18, 2025',
-    time: '9:00 AM'
-  },
-  {
-    title: 'New Pet Added',
-    description: 'Molly Was Added To The Pet List',
-    date: 'April 18, 2025',
-    time: '9:00 AM'
-  }
-];
-
 const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBack }) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const [selectedTab, setSelectedTab] = useState<string>('Activity');
+  const [vaccinations, setVaccinations] = useState<VaccinationData[]>([]);
+  const [vaccinationsLoading, setVaccinationsLoading] = useState(false);
+
+  const { tabLoading, loadingTab, switchTab } = useTabLoading();
+
+  // Fetch vaccination data
+  useEffect(() => {
+    if (selectedTab === 'Vaccination Records') {
+      setVaccinationsLoading(true);
+      vaccinationApi
+        .getAll()
+        .then((vaccRes) => {
+          const responseData = vaccRes.data;
+          const vaccData = responseData?.result?.pets?.data || [];
+          setVaccinations(vaccData);
+        })
+        .catch((error) => {
+          console.error('Vaccination API Error:', error);
+          setVaccinations([]);
+        })
+        .finally(() => setVaccinationsLoading(false));
+    }
+  }, [selectedTab]);
+
+  // Filter vaccinations for current client
+  const filteredVaccinations = useMemo(() => {
+    if (selectedTab !== 'Vaccination Records') return [];
+
+    const clientVaccinations = vaccinations.filter(
+      (vaccination) => vaccination.client?.id === client.id
+    );
+
+    return clientVaccinations.map((pet) => ({
+      ownerAndContact: [
+        `${client.first_name} ${client.last_name}`,
+        client.mobile_number || client.email || ''
+      ],
+      pet: pet.name,
+      currentCount: pet.vaccination_current_count?.toString() || '0',
+      dueSoonCount: pet.vaccination_due_soon_count?.toString() || '0',
+      overdueCount: pet.vaccination_overdue_count?.toString() || '0',
+      missingCount: pet.vaccination_missing_count?.toString() || '0',
+      actions: [
+        {
+          name: 'View',
+          type: 'view',
+          icon: '/images/actions/view.svg',
+          onClick: () => {}
+        },
+        {
+          name: 'Edit',
+          type: 'edit',
+          icon: '/images/actions/edit.svg',
+          onClick: () => {}
+        },
+        {
+          name: 'Delete',
+          type: 'delete',
+          icon: '/images/actions/trash.svg',
+          onClick: () => {}
+        }
+      ]
+    }));
+  }, [vaccinations, client, selectedTab]);
 
   const addPet = ({ clientId }: { clientId: string }) => {
     openModal(
       <BaseModal onClose={closeModal}>
         <AddPet clientId={clientId} />
       </BaseModal>
+    );
+  };
+
+  const handleAddPet = () => {
+    addPet({ clientId: client.id.toString() });
+  };
+
+  const handleTabChange = (tab: string) => {
+    switchTab(tab, setSelectedTab);
+  };
+
+  const renderTabContent = () => {
+    if (tabLoading) {
+      return (
+        <div className={styles.activity}>
+          <div className={styles.loadingWrapper}>
+            <Loader />
+            <p>Loading {loadingTab}...</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <Suspense
+        fallback={
+          <div className={styles.activity}>
+            <div className={styles.loadingWrapper}>
+              <Loader />
+              <p>Loading {selectedTab}...</p>
+            </div>
+          </div>
+        }>
+        {(() => {
+          switch (selectedTab) {
+            case 'Activity':
+              return <LazyActivityTab />;
+            case 'Vaccination Records':
+              return (
+                <LazyVaccinationTab
+                  vaccinationsLoading={vaccinationsLoading}
+                  filteredVaccinations={filteredVaccinations}
+                />
+              );
+            default:
+              return <LazyPlaceholderTab tabName={selectedTab} />;
+          }
+        })()}
+      </Suspense>
     );
   };
 
@@ -110,107 +153,13 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
       </button>
       <div className={styles.header}>
         <div className={styles.avatar} />
-        <div className={styles.info}>
-          <h2 className={styles.name}>
-            {client.first_name} {client.middle_name ? client.middle_name + ' ' : ''}
-            {client.last_name}
-            <StatusTag
-              status={client.status?.toUpperCase() || 'INACTIVE'}
-              bgColor={getStatusClass(client?.status)}
-            />
-          </h2>
-          <div className={styles.since}>
-            Client Since{' '}
-            {client.created_at
-              ? new Date(client.created_at).toLocaleString('default', {
-                  month: 'long',
-                  year: 'numeric'
-                })
-              : 'N/A'}
-          </div>
-          <div className={styles.contact}>
-            <div className={styles.contactItem}>
-              <Icon src="/images/contact/mail.svg" height={16} width={16} /> {client.email}
-            </div>
-            <div className={styles.contactItem}>
-              <Icon src="/images/contact/phone.svg" height={16} width={16} /> {client.mobile_number}
-            </div>
-            <div className={styles.contactItem}>
-              <Icon src="/images/contact/location.svg" height={16} width={16} /><p>{client.address}
-              {client.city ? `, ${client.city}` : ''}
-              {client.state ? `, ${client.state}` : ''}</p>
-            </div>
-          </div>
-          <div className={styles.actions}>
-            <button>Mail</button>
-            <button>Call</button>
-          </div>
-        </div>
-        <div className={styles.pets}>
-          {pets?.map((pet) => (
-            <div key={pet.id} className={styles.pet}>
-              <div className={styles.petAvatar} />
-              <div className={styles.petName}>{pet.name}</div>
-              <div className={styles.petBreed}>{pet.breed}</div>
-            </div>
-          ))}
-        </div>
-        <div
-          className={styles.addContainer}
-          onClick={() => addPet({ clientId: client.id.toString() })}>
-          <Icon
-            src="/images/icon-plus.svg"
-            height={40}
-            width={40}
-            bgColor="#7F7F7F"
-            shape="circle"
-          />
-          <span>Add Pet</span>
-        </div>
+        <ClientInfo client={client} />
+        <ClientPets pets={pets} onAddPet={handleAddPet} />
       </div>
 
-      <div className={styles.tabs} role="tablist">
-        {TABS.map((tab) => (
-          <div
-            key={tab}
-            className={selectedTab === tab ? styles.tabActive : ''}
-            onClick={() => setSelectedTab(tab)}
-            role="tab"
-            aria-selected={selectedTab === tab}
-            tabIndex={selectedTab === tab ? 0 : -1}>
-            {tab}
-          </div>
-        ))}
-      </div>
+      <ClientTabs selectedTab={selectedTab} onTabChange={handleTabChange} />
 
-      {selectedTab === 'Activity' && (
-        <div className={styles.activity}>
-          <h4>Recent Activity</h4>
-          <div>
-            {recentActivity.map((activity, idx) => (
-              <div key={idx} className={styles.activityRow}>
-                <div className={styles.activityAvatar} />
-                <div className={styles.activityInfo}>
-                  <div className={styles.activityTitle}>{activity.title}</div>
-                  <div className={styles.activityDesc}>{activity.description}</div>
-                </div>
-                <div className={styles.activityDate}>
-                  <div>{activity.date}</div>
-                  <div className={styles.activityTime}>{activity.time}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {selectedTab !== 'Activity' && (
-        <div className={styles.activity}>
-          <h4>{selectedTab}</h4>
-          <div style={{ color: '#888', padding: '2rem 0', textAlign: 'center' }}>
-            {selectedTab} content coming soon.
-          </div>
-        </div>
-      )}
+      {renderTabContent()}
     </div>
   );
 };

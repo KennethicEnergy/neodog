@@ -10,7 +10,8 @@ import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
 import { useToastStore } from '@/store/toast.store';
-import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import ClientDetailView from './components/ClientDetailView';
 import FilterControls from './components/FilterControls';
 import TabNavigation from './components/TabNavigation';
@@ -36,6 +37,8 @@ interface PetWithClient extends Pet {
 }
 
 const ClientsAndPetsPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const [activeTab, setActiveTab] = useState<'pets' | 'clients'>('clients');
@@ -50,9 +53,34 @@ const ClientsAndPetsPage = () => {
   // Combined loading state
   const isLoading = clientsLoading || petsLoading;
 
+  // Check for client ID in URL on component mount
+  useEffect(() => {
+    const clientId = searchParams.get('c');
+    if (clientId && clients.length > 0) {
+      const client = clients.find((c) => c.id === parseInt(clientId));
+      if (client) {
+        setSelectedClient(client);
+      }
+    }
+  }, [searchParams, clients]);
+
+  const updateUrl = useCallback(
+    (clientId?: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (clientId) {
+        params.set('c', clientId);
+      } else {
+        params.delete('c');
+      }
+      router.replace(`/clients-and-pets?${params.toString()}`);
+    },
+    [router, searchParams]
+  );
+
   const ctaButton = (c: Client, type: 'view' | 'edit' | 'delete') => {
     if (type === 'view') {
       setSelectedClient(c);
+      updateUrl(c.id.toString());
       return;
     }
     if (type === 'edit') {
@@ -262,11 +290,19 @@ const ClientsAndPetsPage = () => {
     } else {
       getAllPets();
     }
-  }, [fetchClients, fetchPets, activeTab, selectedClient]);
+  }, [fetchClients, fetchPets, activeTab]);
 
-  const handleBack = () => {
+  // Fetch pets when a client is selected to ensure pets data is available
+  useEffect(() => {
+    if (selectedClient) {
+      fetchPets(1, 10);
+    }
+  }, [selectedClient, fetchPets]);
+
+  const handleBack = useCallback(() => {
     setSelectedClient(null);
-  };
+    updateUrl();
+  }, [updateUrl]);
 
   return (
     <div className={styles.petsAndClient}>
