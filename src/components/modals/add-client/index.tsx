@@ -43,7 +43,7 @@ const AddClient = ({ client }: { client?: Client }) => {
             address: client.address || '',
             city: client.city || '',
             state: client.state || '',
-            zipcode: client.zip || ''
+            zipcode: client.zipcode || ''
           });
         }
       } catch (error) {
@@ -59,9 +59,11 @@ const AddClient = ({ client }: { client?: Client }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === 'mobile_number') {
-      // Only allow digits
-      if (!/^\d*$/.test(value)) {
-        setMobileError('Mobile number must be numeric');
+      // Allow digits, plus signs, parentheses, and spaces
+      if (!/^[\d\s\(\)\+]*$/.test(value)) {
+        setMobileError(
+          'Mobile number can only contain digits, spaces, parentheses, and plus signs'
+        );
       } else {
         setMobileError('');
       }
@@ -71,8 +73,8 @@ const AddClient = ({ client }: { client?: Client }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!/^\d+$/.test(form.mobile_number)) {
-      setMobileError('Mobile number must be numeric');
+    if (!/^[\d\s\(\)\+]+$/.test(form.mobile_number)) {
+      setMobileError('Mobile number can only contain digits, spaces, parentheses, and plus signs');
       return;
     }
     setMobileError('');

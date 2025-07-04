@@ -10,7 +10,7 @@ export interface Client {
   email: string;
   city?: string;
   state?: string;
-  zip?: string;
+  zipcode?: string;
   created_at?: string;
   updated_at?: string;
 }
