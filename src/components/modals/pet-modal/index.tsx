@@ -104,6 +104,21 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
 
+  const getVaccinationStatusClass = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case 'CURRENT':
+        return 'success';
+      case 'OVERDUE':
+        return 'danger';
+      case 'DUE SOON':
+        return 'warning';
+      case 'PENDING':
+        return 'primary';
+      default:
+        return 'info';
+    }
+  };
+
   const handleSave = (note: string) => {
     console.log(note);
     closeModal();
@@ -216,12 +231,19 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
                   <div className={styles.notesList}>
                     {mockNotes.map((note, idx) => (
                       <div className={styles.noteCard} key={idx}>
-                        <div className={styles.noteText}>{note.text}</div>
+                        <div className={styles.noteText}>
+                          <span>{note.text}</span>
+                          <span className={styles.noteEditIcon}>
+                            <Image
+                              src="/images/actions/edit.svg"
+                              alt="Edit"
+                              width={18}
+                              height={18}
+                            />
+                          </span>
+                        </div>
                         <div className={styles.noteFooter}>
                           <span className={styles.noteDate}>{note.date}</span>
-                          <span className={styles.noteEditIcon}>
-                            <Image src="/images/edit.svg" alt="Edit" width={18} height={18} />
-                          </span>
                         </div>
                       </div>
                     ))}
@@ -234,13 +256,16 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
                   <div className={styles.belongingsGrid}>
                     {mockBelongings.map((item, idx) => (
                       <div className={styles.belongingCard} key={idx}>
-                        <Image
-                          src={item.image}
-                          alt={item.label}
-                          width={100}
-                          height={100}
-                          className={styles.belongingImage}
-                        />
+                        <div className={styles.belongingImageContainer}>
+                          <Image
+                            src={item.image}
+                            alt={item.label}
+                            width={100}
+                            height={100}
+                            className={styles.belongingImage}
+                          />
+                        </div>
+
                         <div className={styles.belongingLabel}>{item.label}</div>
                       </div>
                     ))}
@@ -258,15 +283,38 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
                             <div className={styles.vaxName}>{vax.name}</div>
                             <div className={styles.vaxType}>{vax.type}</div>
                           </div>
-                          <span className={styles.vaxStatus}>{vax.status}</span>
+                          <div className={styles.vaxStatus}>
+                            <StatusTag
+                              status={vax.status}
+                              bgColor={getVaccinationStatusClass(vax.status)}
+                            />
+                          </div>
                         </div>
-                        <div className={styles.vaxDates}>
-                          <div>Given: {vax.given}</div>
-                          <div>Due: {vax.due}</div>
-                        </div>
-                        <div className={styles.vaxActions}>
-                          <Image src="/images/eye.svg" alt="View" width={18} height={18} />
-                          <Image src="/images/download.svg" alt="Download" width={18} height={18} />
+                        <div className={styles.vaxFooter}>
+                          <div className={styles.vaxDates}>
+                            <div>Given: {vax.given}</div>
+                            <div>Due: {vax.due}</div>
+                          </div>
+                          <div className={styles.vaxActions}>
+                            <Image
+                              src="/images/actions/view.svg"
+                              alt="View"
+                              width={18}
+                              height={18}
+                            />
+                            <Image
+                              src="/images/actions/edit.svg"
+                              alt="Download"
+                              width={18}
+                              height={18}
+                            />
+                            <Image
+                              src="/images/actions/download.svg"
+                              alt="Download"
+                              width={18}
+                              height={18}
+                            />
+                          </div>
                         </div>
                       </div>
                     ))}
