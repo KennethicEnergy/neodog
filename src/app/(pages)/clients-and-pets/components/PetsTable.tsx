@@ -1,14 +1,8 @@
+import { Button } from '@/components/common/button';
 import Table from '@/components/common/table';
-
-interface Pet extends Record<string, unknown> {
-  name: string;
-  breed: string;
-  age: string;
-  owner: string;
-  lastVisit: string;
-  status: string;
-  actions?: object[];
-}
+import PetModal from '@/components/modals/pet-modal';
+import { useModalStore } from '@/store/modal-store';
+import { Pet } from './types';
 
 interface PetsTableProps {
   pets: Pet[];
@@ -25,9 +19,32 @@ const PET_HEADERS = [
 ];
 
 const PetsTable = ({ pets }: PetsTableProps) => {
+  const openModal = useModalStore((state) => state.openModal);
+  const closeModal = useModalStore((state) => state.closeModal);
+
+  const handleViewPet = (pet: Pet) => {
+    openModal(<PetModal pet={pet} onClose={closeModal} />);
+  };
+
+  // Add a custom renderer for the actions column
+  const dataWithActions = pets.map((pet) => ({
+    ...pet,
+    actions: [
+      <Button key="view" size="sm" variant="white" onClick={() => handleViewPet(pet)}>
+        View
+      </Button>
+    ]
+  }));
+
   return (
     <div>
-      <Table data={pets} headers={PET_HEADERS} enableSorting={true} viewAll={false} tableOnly />
+      <Table
+        data={dataWithActions}
+        headers={PET_HEADERS}
+        enableSorting={true}
+        viewAll={false}
+        tableOnly
+      />
     </div>
   );
 };

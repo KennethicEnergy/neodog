@@ -1,4 +1,6 @@
 import { Button } from '@/components/common/button';
+import PetModal from '@/components/modals/pet-modal';
+import { useModalStore } from '@/store/modal-store';
 import Image from 'next/image';
 import styles from './PetCard.module.scss';
 
@@ -18,6 +20,13 @@ interface PetCardProps {
 }
 
 const PetCard = ({ pet }: PetCardProps) => {
+  const openModal = useModalStore((state) => state.openModal);
+  const closeModal = useModalStore((state) => state.closeModal);
+
+  const handleViewProfile = () => {
+    openModal(<PetModal pet={pet} onClose={closeModal} />);
+  };
+
   // const getStatusClass = (status: string) => {
   //   switch (status) {
   //     case 'HEALTHY':
@@ -35,7 +44,7 @@ const PetCard = ({ pet }: PetCardProps) => {
 
   return (
     <div className={styles.petCard}>
-      <div className={styles.imageContainer}>
+      <div className={styles.imageContainer} onClick={handleViewProfile}>
         <div className={styles.imagePlaceholder}>
           {pet.image && <Image src={pet.image} alt={pet.name} width={100} height={100} />}
         </div>
@@ -57,7 +66,7 @@ const PetCard = ({ pet }: PetCardProps) => {
         </div> */}
       </div>
       <div className={styles.controls}>
-        <Button variant="white" size="sm" className={styles.profile}>
+        <Button variant="white" size="sm" className={styles.profile} onClick={handleViewProfile}>
           Profile
         </Button>
         <Button variant="dark" size="sm" className={styles.schedule}>

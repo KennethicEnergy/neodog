@@ -1,0 +1,327 @@
+.petModalWrapper {
+  padding: 1rem;
+  background: #fff;
+
+}
+
+.petModalContainer {
+  display: flex;
+  flex-direction: column;
+  width: 720px;
+  height: 600px;
+  border-radius: 16px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.modalContent {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.headerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  width: 96px !important;
+  height: 96px !important;
+}
+
+.avatarPlaceholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #eee;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.petNameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.statusTagOutline {
+  background: #fff !important;
+  color: #555 !important;
+  border: 2px solid #bbb !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 20px !important;
+  padding: 0.2rem 1.2rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ownerInfoList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.2rem;
+}
+
+.ownerInfoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ownerText {
+  color: #888;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.tabs {
+  display: flex;
+  background: #f7f7f7;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 0.2rem;
+}
+
+.tab, .tabActive {
+  background: transparent;
+  color: #7f7f7f;
+  border: none;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 0.8rem 2rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.tabActive {
+  background: #7f7f7f;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.tabIcon {
+  font-size: 1.25rem;
+  margin-right: 0.7rem;
+  vertical-align: middle;
+}
+
+.tabContent {
+  min-height: 180px;
+  margin-bottom: 2rem;
+}
+
+.infoSection {
+  margin-top: 1rem;
+  padding: 0 1rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem;
+  margin-top: 1rem;
+}
+
+.label {
+  color: #888;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+}
+
+.footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.footerButton {
+  min-width: 110px;
+  border-radius: 10px !important;
+  font-size: 1.08rem;
+  font-weight: 500;
+  box-shadow: none !important;
+  padding: 0.7rem 0;
+}
+
+// Notes Tab
+.notesSection {
+  margin-top: 1rem;
+}
+.notesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  overflow: auto;
+  height: 200px;
+}
+.noteCard {
+  background: #fafbfc;
+  border-radius: 10px;
+  padding: 1.25rem 1rem 0.75rem 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.noteText {
+  font-size: 1.08rem;
+  color: #222;
+}
+.noteFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.noteDate {
+  color: #888;
+  font-size: 0.98rem;
+}
+.noteEditIcon {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.noteEditIcon:hover {
+  opacity: 1;
+}
+
+// Belongings Tab
+.belongingsSection {
+  margin-top: 1rem;
+}
+.belongingsGrid {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+.belongingCard {
+  background: #fafbfc;
+  border-radius: 12px;
+  padding: 1rem 1.5rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 250px;
+  height: 200px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.belongingImage {
+  margin-bottom: 0.5rem;
+  object-fit: contain;
+}
+.belongingLabel {
+  font-size: 1.08rem;
+  color: #444;
+  margin-top: 0.5rem;
+}
+
+// Vaccinations Tab
+.vaccinationsSection {
+  margin-top: 1rem;
+}
+.vaccinationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  height: 200px;
+  overflow: auto;
+}
+.vaccinationCard {
+  background: #fafbfc;
+  border-radius: 10px;
+  padding: 1.25rem 1rem 0.75rem 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.vaxHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.vaxName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+}
+.vaxType {
+  color: #888;
+  font-size: 0.98rem;
+}
+.vaxStatus {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  background: #888;
+  border-radius: 12px;
+  padding: 0.2rem 0.9rem;
+}
+.vaxDates {
+  display: flex;
+  gap: 2rem;
+  color: #444;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+.vaxActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
