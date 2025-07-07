@@ -1,5 +1,6 @@
 import { vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
+import { usePetStore } from '@/store/pet.store';
 import { useToastStore } from '@/store/toast.store';
 import React, { useEffect, useState } from 'react';
 import Loader from '../../common/loader';
@@ -7,34 +8,31 @@ import styles from '../add-pet/styles.module.scss';
 
 interface AddVaccineForm {
   pet_id: string;
-  vaccination_type_id: string;
-  vaccine_type: string;
+  vaccination_name_id: string;
+  file: File | null;
   vaccination_date: string;
   expiration_date: string;
-  file: File | null;
+  notes: string;
   vaccination_status_id: string;
-  vaccination_name_id: string;
 }
 
 const AddVaccine = () => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
+  const { pets, fetchPets, isLoading: petsLoading } = usePetStore();
   const [form, setForm] = useState<AddVaccineForm>({
     pet_id: '',
-    vaccination_type_id: '',
-    vaccine_type: '',
+    vaccination_name_id: '',
+    file: null,
     vaccination_date: '',
     expiration_date: '',
-    file: null,
-    vaccination_status_id: '',
-    vaccination_name_id: ''
+    notes: '',
+    vaccination_status_id: ''
   });
   const [vaccineTypes, setVaccineTypes] = useState<{ id: number; name: string }[]>([]);
   const [statusRefs, setStatusRefs] = useState<{ id: number; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     // Fetch vaccine types and status
@@ -61,6 +59,11 @@ const AddVaccine = () => {
       });
   }, [addToast]);
 
+  useEffect(() => {
+    // Fetch pets for selection
+    fetchPets(1, 100);
+  }, [fetchPets]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -74,8 +77,6 @@ const AddVaccine = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
 
     try {
       const formData = new FormData();
@@ -88,7 +89,6 @@ const AddVaccine = () => {
       const response = await vaccinationApi.create(formData);
 
       if (response.data.code === 200) {
-        setSuccess('Vaccine added successfully!');
         addToast({
           scheme: 'success',
           title: 'Success',
@@ -99,7 +99,6 @@ const AddVaccine = () => {
           closeModal();
         }, 1000);
       } else {
-        setError(response.data.message || 'Failed to add vaccine');
         addToast({
           scheme: 'danger',
           title: 'Error',
@@ -113,7 +112,6 @@ const AddVaccine = () => {
           ? (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
             'Failed to add vaccine'
           : 'Failed to add vaccine';
-      setError(errorMessage);
       addToast({
         scheme: 'danger',
         title: 'Error',
@@ -125,7 +123,7 @@ const AddVaccine = () => {
     }
   };
 
-  if (initialLoading) {
+  if (initialLoading || petsLoading) {
     return (
       <div className={styles.modalContainer}>
         <div className={styles.section}>
@@ -145,38 +143,41 @@ const AddVaccine = () => {
         <div className={styles.section}>
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="vaccination_type_id">
-                Vaccine Name
+              <label className={styles.label} htmlFor="pet_id">
+                Pet
               </label>
               <select
-                id="vaccination_type_id"
+                id="pet_id"
                 className={styles.input}
-                name="vaccination_type_id"
-                value={form.vaccination_type_id}
+                name="pet_id"
+                value={form.pet_id}
                 onChange={handleChange}
                 required>
-                <option value="">Select vaccine name</option>
-                {vaccineTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name}
+                <option value="">Select a pet</option>
+                {pets.map((pet) => (
+                  <option key={pet.id} value={pet.id}>
+                    {pet.name}
                   </option>
                 ))}
               </select>
             </div>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="vaccine_type">
-                Vaccine Type
+              <label className={styles.label} htmlFor="vaccination_name_id">
+                Vaccination Name
               </label>
               <select
-                id="vaccine_type"
+                id="vaccination_name_id"
                 className={styles.input}
-                name="vaccine_type"
-                value={form.vaccine_type}
+                name="vaccination_name_id"
+                value={form.vaccination_name_id}
                 onChange={handleChange}
                 required>
-                <option value="">Select vaccine type</option>
-                <option value="core">Core</option>
-                <option value="non-core">Non-core</option>
+                <option value="">Select a vaccine</option>
+                {vaccineTypes.map((vaccine) => (
+                  <option key={vaccine.id} value={vaccine.id}>
+                    {vaccine.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -233,23 +234,18 @@ const AddVaccine = () => {
           </div>
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="vaccination_name_id">
-                Vaccination Name
+              <label className={styles.label} htmlFor="notes">
+                Notes
               </label>
-              <select
-                id="vaccination_name_id"
+              <input
+                id="notes"
                 className={styles.input}
-                name="vaccination_name_id"
-                value={form.vaccination_name_id}
+                type="text"
+                name="notes"
+                value={form.notes}
                 onChange={handleChange}
-                required>
-                <option value="">Select a vaccine</option>
-                {vaccineTypes.map((vaccine) => (
-                  <option key={vaccine.id} value={vaccine.id}>
-                    {vaccine.name}
-                  </option>
-                ))}
-              </select>
+                placeholder="Enter notes (optional)"
+              />
             </div>
           </div>
           <div className={styles.formGroup}>
@@ -270,8 +266,6 @@ const AddVaccine = () => {
               </small>
             </div>
           </div>
-          {error && <div className={styles.error}>{error}</div>}
-          {success && <div className={styles.success}>{success}</div>}
           <div className={styles.buttonContainer}>
             <button
               className={styles.button}
