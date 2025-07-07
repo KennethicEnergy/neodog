@@ -2,8 +2,10 @@ import { Pet } from '@/app/(pages)/clients-and-pets/components/types';
 import BaseModal from '@/components/common/base-modal';
 import { Button } from '@/components/common/button';
 import StatusTag from '@/components/common/status-tag';
+import { useModalStore } from '@/store/modal-store';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import AddNotesModal from '../add-notes';
 import styles from './pet-modal.module.scss';
 
 interface PetModalProps {
@@ -99,6 +101,17 @@ const mockVaccinations = [
 
 const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
   const [activeTab, setActiveTab] = useState('Info');
+  const openModal = useModalStore((state) => state.openModal);
+  const closeModal = useModalStore((state) => state.closeModal);
+
+  const handleSave = (note: string) => {
+    console.log(note);
+    closeModal();
+  };
+
+  const handleAdd = () => {
+    openModal(<AddNotesModal onSave={handleSave} onCancel={closeModal} />);
+  };
 
   return (
     <BaseModal onClose={onClose}>
@@ -266,9 +279,15 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
             <Button variant="white" onClick={onClose} className={styles.footerButton}>
               Cancel
             </Button>
-            <Button variant="dark" onClick={onEdit} className={styles.footerButton}>
-              Edit
-            </Button>
+            {activeTab === 'Info' ? (
+              <Button variant="dark" onClick={onEdit} className={styles.footerButton}>
+                Edit
+              </Button>
+            ) : (
+              <Button variant="dark" onClick={handleAdd} className={styles.footerButton}>
+                Add
+              </Button>
+            )}
           </div>
         </div>
       </div>

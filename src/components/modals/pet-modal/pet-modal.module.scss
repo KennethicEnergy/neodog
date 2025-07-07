@@ -1,31 +1,24 @@
 .petModalWrapper {
   padding: 1rem;
   background: #fff;
-
 }
 
 .petModalContainer {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 720px;
-  height: 600px;
+  height: 530px;
   border-radius: 16px;
   box-sizing: border-box;
   position: relative;
-}
-
-.modalContent {
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
+  gap: 1rem;
 }
 
 .header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
 }
 
 .headerTitle {
@@ -150,7 +143,6 @@
 
 .tabContent {
   min-height: 180px;
-  margin-bottom: 2rem;
 }
 
 .infoSection {
@@ -182,7 +174,6 @@
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
 .footerButton {
@@ -195,9 +186,6 @@
 }
 
 // Notes Tab
-.notesSection {
-  margin-top: 1rem;
-}
 .notesList {
   display: flex;
   flex-direction: column;
@@ -239,9 +227,6 @@
 }
 
 // Belongings Tab
-.belongingsSection {
-  margin-top: 1rem;
-}
 .belongingsGrid {
   display: flex;
   gap: 1.5rem;
@@ -266,13 +251,9 @@
 .belongingLabel {
   font-size: 1.08rem;
   color: #444;
-  margin-top: 0.5rem;
 }
 
 // Vaccinations Tab
-.vaccinationsSection {
-  margin-top: 1rem;
-}
 .vaccinationsList {
   display: flex;
   flex-direction: column;
