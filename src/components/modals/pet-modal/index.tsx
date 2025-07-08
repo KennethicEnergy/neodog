@@ -324,15 +324,15 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
             </div>
           </div>
           <div className={styles.footer}>
-            <Button variant="white" onClick={onClose} className={styles.footerButton}>
+            <Button variant="white" size="md" onClick={onClose} className={styles.footerButton}>
               Cancel
             </Button>
             {activeTab === 'Info' ? (
-              <Button variant="dark" onClick={onEdit} className={styles.footerButton}>
+              <Button variant="dark" size="md" onClick={onEdit} className={styles.footerButton}>
                 Edit
               </Button>
             ) : (
-              <Button variant="dark" onClick={handleAdd} className={styles.footerButton}>
+              <Button variant="dark" size="md" onClick={handleAdd} className={styles.footerButton}>
                 Add
               </Button>
             )}
