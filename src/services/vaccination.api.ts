@@ -128,5 +128,9 @@ export const vaccinationApi = {
     return apiClient.get<VaccinationStatusReferenceResponse>(
       '/facility/vaccination-management/get-vaccination-status-references'
     );
+  },
+
+  viewRecordsByPetId: async (petId: string | number) => {
+    return apiClient.get(`/facility/vaccination-management/view-records/${petId}`);
   }
 };

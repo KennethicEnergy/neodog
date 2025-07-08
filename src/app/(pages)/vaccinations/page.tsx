@@ -2,6 +2,7 @@
 import BaseModal from '@/components/common/base-modal';
 import Loader from '@/components/common/loader';
 import AddVaccine from '@/components/modals/add-vaccine';
+import ViewVaccinationsModal from '@/components/modals/view-vaccinations';
 import { vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
 import { useEffect, useMemo, useState } from 'react';
@@ -34,7 +35,11 @@ type VaccinationTableRow = {
   actions: object[];
 };
 
-function transformVaccinationData(data: VaccinationApiType[]): VaccinationTableRow[] {
+function transformVaccinationData(
+  data: VaccinationApiType[],
+  openModal: (modal: React.ReactNode) => void,
+  closeModal: () => void
+): VaccinationTableRow[] {
   console.log('transformVaccinationData input:', data);
   const result = data.map((pet) => ({
     ownerAndContact: [
@@ -51,7 +56,13 @@ function transformVaccinationData(data: VaccinationApiType[]): VaccinationTableR
         name: 'View',
         type: 'view',
         icon: '/images/actions/view.svg',
-        onClick: () => {}
+        onClick: () => {
+          openModal(
+            <BaseModal onClose={closeModal}>
+              <ViewVaccinationsModal petId={pet.id} onClose={closeModal} />
+            </BaseModal>
+          );
+        }
       },
       {
         name: 'Edit',
@@ -102,10 +113,8 @@ const VaccinationsPage = () => {
   }, []);
 
   const transformedVaccinations = useMemo(() => {
-    const result = transformVaccinationData(vaccinations);
-    console.log('transformedVaccinations', result);
-    return result;
-  }, [vaccinations]);
+    return transformVaccinationData(vaccinations, openModal, closeModal);
+  }, [vaccinations, openModal, closeModal]);
 
   const filteredData = useMemo(() => {
     if (!search) return transformedVaccinations;

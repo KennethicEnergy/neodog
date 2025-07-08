@@ -1,0 +1,121 @@
+.modalContainer {
+  min-width: 600px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+  padding: 0 1rem;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 300px;
+}
+
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+  min-height: 200px;
+
+  p {
+    color: #888;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.noRecords {
+  text-align: center;
+  color: #888;
+  padding: 2rem;
+}
+
+.vaccineCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vaccineCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vaccineName {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.vaccineType {
+  color: #888;
+  font-size: 15px;
+}
+
+.vaccineStatus {
+  font-weight: 600;
+  font-size: 14px;
+  background: #f3f3f3;
+  border-radius: 16px;
+  padding: 4px 16px;
+  color: #888;
+}
+
+.vaccineDates {
+  margin-top: 8px;
+  color: #444;
+  font-size: 15px;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  background: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.vaccineDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vaccineActions {
+  display: flex;
+  gap: 1rem;
+
+  .actionButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+}
