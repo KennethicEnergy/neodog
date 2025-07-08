@@ -36,6 +36,17 @@ interface PetWithClient extends Pet {
   };
 }
 
+interface TransformedPet {
+  id: number;
+  name: string;
+  breed: string;
+  age: string;
+  owner: string;
+  lastVisit: string;
+  status: string;
+  image: string | null;
+}
+
 const ClientsAndPetsPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,7 +56,7 @@ const ClientsAndPetsPage = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { fetchClients, clients, isLoading: clientsLoading, deleteClient } = useClientStore();
-  const { fetchPets, pets, isLoading: petsLoading } = usePetStore();
+  const { fetchPets, pets, isLoading: petsLoading, deletePet } = usePetStore();
   const addToast = useToastStore((state) => state.addToast);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [petsView, setPetsView] = useState<'list' | 'tiles'>('tiles');
@@ -146,6 +157,67 @@ const ClientsAndPetsPage = () => {
     }
   };
 
+  const handleDeletePet = async (pet: TransformedPet) => {
+    try {
+      const result = await deletePet(pet.id);
+      if (result.success) {
+        closeModal();
+        addToast({
+          scheme: 'success',
+          title: 'Pet Deleted',
+          message: `${pet.name} was deleted successfully.`,
+          timeout: 2000
+        });
+        fetchPets(1, 10);
+      } else {
+        addToast({
+          scheme: 'danger',
+          title: 'Delete Failed',
+          message: result.message || 'Failed to delete pet.',
+          timeout: 4000
+        });
+      }
+    } catch (error) {
+      addToast({
+        scheme: 'danger',
+        title: 'Delete Error',
+        message: error instanceof Error ? error.message : 'Error deleting pet.',
+        timeout: 4000
+      });
+    }
+  };
+
+  const petActionButton = (pet: TransformedPet, type: 'view' | 'edit' | 'delete') => {
+    if (type === 'view') {
+      // Handle view pet - this will be handled in PetsTable component
+      return;
+    }
+    if (type === 'edit') {
+      // Handle edit pet - this will be handled in PetsTable component
+      return;
+    }
+    if (type === 'delete') {
+      openModal(
+        <BaseModal onClose={closeModal}>
+          <div className={styles.deleteModal}>
+            <h3>Delete Pet</h3>
+            <p>
+              Are you sure you want to delete <strong>{pet.name}</strong>?
+            </p>
+            <div className={styles.buttonGroup}>
+              <button className={styles.cancelButton} onClick={closeModal}>
+                Cancel
+              </button>
+              <button className={styles.deleteButton} onClick={() => handleDeletePet(pet)}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </BaseModal>
+      );
+    }
+  };
+
   const transformedPets = useMemo(() => {
     return (Array.isArray(pets) ? pets : []).map((pet) => {
       const petWithClient = pet as unknown as PetWithClient;
@@ -163,33 +235,7 @@ const ClientsAndPetsPage = () => {
             })
           : 'No visits',
         status: 'HEALTHY',
-        image: null,
-        actions: [
-          {
-            name: 'View',
-            type: 'view',
-            icon: '/images/actions/view.svg',
-            onClick: () => {
-              /* handle view pet */
-            }
-          },
-          {
-            name: 'Edit',
-            type: 'edit',
-            icon: '/images/actions/edit.svg',
-            onClick: () => {
-              /* handle edit pet */
-            }
-          },
-          {
-            name: 'Delete',
-            type: 'delete',
-            icon: '/images/actions/trash.svg',
-            onClick: () => {
-              /* handle delete pet */
-            }
-          }
-        ]
+        image: null
       };
     });
   }, [pets]);
@@ -373,7 +419,10 @@ const ClientsAndPetsPage = () => {
                 {activeTab === 'clients' ? (
                   <ClientsTable clients={filteredClients} />
                 ) : petsView === 'list' ? (
-                  <PetsTable pets={filteredPets} />
+                  <PetsTable
+                    pets={filteredPets}
+                    onDeletePet={(pet) => petActionButton(pet, 'delete')}
+                  />
                 ) : (
                   <PetsGrid pets={filteredPets} />
                 )}
