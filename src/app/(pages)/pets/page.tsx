@@ -1,8 +1,8 @@
 'use client';
-import ClientsAndPetsPage from '../clients-and-pets/page';
+import ClientsAndPetsShared from '../clients-and-pets/ClientsAndPetsShared';
 
 const PetsPage = () => {
-  return <ClientsAndPetsPage defaultTab="pets" />;
+  return <ClientsAndPetsShared defaultTab="pets" />;
 };
 
 export default PetsPage;
