@@ -12,15 +12,15 @@ import { usePetStore } from '@/store/pet.store';
 import { useToastStore } from '@/store/toast.store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
-import ClientDetailView from './components/ClientDetailView';
-import FilterControls from './components/FilterControls';
-import TabNavigation from './components/TabNavigation';
+import ClientDetailView from './components/clients/ClientDetailView';
+import FilterControls from './components/clients/FilterControls';
+import TabNavigation from './components/clients/TabNavigation';
 import styles from './page.module.scss';
 
 // Dynamic imports for better performance
-const ClientsTable = lazy(() => import('./components/ClientsTable'));
-const PetsTable = lazy(() => import('./components/PetsTable'));
-const PetsGrid = lazy(() => import('./components/PetsGrid'));
+const ClientsTable = lazy(() => import('./components/clients/ClientsTable'));
+const PetsTable = lazy(() => import('./components/pets/PetsTable'));
+const PetsGrid = lazy(() => import('./components/pets/PetsGrid'));
 
 interface Client extends BaseClient {
   pets_count?: number;

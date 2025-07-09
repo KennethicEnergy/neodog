@@ -1,4 +1,4 @@
-import { Pet } from '@/app/(pages)/clients-and-pets/components/types';
+import { Pet } from '@/app/(pages)/clients-and-pets/components/clients/types';
 import BaseModal from '@/components/common/base-modal';
 import { Button } from '@/components/common/button';
 import StatusTag from '@/components/common/status-tag';

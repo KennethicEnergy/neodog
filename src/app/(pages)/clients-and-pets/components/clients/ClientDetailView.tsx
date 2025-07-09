@@ -5,8 +5,10 @@ import { vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
 import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import styles from './ClientDetailView.module.scss';
+import ClientInfo from './ClientInfo';
+import ClientPets from './ClientPets';
+import ClientTabs from './ClientTabs';
 import { useTabLoading } from './hooks/useTabLoading';
-import { ClientInfo, ClientPets, ClientTabs } from './index';
 import { Client, Pet, VaccinationData } from './types';
 
 // Lazy load tab components for better performance

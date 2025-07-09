@@ -1,5 +1,6 @@
 import Icon from '@/components/common/icon';
-import petCardStyles from '../../clients-and-pets/components/PetCard.module.scss';
+import Loader from '@/components/common/loader';
+import petCardStyles from '../../clients-and-pets/components/pets/PetCard.module.scss';
 import styles from './VaccinationsMetrics.module.scss';
 
 interface MetricCard {
@@ -30,9 +31,7 @@ const VaccinationsMetrics = ({ metrics, loading = false }: VaccinationsMetricsPr
             />
           </div>
           <div className={styles.metricContent}>
-            <div className={styles.metricValue}>
-              {loading ? <div className={styles.skeletonValue}></div> : card.value}
-            </div>
+            <div className={styles.metricValue}>{loading ? <Loader /> : card.value}</div>
             <div className={styles.metricLabel}>{card.label}</div>
           </div>
         </div>
