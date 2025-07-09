@@ -47,12 +47,16 @@ interface TransformedPet {
   image: string | null;
 }
 
-const ClientsAndPetsPage = () => {
+interface ClientsAndPetsPageProps {
+  defaultTab?: 'pets' | 'clients';
+}
+
+const ClientsAndPetsPage: React.FC<ClientsAndPetsPageProps> = ({ defaultTab = 'clients' }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
-  const [activeTab, setActiveTab] = useState<'pets' | 'clients'>('clients');
+  const [activeTab, setActiveTab] = useState<'pets' | 'clients'>(defaultTab);
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { fetchClients, clients, isLoading: clientsLoading, deleteClient } = useClientStore();
@@ -316,6 +320,12 @@ const ClientsAndPetsPage = () => {
   const switchTab = (tab: 'pets' | 'clients') => {
     setActiveTab(tab);
     handleSearch('');
+    // Update the URL when switching tabs
+    if (tab === 'pets') {
+      router.push('/pets');
+    } else {
+      router.push('/clients');
+    }
   };
 
   const handleSearch = (query: string) => {

@@ -35,7 +35,7 @@ export const SIDEBAR_MENU_ITEMS: TMenuItem[] = [
   { name: 'Dashboard', route: '/', icon: '/images/sidebar-icons/dashboard-dark.svg' },
   {
     name: 'Client & Pets',
-    route: '/clients-and-pets',
+    route: '/clients',
     icon: '/images/sidebar-icons/pets-and-clients-dark.svg'
   },
   {

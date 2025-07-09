@@ -13,7 +13,10 @@ const Sidebar = () => {
     if (route === '/') {
       return pathname === '/';
     }
-    return pathname.startsWith(route);
+    if (route === '/clients') {
+      return pathname === '/clients' || pathname === '/pets';
+    }
+    return pathname === route || pathname.startsWith(route + '/');
   };
 
   const getIconPath = (iconPath: string, isActive: boolean) => {
