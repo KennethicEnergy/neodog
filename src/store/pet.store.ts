@@ -1,4 +1,4 @@
-import { Pet, petApi } from '@/services/pet.api';
+import { Pet, petApi, PetReference } from '@/services/pet.api';
 import { create } from 'zustand';
 
 interface PetSexReference {
@@ -34,8 +34,9 @@ interface PetState {
   isLoading: boolean;
   error: string | null;
   petSexReferences: PetSexReference[];
-  petClassificationReferences: PetClassificationReference[];
-  petSizeReferences: PetSizeReference[];
+  petBreedReferences: PetReference[];
+  petVaccinationStatusReferences: PetReference[];
+  petStatusReferences: PetReference[];
   fetchPets: (page?: number, paginate?: number) => Promise<void>;
   createPet: (data: Partial<Pet> | FormData) => Promise<{
     success: boolean;
@@ -54,6 +55,9 @@ export const usePetStore = create<PetState>((set, get) => ({
   isLoading: false,
   error: null,
   petSexReferences: [],
+  petBreedReferences: [],
+  petVaccinationStatusReferences: [],
+  petStatusReferences: [],
   petClassificationReferences: [],
   petSizeReferences: [],
 
@@ -244,42 +248,56 @@ export const usePetStore = create<PetState>((set, get) => ({
   fetchReferences: async () => {
     set({ isLoading: true, error: null });
     try {
-      const [sexRes, classificationRes, sizeRes] = await Promise.all([
-        petApi.getPetSexReferences(),
-        petApi.getPetClassificationReferences(),
-        petApi.getPetSizeReferences()
-      ]);
-
-      // Check if any response contains an error code
-      const responses = [sexRes, classificationRes, sizeRes];
-      for (const response of responses) {
-        if (response.data.code && response.data.code >= 400) {
-          const message = response.data.message || 'Failed to fetch references';
-          set({
-            error: message,
-            isLoading: false
-          });
-          return;
-        }
+      // Try to get from localStorage first
+      let breedReferences = null;
+      let sexReferences = null;
+      let vaccinationStatusReferences = null;
+      let statusReferences = null;
+      const breedCache = localStorage.getItem('petBreedReferences');
+      const sexCache = localStorage.getItem('petSexReferences');
+      const vaccinationStatusCache = localStorage.getItem('petVaccinationStatusReferences');
+      const statusCache = localStorage.getItem('petStatusReferences');
+      if (breedCache) {
+        breedReferences = JSON.parse(breedCache);
       }
-
-      // Success case
+      if (sexCache) {
+        sexReferences = JSON.parse(sexCache);
+      }
+      if (vaccinationStatusCache) {
+        vaccinationStatusReferences = JSON.parse(vaccinationStatusCache);
+      }
+      if (statusCache) {
+        statusReferences = JSON.parse(statusCache);
+      }
+      // If not in cache, fetch from petApi
+      if (!breedReferences) {
+        const breedRes = await petApi.getPetBreedReferences();
+        breedReferences = breedRes.data.result;
+        localStorage.setItem('petBreedReferences', JSON.stringify(breedReferences));
+      }
+      if (!sexReferences) {
+        const sexRes = await petApi.getPetSexReferences();
+        sexReferences = sexRes.data.result;
+        localStorage.setItem('petSexReferences', JSON.stringify(sexReferences));
+      }
+      if (!vaccinationStatusReferences) {
+        const vaccinationStatusRes = await petApi.getPetVaccinationStatusReferences();
+        vaccinationStatusReferences = vaccinationStatusRes.data.result;
+        localStorage.setItem(
+          'petVaccinationStatusReferences',
+          JSON.stringify(vaccinationStatusReferences)
+        );
+      }
+      if (!statusReferences) {
+        const statusRes = await petApi.getPetStatusReferences();
+        statusReferences = statusRes.data.result;
+        localStorage.setItem('petStatusReferences', JSON.stringify(statusReferences));
+      }
       set({
-        petSexReferences: sexRes.data.result.map((ref) => ({
-          ...ref,
-          created_at: null,
-          updated_at: null
-        })) as PetSexReference[],
-        petClassificationReferences: classificationRes.data.result.map((ref) => ({
-          ...ref,
-          created_at: null,
-          updated_at: null
-        })) as PetClassificationReference[],
-        petSizeReferences: sizeRes.data.result.map((ref) => ({
-          ...ref,
-          created_at: null,
-          updated_at: null
-        })) as PetSizeReference[],
+        petBreedReferences: breedReferences,
+        petSexReferences: sexReferences,
+        petVaccinationStatusReferences: vaccinationStatusReferences,
+        petStatusReferences: statusReferences,
         isLoading: false
       });
     } catch (error: unknown) {

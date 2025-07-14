@@ -69,13 +69,19 @@ export const petApi = {
     return apiClient.get<PetReferenceResponse>('/facility/pet-management/get-pet-sex-references');
   },
 
-  getPetClassificationReferences: async () => {
+  getPetVaccinationStatusReferences: async () => {
     return apiClient.get<PetReferenceResponse>(
-      '/facility/pet-management/get-pet-classification-references'
+      '/facility/pet-management/get-pet-vaccination-status-references'
     );
   },
 
-  getPetSizeReferences: async () => {
-    return apiClient.get<PetReferenceResponse>('/facility/pet-management/get-pet-size-references');
+  getPetStatusReferences: async () => {
+    return apiClient.get<PetReferenceResponse>(
+      '/facility/pet-management/get-pet-status-references'
+    );
+  },
+
+  getPetBreedReferences: async () => {
+    return apiClient.get<PetReferenceResponse>('/facility/pet-management/get-pet-breed-references');
   }
 };
