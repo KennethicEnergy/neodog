@@ -203,7 +203,7 @@ const AddPet = ({ clientId }: AddPetProps) => {
             vaccinationApi.getVaccinationStatusReferences,
             () => {} // Not used in this form
           ),
-          fetchClients() // Fetch clients when the modal opens
+          fetchClients(1, 999) // Fetch clients when the modal opens
         ]);
       } catch (error) {
         console.error('Error loading references:', error);

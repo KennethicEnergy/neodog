@@ -1,3 +1,4 @@
+import { Button } from '@/components/common/button';
 import { Client } from '@/services/client.api';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
@@ -271,18 +272,19 @@ const AddClient = ({ client }: { client?: Client }) => {
             </div>
           </div>
           <div className={styles.buttonContainer}>
-            <button className={styles.button} type="submit" disabled={isLoading || initialLoading}>
-              {isLoading ? (
-                <>
-                  <Loader />
-                  <span>{isEditing ? 'Updating Client...' : 'Adding Client...'}</span>
-                </>
-              ) : isEditing ? (
-                'Update Client'
-              ) : (
-                'Add Client'
-              )}
-            </button>
+            <Button
+              type="submit"
+              variant="default"
+              isLoading={isLoading || initialLoading}
+              disabled={isLoading || initialLoading}>
+              {isLoading || initialLoading
+                ? isEditing
+                  ? 'Updating Client...'
+                  : 'Adding Client...'
+                : isEditing
+                  ? 'Update Client'
+                  : 'Add Client'}
+            </Button>
           </div>
         </div>
       </form>
