@@ -37,6 +37,8 @@ interface PetState {
   petBreedReferences: PetReference[];
   petVaccinationStatusReferences: PetReference[];
   petStatusReferences: PetReference[];
+  petClassificationReferences: PetClassificationReference[];
+  petSizeReferences: PetSizeReference[];
   fetchPets: (page?: number, paginate?: number) => Promise<void>;
   createPet: (data: Partial<Pet> | FormData) => Promise<{
     success: boolean;
