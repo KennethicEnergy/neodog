@@ -63,7 +63,7 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
   const { fetchPets, pets, isLoading: petsLoading, deletePet } = usePetStore();
   const addToast = useToastStore((state) => state.addToast);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-  const [petsView, setPetsView] = useState<'list' | 'tiles'>('tiles');
+  const [petsView, setPetsView] = useState<'list' | 'tiles'>('list');
   const pathname = usePathname();
 
   // Combined loading state
@@ -227,11 +227,15 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
   const transformedPets = useMemo(() => {
     return (Array.isArray(pets) ? pets : []).map((pet) => {
       const petWithClient = pet as unknown as PetWithClient;
+
+      const ageValue = pet.age || '';
+      const formattedAge = ageValue.includes('years') ? ageValue : `${ageValue} years`;
+
       return {
         id: pet.id,
         name: pet.name,
-        breed: pet.breed,
-        age: `${pet.age} years`,
+        breed: pet.breed || 'Unknown Breed', // Add fallback for undefined breed
+        age: formattedAge,
         owner: `${petWithClient?.client?.first_name} ${petWithClient?.client?.middle_name ? petWithClient?.client?.middle_name + ' ' : ''}${petWithClient?.client?.last_name}`,
         lastVisit: pet.created_at
           ? new Date(pet.created_at).toLocaleDateString('en-US', {

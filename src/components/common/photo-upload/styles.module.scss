@@ -1,0 +1,177 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.uploadCircle {
+  position: relative;
+  border-radius: 50%;
+  border: 2px dashed #d1d5db;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+
+    .overlay {
+      opacity: 1;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  &.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+
+    &:hover {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+    }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      border-color: #d1d5db;
+      background-color: #f9fafb;
+
+      .overlay {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+// Size variants
+.sm {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+}
+
+.md {
+  width: 120px;
+  height: 120px;
+  min-width: 120px;
+  min-height: 120px;
+}
+
+.lg {
+  width: 160px;
+  height: 160px;
+  min-width: 160px;
+  min-height: 160px;
+}
+
+.previewImage {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px;
+  text-align: center;
+}
+
+.placeholderIcon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
+
+  .small & {
+    width: 20px;
+    height: 20px;
+  }
+
+  .large & {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.placeholderText {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.2;
+  position: absolute;
+
+  .sm & {
+    font-size: 10px;
+  }
+
+  .lg & {
+    font-size: 14px;
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  border-radius: 50%;
+}
+
+.overlayText {
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  padding: 0 8px;
+
+  .sm & {
+    font-size: 10px;
+  }
+
+  .lg & {
+    font-size: 14px;
+  }
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.helperText {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+  line-height: 1.4;
+
+  &.errorText {
+    color: #ef4444;
+  }
+}

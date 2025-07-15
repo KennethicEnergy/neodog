@@ -1,10 +1,13 @@
 import { Pet } from '@/app/(pages)/clients-and-pets/components/clients/types';
 import BaseModal from '@/components/common/base-modal';
 import { Button } from '@/components/common/button';
+import Loader from '@/components/common/loader';
 import StatusTag from '@/components/common/status-tag';
+import { petApi } from '@/services/pet.api';
 import { useModalStore } from '@/store/modal-store';
+import { useToastStore } from '@/store/toast.store';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddNotesModal from '../add-notes';
 import styles from './pet-modal.module.scss';
 
@@ -12,6 +15,34 @@ interface PetModalProps {
   pet: Pet;
   onClose: () => void;
   onEdit?: () => void;
+}
+
+interface ActualPetData {
+  id: number;
+  client_id: string;
+  name: string;
+  breed: string;
+  pet_breed_id: string;
+  pet_sex_id: string;
+  neutered: string;
+  pet_classification_id: string;
+  age: string;
+  color: string;
+  pet_size_id: string;
+  microchip_number: string;
+  photo?: File;
+  belongings: string;
+  allergies_notes: string;
+  medication_notes: string;
+  diet_notes: string;
+  notes: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface ReferenceData {
+  value: string;
+  label: string;
 }
 
 const TABS = [
@@ -101,8 +132,64 @@ const mockVaccinations = [
 
 const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
   const [activeTab, setActiveTab] = useState('Info');
+  const [actualPetData, setActualPetData] = useState<ActualPetData | null>(null);
+  const [loading, setLoading] = useState(true);
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
+  const addToast = useToastStore((state) => state.addToast);
+
+  // Helper function to get reference data from localStorage
+  const getReferenceData = (cacheKey: string): ReferenceData[] => {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsedData = JSON.parse(cached);
+        return parsedData.data || [];
+      }
+    } catch (error) {
+      console.error(`Error parsing ${cacheKey}:`, error);
+    }
+    return [];
+  };
+
+  // Helper function to get reference name by ID
+  const getReferenceName = (cacheKey: string, id: string): string => {
+    const references = getReferenceData(cacheKey);
+    const reference = references.find((ref) => ref.value === id);
+    return reference?.label || 'Unknown';
+  };
+
+  // Fetch actual pet data
+  useEffect(() => {
+    const fetchPetData = async () => {
+      try {
+        setLoading(true);
+        const response = await petApi.findById(pet.id);
+        if (response.data.code === 200) {
+          setActualPetData(response.data.result as ActualPetData);
+        } else {
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: 'Failed to load pet details.',
+            timeout: 4000
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching pet data:', error);
+        addToast({
+          scheme: 'danger',
+          title: 'Error',
+          message: 'Failed to load pet details.',
+          timeout: 4000
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPetData();
+  }, [pet.id, addToast]);
 
   const getVaccinationStatusClass = (status: string) => {
     switch (status?.toUpperCase()) {
@@ -195,34 +282,48 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
               {activeTab === 'Info' && (
                 <div className={styles.infoSection}>
                   <h3>Pet Information</h3>
-                  <div className={styles.infoGrid}>
-                    <div>
-                      <div className={styles.label}>Name</div>
-                      <div className={styles.value}>{pet.name}</div>
+                  {loading ? (
+                    <div className={styles.loadingWrapper}>
+                      <Loader />
                     </div>
-                    <div>
-                      <div className={styles.label}>Breed</div>
-                      <div className={styles.value}>{pet.breed}</div>
+                  ) : (
+                    <div className={styles.infoGrid}>
+                      <div>
+                        <div className={styles.label}>Name</div>
+                        <div className={styles.value}>{actualPetData?.name || pet.name}</div>
+                      </div>
+                      <div>
+                        <div className={styles.label}>Breed</div>
+                        <div className={styles.value}>
+                          {actualPetData?.pet_breed_id
+                            ? getReferenceName('pet_breed_references', actualPetData.pet_breed_id)
+                            : actualPetData?.breed || pet.breed || 'Unknown Breed'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className={styles.label}>Age</div>
+                        <div className={styles.value}>
+                          {actualPetData?.age || pet.age || 'Unknown'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className={styles.label}>Sex</div>
+                        <div className={styles.value}>
+                          {actualPetData?.pet_sex_id
+                            ? getReferenceName('pet_sex_references', actualPetData.pet_sex_id)
+                            : 'Unknown'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className={styles.label}>Weight</div>
+                        <div className={styles.value}>Not Available</div>
+                      </div>
+                      <div>
+                        <div className={styles.label}>Color</div>
+                        <div className={styles.value}>{actualPetData?.color || 'Unknown'}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className={styles.label}>Age</div>
-                      <div className={styles.value}>{pet.age}</div>
-                    </div>
-                    <div>
-                      <div className={styles.label}>Sex</div>
-                      <div className={styles.value}>Female</div> {/* TODO: Replace with real sex */}
-                    </div>
-                    <div>
-                      <div className={styles.label}>Weight</div>
-                      <div className={styles.value}>28 kg.</div>{' '}
-                      {/* TODO: Replace with real weight */}
-                    </div>
-                    <div>
-                      <div className={styles.label}>Color</div>
-                      <div className={styles.value}>Golden</div>{' '}
-                      {/* TODO: Replace with real color */}
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
               {activeTab === 'Notes' && (

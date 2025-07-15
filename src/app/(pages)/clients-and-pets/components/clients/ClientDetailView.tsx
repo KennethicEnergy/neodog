@@ -2,7 +2,9 @@ import BaseModal from '@/components/common/base-modal';
 import Loader from '@/components/common/loader';
 import AddPet from '@/components/modals/add-pet';
 import { vaccinationApi } from '@/services/vaccination.api';
+import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal-store';
+import { useToastStore } from '@/store/toast.store';
 import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import styles from './ClientDetailView.module.scss';
 import ClientInfo from './ClientInfo';
@@ -30,6 +32,8 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
   const [vaccinationsLoading, setVaccinationsLoading] = useState(false);
 
   const { tabLoading, loadingTab, switchTab } = useTabLoading();
+  const { isAuthenticated } = useAuthStore();
+  const addToast = useToastStore((state) => state.addToast);
 
   // Fetch vaccination data
   useEffect(() => {
@@ -45,10 +49,16 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
         .catch((error) => {
           console.error('Vaccination API Error:', error);
           setVaccinations([]);
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: 'Failed to load vaccination records. Please try again.',
+            timeout: 4000
+          });
         })
         .finally(() => setVaccinationsLoading(false));
     }
-  }, [selectedTab]);
+  }, [selectedTab, addToast]);
 
   // Filter vaccinations for current client
   const filteredVaccinations = useMemo(() => {
@@ -92,6 +102,17 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ client, pets, onBac
   }, [vaccinations, client, selectedTab]);
 
   const addPet = ({ clientId }: { clientId: string }) => {
+    // Check authentication before opening modal
+    if (!isAuthenticated) {
+      addToast({
+        scheme: 'warning',
+        title: 'Authentication Required',
+        message: 'Please log in to add new pets.',
+        timeout: 4000
+      });
+      return;
+    }
+
     openModal(
       <BaseModal onClose={closeModal}>
         <AddPet clientId={clientId} />

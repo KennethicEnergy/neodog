@@ -1,5 +1,8 @@
+import BaseModal from '@/components/common/base-modal';
 import Table from '@/components/common/table';
+import AddPet from '@/components/modals/add-pet';
 import PetModal from '@/components/modals/pet-modal';
+import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal-store';
 import { useToastStore } from '@/store/toast.store';
 
@@ -33,6 +36,7 @@ const PET_HEADERS = [
 const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
+  const { isAuthenticated } = useAuthStore();
   const addToast = useToastStore((state) => state.addToast);
 
   const handleViewPet = (pet: TransformedPet) => {
@@ -40,14 +44,22 @@ const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
   };
 
   const handleEditPet = () => {
-    // For now, we'll reuse the add pet modal with pre-filled data
-    // TODO: Create a dedicated edit pet modal
-    addToast({
-      scheme: 'primary',
-      title: 'Edit Pet',
-      message: 'Edit functionality will be implemented soon',
-      timeout: 3000
-    });
+    // Check authentication before opening modal
+    if (!isAuthenticated) {
+      addToast({
+        scheme: 'warning',
+        title: 'Authentication Required',
+        message: 'Please log in to edit pets.',
+        timeout: 4000
+      });
+      return;
+    }
+
+    openModal(
+      <BaseModal onClose={closeModal}>
+        <AddPet />
+      </BaseModal>
+    );
   };
 
   const handleDeletePet = (pet: TransformedPet) => {

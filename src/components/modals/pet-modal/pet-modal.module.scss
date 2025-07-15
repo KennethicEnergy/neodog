@@ -21,6 +21,14 @@
   align-items: flex-start;
 }
 
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .headerTitle {
   font-size: 1.5rem;
   font-weight: 700;

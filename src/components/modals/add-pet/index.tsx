@@ -1,5 +1,15 @@
+import { Button } from '@/components/common/button';
+import { DatePicker } from '@/components/common/date-picker';
+import { Input } from '@/components/common/input';
 import Loader from '@/components/common/loader';
+import PhotoUpload from '@/components/common/photo-upload';
+import { Select, SelectOption } from '@/components/common/select';
+import { Textarea } from '@/components/common/textarea';
 import { createMultiMessageToast } from '@/components/common/toast';
+import { Toggle } from '@/components/common/toggle';
+import { petApi } from '@/services/pet.api';
+import { vaccinationApi } from '@/services/vaccination.api';
+import { useAuthStore } from '@/store/auth.store';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { usePetStore } from '@/store/pet.store';
@@ -7,62 +17,194 @@ import { useToastStore } from '@/store/toast.store';
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 
-interface PetForm {
+export interface PetFormData {
   client_id: string;
+  photo?: File | null;
   name: string;
-  breed: string;
+  pet_breed_id: string;
+  date_of_birth: string;
   pet_sex_id: string;
-  neutered: string;
-  pet_classification_id: string;
-  age: string;
-  color: string;
-  pet_size_id: string;
+  color_or_markings: string;
+  weight: string;
+  height: string;
   microchip_number: string;
-  photo: File | null;
-  belongings: string;
-  allergies_notes: string;
-  medication_notes: string;
-  diet_notes: string;
-  notes: string;
+  enrollment_date: string;
+  spayed_or_neutered: boolean;
+  emergency_contact_name: string;
+  e_c_phone_number: string;
+  veterinarian_name: string;
+  v_phone_number: string;
+  handling_instruction: string;
+  behavioral_notes: string;
+  care_preferences: string;
+  feeding_instructions: string;
+  walking_preferences: string;
+  favorite_toys: string;
+  allergies: string;
+  current_medications: string;
+  medical_conditions: string;
+  admin_and_logistics: string;
+  pet_status_id: string;
 }
 
-const AddPet = ({ clientId }: { clientId?: string }) => {
+interface AddPetProps {
+  clientId?: string;
+}
+
+const AddPet = ({ clientId }: AddPetProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
-  const [form, setForm] = useState<PetForm>({
+  const { clients, fetchClients } = useClientStore();
+  const { createPet, isLoading: petsLoading } = usePetStore();
+  const [form, setForm] = useState<PetFormData>({
     client_id: clientId || '',
-    name: '',
-    breed: '',
-    pet_sex_id: '',
-    neutered: '',
-    pet_classification_id: '',
-    age: '',
-    color: '',
-    pet_size_id: '',
-    microchip_number: '',
     photo: null,
-    belongings: '',
-    allergies_notes: '',
-    medication_notes: '',
-    diet_notes: '',
-    notes: ''
+    name: '',
+    pet_breed_id: '',
+    date_of_birth: '',
+    pet_sex_id: '',
+    color_or_markings: '',
+    weight: '',
+    height: '',
+    microchip_number: '',
+    enrollment_date: '',
+    spayed_or_neutered: false,
+    emergency_contact_name: '',
+    e_c_phone_number: '',
+    veterinarian_name: '',
+    v_phone_number: '',
+    handling_instruction: '',
+    behavioral_notes: '',
+    care_preferences: '',
+    feeding_instructions: '',
+    walking_preferences: '',
+    favorite_toys: '',
+    allergies: '',
+    current_medications: '',
+    medical_conditions: '',
+    admin_and_logistics: '',
+    pet_status_id: ''
   });
 
-  const { clients, isLoading: clientsLoading } = useClientStore();
-  const { createPet, isLoading: petsLoading, petSexReferences, fetchReferences } = usePetStore();
-
-  const [ageError, setAgeError] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [initialLoading, setInitialLoading] = useState(true);
 
-  // Combined loading states
-  const isLoading = petsLoading || clientsLoading;
-  const isInitialLoading = initialLoading || petSexReferences.length === 0;
+  // Reference data with localStorage caching
+  const [breedOptions, setBreedOptions] = useState<SelectOption[]>([]);
+  const [sexOptions, setSexOptions] = useState<SelectOption[]>([]);
+  const [statusOptions, setStatusOptions] = useState<SelectOption[]>([]);
+
+  // Authentication check
+  const { isAuthenticated } = useAuthStore();
+
+  // Client options
+  const clientOptions: SelectOption[] =
+    clients?.map((client) => ({
+      value: client.id,
+      label: `${client.first_name} ${client.last_name}`
+    })) || [];
+
+  // Helper function to get cached data or fetch from API
+  const getCachedOrFetchData = async (
+    cacheKey: string,
+    fetchFunction: () => Promise<{ data: { result: Array<{ id: number; name: string }> } }>,
+    setterFunction: (data: SelectOption[]) => void
+  ) => {
+    try {
+      // Check if we have cached data
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsedData = JSON.parse(cached);
+        const now = Date.now();
+        // Cache for 1 hour (3600000 ms)
+        if (now - parsedData.timestamp < 3600000) {
+          setterFunction(parsedData.data);
+          return;
+        }
+      }
+
+      // Check if user is authenticated before making API call
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.warn(`No authentication token found for ${cacheKey}`);
+        // Try to use cached data even if expired
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          const parsedData = JSON.parse(cached);
+          setterFunction(parsedData.data);
+        }
+        return;
+      }
+
+      // Fetch fresh data
+      const response = await fetchFunction();
+      const data = response.data?.result || [];
+      const options = data.map((item: { id: number; name: string }) => ({
+        value: item.id.toString(),
+        label: item.name
+      }));
+
+      // Cache the data
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({
+          data: options,
+          timestamp: Date.now()
+        })
+      );
+
+      setterFunction(options);
+    } catch (error: unknown) {
+      console.error(`Error fetching ${cacheKey}:`, error);
+
+      // Handle authentication errors specifically
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 401) {
+        console.warn(`Authentication error for ${cacheKey}, using cached data if available`);
+        addToast({
+          scheme: 'warning',
+          title: 'Authentication Required',
+          message: 'Please log in again to access fresh data.',
+          timeout: 4000
+        });
+      }
+
+      // Try to use cached data even if expired
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        try {
+          const parsedData = JSON.parse(cached);
+          setterFunction(parsedData.data);
+        } catch (parseError) {
+          console.error(`Error parsing cached data for ${cacheKey}:`, parseError);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     const loadInitialData = async () => {
       setInitialLoading(true);
       try {
-        await fetchReferences();
+        await Promise.all([
+          getCachedOrFetchData(
+            'pet_breed_references',
+            petApi.getPetBreedReferences,
+            setBreedOptions
+          ),
+          getCachedOrFetchData('pet_sex_references', petApi.getPetSexReferences, setSexOptions),
+          getCachedOrFetchData(
+            'pet_status_references',
+            petApi.getPetStatusReferences,
+            setStatusOptions
+          ),
+          getCachedOrFetchData(
+            'pet_vaccination_status_references',
+            vaccinationApi.getVaccinationStatusReferences,
+            () => {} // Not used in this form
+          ),
+          fetchClients() // Fetch clients when the modal opens
+        ]);
       } catch (error) {
         console.error('Error loading references:', error);
         addToast({
@@ -77,107 +219,109 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
     };
 
     loadInitialData();
-  }, [fetchReferences, addToast]);
+  }, [addToast, fetchClients]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === 'age') {
-      // Only allow digits
-      if (!/^\d*$/.test(value)) {
-        setAgeError('Age must be a number');
-      } else {
-        setAgeError('');
-      }
+  // Check authentication after all hooks are declared
+  useEffect(() => {
+    if (!isAuthenticated) {
+      addToast({
+        scheme: 'warning',
+        title: 'Authentication Required',
+        message: 'Please log in to access this feature.',
+        timeout: 4000
+      });
+      closeModal();
     }
-    setForm((prev) => ({ ...prev, [name]: value }));
+  }, [isAuthenticated, addToast, closeModal]);
+
+  // Don't render if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!form.client_id) newErrors.client_id = 'Client is required';
+    if (!form.name) newErrors.name = 'Pet name is required';
+    if (!form.pet_breed_id) newErrors.pet_breed_id = 'Breed is required';
+    if (!form.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
+    if (!form.pet_sex_id) newErrors.pet_sex_id = 'Sex is required';
+    if (!form.color_or_markings) newErrors.color_or_markings = 'Color/markings is required';
+    if (!form.weight) newErrors.weight = 'Weight is required';
+    if (!form.height) newErrors.height = 'Height is required';
+    if (!form.enrollment_date) newErrors.enrollment_date = 'Enrollment date is required';
+    if (!form.pet_status_id) newErrors.pet_status_id = 'Status is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (file) {
-      // Check file size (2MB = 2 * 1024 * 1024 bytes)
-      if (file.size > 2 * 1024 * 1024) {
-        addToast({
-          scheme: 'danger',
-          title: 'File Too Large',
-          message: 'Photo must be less than 2MB',
-          timeout: 3000
-        });
-        e.target.value = '';
-        setForm((prev) => ({ ...prev, photo: null }));
-        return;
-      }
+  const handleInputChange = (field: keyof PetFormData, value: string | boolean | File | null) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
-    setForm((prev) => ({ ...prev, photo: file }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!/^\d+$/.test(form.age)) {
-      setAgeError('Age must be a number');
+
+    if (!validateForm()) {
       return;
     }
-    setAgeError('');
 
-    // Create FormData for file upload
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value !== null && value !== '') {
-        if (key === 'photo' && value instanceof File) {
-          formData.append(key, value);
-        } else if (key !== 'photo') {
-          formData.append(key, String(value));
+    try {
+      const formData = new FormData();
+
+      // Append all form fields to FormData
+      Object.entries(form).forEach(([key, value]) => {
+        if (value !== null && value !== '') {
+          if (key === 'photo' && value instanceof File) {
+            formData.append(key, value);
+          } else if (key === 'spayed_or_neutered') {
+            formData.append(key, value ? '1' : '0');
+          } else if (key !== 'photo') {
+            formData.append(key, String(value));
+          }
+        }
+      });
+
+      const result = await createPet(formData);
+
+      if (result.success) {
+        addToast({
+          scheme: 'success',
+          title: 'Success',
+          message: 'Pet created successfully',
+          timeout: 3000
+        });
+        closeModal();
+      } else {
+        if (result.fieldErrors) {
+          const errorMessages = Object.values(result.fieldErrors).flat();
+          addToast(createMultiMessageToast('danger', 'Validation Error', errorMessages, 5000));
+        } else if (result.message) {
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: result.message,
+            timeout: 5000
+          });
         }
       }
-    });
-
-    const result = await createPet(formData);
-    console.log(result);
-    if (result.success) {
+    } catch (error) {
+      console.error('Error submitting form:', error);
       addToast({
-        scheme: 'success',
-        title: 'Success',
-        message: 'Pet created successfully',
-        timeout: 3000
+        scheme: 'danger',
+        title: 'Error',
+        message: 'Failed to save pet. Please try again.',
+        timeout: 5000
       });
-      setForm({
-        client_id: '',
-        name: '',
-        breed: '',
-        pet_sex_id: '',
-        neutered: '',
-        pet_classification_id: '',
-        age: '',
-        color: '',
-        pet_size_id: '',
-        microchip_number: '',
-        photo: null,
-        belongings: '',
-        allergies_notes: '',
-        medication_notes: '',
-        diet_notes: '',
-        notes: ''
-      });
-      closeModal();
-    } else {
-      // Handle validation errors
-      if (result.fieldErrors) {
-        const errorMessages = Object.values(result.fieldErrors).flat();
-        addToast(createMultiMessageToast('danger', 'Validation Error', errorMessages, 5000));
-      } else if (result.message) {
-        addToast({
-          scheme: 'danger',
-          title: 'Error',
-          message: result.message,
-          timeout: 5000
-        });
-      }
     }
   };
 
-  if (isInitialLoading) {
+  if (initialLoading) {
     return (
       <div className={styles.modalContainer}>
         <div className={styles.loadingWrapper}>
@@ -190,43 +334,84 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
 
   return (
     <div className={styles.modalContainer}>
-      <h2 className={styles.header}>Add Pet</h2>
+      <h3 className={styles.header}>Add Pet</h3>
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
-          <div className={styles.sectionTitle}>Pet Information</div>
-
+          <div className={styles.sectionTitle}>Owner Information</div>
           <div className={styles.formGroup}>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="client_id">
-                Owner
+                Client/Owner
               </label>
-              <select
+              <Select
                 id="client_id"
-                className={styles.input}
-                name="client_id"
+                options={clientOptions}
+                placeholder="Select client"
                 value={form.client_id}
-                onChange={handleChange}
-                disabled={!!clientId || isLoading}
-                required>
-                <option value="">Select Owner</option>
-                {clients?.map((client) => (
-                  <option key={client.id} value={client.id}>
-                    {`${client.first_name} ${client.last_name}`}
-                  </option>
-                ))}
-              </select>
+                onValueChange={(value) => handleInputChange('client_id', value)}
+                error={!!errors.client_id}
+                helperText={errors.client_id}
+                required
+                disabled={!!clientId}
+              />
             </div>
+          </div>
+
+          <div className={styles.sectionTitle}>Pet Details</div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="photo">
+                Photo
+              </label>
+              <PhotoUpload
+                id="photo"
+                size="sm"
+                value={form.photo}
+                onChange={(file) => {
+                  if (file && file.size > 2 * 1024 * 1024) {
+                    addToast({
+                      scheme: 'danger',
+                      title: 'File Too Large',
+                      message: 'Photo must be less than 2MB',
+                      timeout: 3000
+                    });
+                    return;
+                  }
+                  handleInputChange('photo', file);
+                }}
+                helperText="Accepted formats: JPEG, PNG, JPG, GIF, SVG, WebP (max 2MB)"
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="name">
                 Pet Name
               </label>
-              <input
+              <Input
                 id="name"
-                className={styles.input}
-                type="text"
-                name="name"
+                placeholder="Enter pet's name"
                 value={form.name}
-                onChange={handleChange}
+                onValueChange={(value) => handleInputChange('name', value)}
+                error={!!errors.name}
+                helperText={errors.name}
+                required
+              />
+            </div>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="pet_breed_id">
+                Breed
+              </label>
+              <Select
+                id="pet_breed_id"
+                options={breedOptions}
+                placeholder="Select breed"
+                value={form.pet_breed_id}
+                onValueChange={(value) => handleInputChange('pet_breed_id', value)}
+                error={!!errors.pet_breed_id}
+                helperText={errors.pet_breed_id}
                 required
               />
             </div>
@@ -234,16 +419,16 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="breed">
-                Breed
+              <label className={styles.label} htmlFor="date_of_birth">
+                Date of Birth
               </label>
-              <input
-                id="breed"
-                className={styles.input}
-                type="text"
-                name="breed"
-                value={form.breed}
-                onChange={handleChange}
+              <DatePicker
+                value={form.date_of_birth}
+                onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
+                placeholder="MM/DD/YYYY"
+                max={new Date().toISOString().split('T')[0]}
+                error={!!errors.date_of_birth}
+                helperText={errors.date_of_birth}
                 required
               />
             </div>
@@ -251,87 +436,46 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
               <label className={styles.label} htmlFor="pet_sex_id">
                 Sex
               </label>
-              <select
+              <Select
                 id="pet_sex_id"
-                className={styles.input}
-                name="pet_sex_id"
+                options={sexOptions}
+                placeholder="Select sex"
                 value={form.pet_sex_id}
-                onChange={handleChange}
-                required>
-                <option value="">Select Sex</option>
-                {petSexReferences.map((sex) => (
-                  <option key={sex.id} value={sex.id}>
-                    {sex.name}
-                  </option>
-                ))}
-              </select>
+                onValueChange={(value) => handleInputChange('pet_sex_id', value)}
+                error={!!errors.pet_sex_id}
+                helperText={errors.pet_sex_id}
+                required
+              />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="neutered">
-                Neutered
+              <label className={styles.label} htmlFor="color_or_markings">
+                Color/Markings
               </label>
-              <select
-                id="neutered"
-                className={styles.input}
-                name="neutered"
-                value={form.neutered}
-                onChange={handleChange}
-                required>
-                <option value="">Select</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
+              <Input
+                id="color_or_markings"
+                placeholder="e.g. Golden with white markings"
+                value={form.color_or_markings}
+                onValueChange={(value) => handleInputChange('color_or_markings', value)}
+                error={!!errors.color_or_markings}
+                helperText={errors.color_or_markings}
+                required
+              />
             </div>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="pet_classification_id">
-                Classification
+              <label className={styles.label} htmlFor="weight">
+                Weight
               </label>
-              <select
-                id="pet_classification_id"
-                className={styles.input}
-                name="pet_classification_id"
-                value={form.pet_classification_id}
-                onChange={handleChange}
-                required>
-                <option value="">Select Classification</option>
-              </select>
-            </div>
-          </div>
-
-          <div className={styles.formGroup}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="age">
-                Age
-              </label>
-              <input
-                id="age"
-                className={styles.input}
+              <Input
+                id="weight"
                 type="number"
-                name="age"
-                value={form.age}
-                onChange={handleChange}
-                pattern="\\d*"
-                inputMode="numeric"
-                min="0"
-                required
-                aria-invalid={!!ageError}
-              />
-              {ageError && <div style={{ color: 'red', fontSize: 12 }}>{ageError}</div>}
-            </div>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="color">
-                Color
-              </label>
-              <input
-                id="color"
-                className={styles.input}
-                type="text"
-                name="color"
-                value={form.color}
-                onChange={handleChange}
+                placeholder="e.g. 25kg. or 55 lbs."
+                value={form.weight}
+                onValueChange={(value) => handleInputChange('weight', value)}
+                error={!!errors.weight}
+                helperText={errors.weight}
                 required
               />
             </div>
@@ -339,155 +483,298 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="pet_size_id">
-                Size
+              <label className={styles.label} htmlFor="height">
+                Height
               </label>
-              <select
-                id="pet_size_id"
-                className={styles.input}
-                name="pet_size_id"
-                value={form.pet_size_id}
-                onChange={handleChange}
-                required>
-                <option value="">Select Size</option>
-              </select>
+              <Input
+                id="height"
+                type="number"
+                placeholder="e.g. 60 cm. or 24 in."
+                value={form.height}
+                onValueChange={(value) => handleInputChange('height', value)}
+                error={!!errors.height}
+                helperText={errors.height}
+                required
+              />
             </div>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="microchip_number">
                 Microchip Number
               </label>
-              <input
+              <Input
                 id="microchip_number"
-                className={styles.input}
-                type="text"
-                name="microchip_number"
+                placeholder="00000000000000"
                 value={form.microchip_number}
-                onChange={handleChange}
-                required
+                onValueChange={(value) => handleInputChange('microchip_number', value)}
               />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="photo">
-                Photo
+              <label className={styles.label} htmlFor="enrollment_date">
+                Enrollment Date
               </label>
-              <input
-                id="photo"
-                className={styles.input}
-                type="file"
-                name="photo"
-                accept="image/jpeg,image/png,image/jpg,image/gif,image/svg+xml,image/webp"
-                onChange={handleFileChange}
-              />
-              <small style={{ fontSize: '12px', color: '#666' }}>
-                Accepted formats: JPEG, PNG, JPG, GIF, SVG, WebP (max 2MB)
-              </small>
-            </div>
-          </div>
-
-          <div className={styles.formGroup}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="belongings">
-                Belongings
-              </label>
-              <input
-                id="belongings"
-                className={styles.input}
-                type="text"
-                name="belongings"
-                value={form.belongings}
-                onChange={handleChange}
+              <DatePicker
+                value={form.enrollment_date}
+                onChange={(e) => handleInputChange('enrollment_date', e.target.value)}
+                placeholder="MM/DD/YYYY"
+                max={new Date().toISOString().split('T')[0]}
+                error={!!errors.enrollment_date}
+                helperText={errors.enrollment_date}
                 required
               />
             </div>
-          </div>
-
-          <div className={styles.sectionTitle}>Notes</div>
-
-          <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="allergies_notes">
-                Allergies Notes
+              <label className={styles.label} htmlFor="spayed_or_neutered">
+                Spayed/Neutered
               </label>
-              <textarea
-                id="allergies_notes"
-                className={styles.textarea}
-                name="allergies_notes"
-                value={form.allergies_notes}
-                onChange={handleChange}
-                style={{ resize: 'none' }}
-                required
+              <Toggle
+                id="spayed_or_neutered"
+                checked={form.spayed_or_neutered}
+                onCheckedChange={(checked) => handleInputChange('spayed_or_neutered', checked)}
+                label="Spayed/Neutered"
               />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="medication_notes">
-                Medication Notes
+              <label className={styles.label} htmlFor="pet_status_id">
+                Pet Status
               </label>
-              <textarea
-                id="medication_notes"
-                className={styles.textarea}
-                name="medication_notes"
-                value={form.medication_notes}
-                onChange={handleChange}
-                style={{ resize: 'none' }}
+              <Select
+                id="pet_status_id"
+                options={statusOptions}
+                placeholder="Select status"
+                value={form.pet_status_id}
+                onValueChange={(value) => handleInputChange('pet_status_id', value)}
+                error={!!errors.pet_status_id}
+                helperText={errors.pet_status_id}
                 required
+              />
+            </div>
+          </div>
+
+          {/* Contact Information Section */}
+          <div className={styles.sectionTitle}>Contact Information</div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="emergency_contact_name">
+                Emergency Contact
+              </label>
+              <Input
+                id="emergency_contact_name"
+                placeholder="Contact Name"
+                value={form.emergency_contact_name}
+                onValueChange={(value) => handleInputChange('emergency_contact_name', value)}
+              />
+            </div>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="e_c_phone_number">
+                Phone Number
+              </label>
+              <Input
+                id="e_c_phone_number"
+                placeholder="(000) 000-0000"
+                value={form.e_c_phone_number}
+                onValueChange={(value) => handleInputChange('e_c_phone_number', value)}
               />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="diet_notes">
-                Diet Notes
+              <label className={styles.label} htmlFor="veterinarian_name">
+                Veterinarian
               </label>
-              <textarea
-                id="diet_notes"
-                className={styles.textarea}
-                name="diet_notes"
-                value={form.diet_notes}
-                onChange={handleChange}
-                style={{ resize: 'none' }}
-                required
+              <Input
+                id="veterinarian_name"
+                placeholder="Vet Name"
+                value={form.veterinarian_name}
+                onValueChange={(value) => handleInputChange('veterinarian_name', value)}
+              />
+            </div>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="v_phone_number">
+                Phone Number
+              </label>
+              <Input
+                id="v_phone_number"
+                placeholder="(000) 000-0000"
+                value={form.v_phone_number}
+                onValueChange={(value) => handleInputChange('v_phone_number', value)}
               />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <div className={styles.col}>
-              <label className={styles.label} htmlFor="notes">
-                Additional Notes
+              <label className={styles.label} htmlFor="handling_instruction">
+                Special Handling Requirements
               </label>
-              <textarea
-                id="notes"
-                className={styles.textarea}
-                name="notes"
-                value={form.notes}
-                onChange={handleChange}
-                style={{ resize: 'none' }}
-                required
+              <Textarea
+                id="handling_instruction"
+                placeholder="Special handling requirements or precautions"
+                value={form.handling_instruction}
+                onValueChange={(value) => handleInputChange('handling_instruction', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          {/* Behavioral Notes Section */}
+          <div className={styles.sectionTitle}>Behavioral Notes</div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="behavioral_notes">
+                Behavioral Notes
+              </label>
+              <Textarea
+                id="behavioral_notes"
+                placeholder="Behavioral traits, temperament, and social preferences"
+                value={form.behavioral_notes}
+                onValueChange={(value) => handleInputChange('behavioral_notes', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          {/* Care Information Section */}
+          <div className={styles.sectionTitle}>Care Information</div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="care_preferences">
+                Care Preferences
+              </label>
+              <Textarea
+                id="care_preferences"
+                placeholder="Preferred care routines and preferences"
+                value={form.care_preferences}
+                onValueChange={(value) => handleInputChange('care_preferences', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="feeding_instructions">
+                Feeding Instructions
+              </label>
+              <Textarea
+                id="feeding_instructions"
+                placeholder="Diet, feeding schedule, and food preferences"
+                value={form.feeding_instructions}
+                onValueChange={(value) => handleInputChange('feeding_instructions', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="walking_preferences">
+                Walking Preferences
+              </label>
+              <Textarea
+                id="walking_preferences"
+                placeholder="Exercise needs, walking preferences, and restrictions"
+                value={form.walking_preferences}
+                onValueChange={(value) => handleInputChange('walking_preferences', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="favorite_toys">
+                Favorite Toys
+              </label>
+              <Textarea
+                id="favorite_toys"
+                placeholder="Preferred toys and play activities"
+                value={form.favorite_toys}
+                onValueChange={(value) => handleInputChange('favorite_toys', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          {/* Medical Information Section */}
+          <div className={styles.sectionTitle}>Medical Information</div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="allergies">
+                Allergies
+              </label>
+              <Textarea
+                id="allergies"
+                placeholder="Known allergies and reactions"
+                value={form.allergies}
+                onValueChange={(value) => handleInputChange('allergies', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="current_medications">
+                Current Medications
+              </label>
+              <Textarea
+                id="current_medications"
+                placeholder="Current medications and dosage instructions"
+                value={form.current_medications}
+                onValueChange={(value) => handleInputChange('current_medications', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="medical_conditions">
+                Medical Conditions
+              </label>
+              <Textarea
+                id="medical_conditions"
+                placeholder="Known medical conditions and health issues"
+                value={form.medical_conditions}
+                onValueChange={(value) => handleInputChange('medical_conditions', value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          {/* Admin & Logistics Section */}
+          <div className={styles.sectionTitle}>Admin & Logistics</div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="admin_and_logistics">
+                Admin & Logistics
+              </label>
+              <Textarea
+                id="admin_and_logistics"
+                placeholder="Administrative notes and logistical information"
+                value={form.admin_and_logistics}
+                onValueChange={(value) => handleInputChange('admin_and_logistics', value)}
+                rows={3}
               />
             </div>
           </div>
 
           <div className={styles.buttonContainer}>
-            <button
-              className={styles.button}
-              type="submit"
-              disabled={isLoading || isInitialLoading}>
-              {isLoading ? (
-                <>
-                  <Loader />
-                  <span>Adding Pet...</span>
-                </>
-              ) : (
-                'Add Pet'
-              )}
-            </button>
+            <Button type="submit" variant="default" isLoading={petsLoading} disabled={petsLoading}>
+              {petsLoading ? 'Adding Pet...' : 'Add Pet'}
+            </Button>
           </div>
         </div>
       </form>
