@@ -160,8 +160,15 @@
   }
 }
 
-.hiddenInput {
-  display: none;
+.hiddenFileInput {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .helperText {

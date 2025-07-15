@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
+import { FileInput } from '../file-input';
 import styles from './styles.module.scss';
 
 interface PhotoUploadProps {
@@ -11,6 +12,7 @@ interface PhotoUploadProps {
   helperText?: string;
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  accept?: string;
 }
 
 const PhotoUpload: React.FC<PhotoUploadProps> = ({
@@ -21,7 +23,8 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
   error = false,
   helperText,
   disabled = false,
-  size = 'md'
+  size = 'md',
+  accept = 'image/*'
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -37,8 +40,8 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
     }
   }, [value]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
+  const handleFileSelect = (files: FileList | null) => {
+    const file = files?.[0] || null;
     onChange?.(file);
   };
 
@@ -118,19 +121,20 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
         )}
       </div>
 
-      <input
-        ref={fileInputRef}
-        id={id}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className={styles.hiddenInput}
-        disabled={disabled}
-      />
-
-      {helperText && (
-        <p className={`${styles.helperText} ${error ? styles.errorText : ''}`}>{helperText}</p>
-      )}
+      {/* Hidden FileInput component that handles the actual file selection */}
+      <div className={styles.hiddenFileInput}>
+        <FileInput
+          ref={fileInputRef}
+          id={id}
+          accept={accept}
+          onFileSelect={handleFileSelect}
+          disabled={disabled}
+          multiple={false}
+          size={size}
+          error={error}
+          helperText={helperText}
+        />
+      </div>
     </div>
   );
 };
