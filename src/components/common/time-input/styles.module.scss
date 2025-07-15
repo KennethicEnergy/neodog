@@ -1,6 +1,6 @@
 @import '@/styles/variables';
 
-.inputWrapper {
+.timeInputWrapper {
   align-items: flex-start;
   width: 100%;
   display: flex;
@@ -8,13 +8,14 @@
   flex-direction: column;
 }
 
-.input {
+.timeInput {
   width: 100%;
   border: $border-width solid $border-color;
   border-radius: $border-radius;
   background-color: $white;
   color: $dark;
   transition: $transition-base;
+  cursor: pointer;
 
   // Small size
   &.sm {
@@ -37,28 +38,32 @@
     line-height: 1.5rem;
   }
 
-  // File input specific styles
-  &[type='file'] {
-    padding: 0.25rem;
-    border: none;
-    background: transparent;
-    font-size: $font-size-sm;
-    font-weight: 500;
-  }
+  // Time input specific styles
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
 
-  // Password input specific styles
-  &[type='password'] {
-    letter-spacing: 0.125em;
-  }
-
-  // Number input specific styles
-  &[type='number'] {
-    -moz-appearance: textfield;
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
+    &:hover {
+      opacity: 1;
     }
+  }
+
+  &::-webkit-datetime-edit {
+    padding: 0;
+  }
+
+  &::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-datetime-edit-text {
+    padding: 0 0.2em;
+  }
+
+  &::-webkit-datetime-edit-hour-field,
+  &::-webkit-datetime-edit-minute-field {
+    padding: 0 0.2em;
   }
 
   &:focus {

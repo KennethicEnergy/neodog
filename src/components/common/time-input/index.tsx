@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
+export interface TimeInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange' | 'size'> {
   error?: boolean;
   helperText?: string;
   leftIcon?: React.ReactNode;
@@ -12,11 +12,10 @@ export interface InputProps
   size?: 'sm' | 'md' | 'lg';
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const TimeInput = React.forwardRef<HTMLInputElement, TimeInputProps>(
   (
     {
       className,
-      type = 'text',
       error,
       helperText,
       leftIcon,
@@ -25,29 +24,31 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onChange,
       onValueChange,
       size = 'md',
+      value,
       ...props
     },
     ref
   ) => {
-    const inputId = React.useId();
-    const helperTextId = `${inputId}-helper-text`;
+    const timeInputId = React.useId();
+    const helperTextId = `${timeInputId}-helper-text`;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
       onChange?.(e);
-      onValueChange?.(e.target.value);
+      onValueChange?.(newValue);
     };
 
     return (
-      <div className={styles.inputWrapper}>
+      <div className={styles.timeInputWrapper}>
         {leftIcon && (
           <div className={styles.leftIcon} aria-hidden="true">
             {leftIcon}
           </div>
         )}
         <input
-          type={type}
+          type="time"
           className={`
-            ${styles.input}
+            ${styles.timeInput}
             ${styles[size]}
             ${error ? styles.error : ''}
             ${leftIcon ? styles.hasLeftIcon : ''}
@@ -58,6 +59,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           disabled={disabled}
           aria-invalid={error}
           aria-describedby={helperText ? helperTextId : undefined}
+          value={value}
           onChange={handleChange}
           {...props}
         />
@@ -78,6 +80,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-Input.displayName = 'Input';
+TimeInput.displayName = 'TimeInput';
 
-export { Input };
+export { TimeInput };

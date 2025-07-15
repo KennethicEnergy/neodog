@@ -1,0 +1,15 @@
+@import '@/styles/variables';
+
+.componentsPage {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.content {
+  background: $white;
+  border-radius: $border-radius;
+  border: $border-width solid $border-color;
+  box-shadow: $box-shadow-card;
+  overflow: hidden;
+}

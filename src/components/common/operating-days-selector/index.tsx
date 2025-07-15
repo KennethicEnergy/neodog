@@ -1,4 +1,5 @@
 import React from 'react';
+import { TimeInput } from '../time-input';
 import styles from './styles.module.scss';
 import type { DayKey, Props } from './types';
 import { getOperatingDaysSummary } from './utils';
@@ -62,22 +63,18 @@ const OperatingDaysSelector: React.FC<Props> = ({
       <div className={styles.timeInputsRow}>
         <div className={styles.timeInputCol}>
           <label className={styles.timeInputLabel}>{startLabel}</label>
-          <input
-            type="time"
+          <TimeInput
             value={time.from}
-            onChange={(e) => handleTimeChange('from', e.target.value)}
+            onValueChange={(val) => handleTimeChange('from', val)}
             disabled={isLoading}
-            className={styles.timeInput}
           />
         </div>
         <div className={styles.timeInputCol}>
           <label className={styles.timeInputLabel}>{endLabel}</label>
-          <input
-            type="time"
+          <TimeInput
             value={time.to}
-            onChange={(e) => handleTimeChange('to', e.target.value)}
+            onValueChange={(val) => handleTimeChange('to', val)}
             disabled={isLoading}
-            className={styles.timeInput}
           />
         </div>
       </div>

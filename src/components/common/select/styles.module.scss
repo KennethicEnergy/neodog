@@ -1,6 +1,6 @@
 @import '@/styles/variables';
 
-.inputWrapper {
+.selectWrapper {
   align-items: flex-start;
   width: 100%;
   display: flex;
@@ -8,58 +8,23 @@
   flex-direction: column;
 }
 
-.input {
+.select {
   width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: $font-size-sm;
+  line-height: 1.25rem;
   border: $border-width solid $border-color;
   border-radius: $border-radius;
   background-color: $white;
   color: $dark;
   transition: $transition-base;
-
-  // Small size
-  &.sm {
-    padding: 0.375rem 0.5rem;
-    font-size: 0.75rem;
-    line-height: 1rem;
-  }
-
-  // Medium size (default)
-  &.md {
-    padding: 0.5rem 0.75rem;
-    font-size: $font-size-sm;
-    line-height: 1.25rem;
-  }
-
-  // Large size
-  &.lg {
-    padding: 0.75rem 1rem;
-    font-size: $font-size-base;
-    line-height: 1.5rem;
-  }
-
-  // File input specific styles
-  &[type='file'] {
-    padding: 0.25rem;
-    border: none;
-    background: transparent;
-    font-size: $font-size-sm;
-    font-weight: 500;
-  }
-
-  // Password input specific styles
-  &[type='password'] {
-    letter-spacing: 0.125em;
-  }
-
-  // Number input specific styles
-  &[type='number'] {
-    -moz-appearance: textfield;
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-  }
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
 
   &:focus {
     outline: none;
@@ -71,10 +36,6 @@
     cursor: not-allowed;
     opacity: 0.7;
     background-color: $gray-100;
-  }
-
-  &::placeholder {
-    color: $text-muted;
   }
 
   &.error {
@@ -91,6 +52,17 @@
 
   &.hasRightIcon {
     padding-right: 2.5rem;
+  }
+
+  option {
+    padding: 0.5rem;
+    background-color: $white;
+    color: $dark;
+  }
+
+  option:disabled {
+    color: $text-muted;
+    font-style: italic;
   }
 }
 

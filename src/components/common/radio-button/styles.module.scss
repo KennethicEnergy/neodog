@@ -1,0 +1,92 @@
+@import '@/styles/variables';
+
+.radioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
+}
+
+.radio {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid $border-color;
+  border-radius: 50%;
+  background-color: $white;
+  cursor: pointer;
+  position: relative;
+  transition: $transition-base;
+  flex-shrink: 0;
+
+  &:checked {
+    border-color: $primary;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: $primary;
+      border-radius: 50%;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 2px rgba($primary, 0.2);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background-color: $gray-100;
+    border-color: $gray-300;
+  }
+
+  &.error {
+    border-color: $danger;
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba($danger, 0.2);
+    }
+  }
+}
+
+.label {
+  font-size: $font-size-sm;
+  color: $dark;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.25rem;
+
+  &.disabled {
+    cursor: not-allowed;
+    color: $text-muted;
+  }
+}
+
+.helperText {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: $text-muted;
+  margin-left: 1.5rem;
+
+  &.error {
+    color: $danger;
+  }
+}

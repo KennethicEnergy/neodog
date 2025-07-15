@@ -1,22 +1,30 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
+export interface SelectOption {
+  value: string | number;
+  label: string;
+  disabled?: boolean;
+}
+
+export interface SelectProps
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
+  options: SelectOption[];
+  placeholder?: string;
   error?: boolean;
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onValueChange?: (value: string) => void;
-  size?: 'sm' | 'md' | 'lg';
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
     {
       className,
-      type = 'text',
+      options,
+      placeholder = 'Select an option',
       error,
       helperText,
       leftIcon,
@@ -24,31 +32,30 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       disabled,
       onChange,
       onValueChange,
-      size = 'md',
+      value,
       ...props
     },
     ref
   ) => {
-    const inputId = React.useId();
-    const helperTextId = `${inputId}-helper-text`;
+    const selectId = React.useId();
+    const helperTextId = `${selectId}-helper-text`;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newValue = e.target.value;
       onChange?.(e);
-      onValueChange?.(e.target.value);
+      onValueChange?.(newValue);
     };
 
     return (
-      <div className={styles.inputWrapper}>
+      <div className={styles.selectWrapper}>
         {leftIcon && (
           <div className={styles.leftIcon} aria-hidden="true">
             {leftIcon}
           </div>
         )}
-        <input
-          type={type}
+        <select
           className={`
-            ${styles.input}
-            ${styles[size]}
+            ${styles.select}
             ${error ? styles.error : ''}
             ${leftIcon ? styles.hasLeftIcon : ''}
             ${rightIcon ? styles.hasRightIcon : ''}
@@ -58,9 +65,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           disabled={disabled}
           aria-invalid={error}
           aria-describedby={helperText ? helperTextId : undefined}
+          value={value}
           onChange={handleChange}
-          {...props}
-        />
+          {...props}>
+          <option value="" disabled>
+            {placeholder}
+          </option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value} disabled={option.disabled}>
+              {option.label}
+            </option>
+          ))}
+        </select>
         {rightIcon && (
           <div className={styles.rightIcon} aria-hidden="true">
             {rightIcon}
@@ -78,6 +94,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-Input.displayName = 'Input';
+Select.displayName = 'Select';
 
-export { Input };
+export { Select };

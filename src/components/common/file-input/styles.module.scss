@@ -1,0 +1,224 @@
+@import '@/styles/variables';
+
+.fileInputContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.fileInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 2px dashed $border-color;
+  border-radius: $border-radius;
+  background-color: $white;
+  transition: $transition-base;
+  cursor: pointer;
+  min-height: 120px;
+
+  &:hover {
+    border-color: $primary;
+    background-color: rgba($primary, 0.02);
+  }
+
+  &.dragActive {
+    border-color: $primary;
+    background-color: rgba($primary, 0.05);
+    border-style: solid;
+  }
+
+  &.error {
+    border-color: $danger;
+    background-color: rgba($danger, 0.02);
+
+    &:hover {
+      border-color: $danger;
+      background-color: rgba($danger, 0.05);
+    }
+  }
+}
+
+.fileInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.fileInputContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 1rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.uploadIcon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+  transition: $transition-base;
+}
+
+.fileInputText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fileInputLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: $dark;
+}
+
+.fileInputSubtext {
+  font-size: 0.875rem;
+  color: $text-muted;
+}
+
+.leftIcon,
+.rightIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 100%;
+  color: $text-muted;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.leftIcon {
+  left: 0;
+}
+
+.rightIcon {
+  right: 0;
+}
+
+.fileList {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background-color: $gray-100;
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+}
+
+.fileName {
+  font-size: 0.875rem;
+  color: $dark;
+  flex: 1;
+  margin-right: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  font-size: 0.75rem;
+  color: $text-muted;
+  margin-right: 0.5rem;
+}
+
+.removeFile {
+  background: none;
+  border: none;
+  color: $danger;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: rgba($danger, 0.1);
+  }
+}
+
+.helperText {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: $text-muted;
+
+  &.error {
+    color: $danger;
+  }
+}
+
+// Size variants
+.fileInputWrapper {
+  &.sm {
+    min-height: 80px;
+
+    .fileInputContent {
+      padding: 1rem 0.75rem;
+    }
+
+    .uploadIcon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 0.5rem;
+    }
+
+    .fileInputLabel {
+      font-size: 0.875rem;
+    }
+
+    .fileInputSubtext {
+      font-size: 0.75rem;
+    }
+  }
+
+  &.lg {
+    min-height: 160px;
+
+    .fileInputContent {
+      padding: 3rem 1.5rem;
+    }
+
+    .uploadIcon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 1.5rem;
+    }
+
+    .fileInputLabel {
+      font-size: 1.125rem;
+    }
+
+    .fileInputSubtext {
+      font-size: 1rem;
+    }
+  }
+}

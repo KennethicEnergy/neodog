@@ -1,22 +1,24 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
+export interface DatePickerProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
+  value?: string;
   error?: boolean;
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onValueChange?: (value: string) => void;
-  size?: 'sm' | 'md' | 'lg';
+  minDate?: string;
+  maxDate?: string;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
   (
     {
       className,
-      type = 'text',
+      value,
       error,
       helperText,
       leftIcon,
@@ -24,31 +26,32 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       disabled,
       onChange,
       onValueChange,
-      size = 'md',
+      minDate,
+      maxDate,
       ...props
     },
     ref
   ) => {
-    const inputId = React.useId();
-    const helperTextId = `${inputId}-helper-text`;
+    const datePickerId = React.useId();
+    const helperTextId = `${datePickerId}-helper-text`;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
       onChange?.(e);
-      onValueChange?.(e.target.value);
+      onValueChange?.(newValue);
     };
 
     return (
-      <div className={styles.inputWrapper}>
+      <div className={styles.datePickerWrapper}>
         {leftIcon && (
           <div className={styles.leftIcon} aria-hidden="true">
             {leftIcon}
           </div>
         )}
         <input
-          type={type}
+          type="date"
           className={`
-            ${styles.input}
-            ${styles[size]}
+            ${styles.datePicker}
             ${error ? styles.error : ''}
             ${leftIcon ? styles.hasLeftIcon : ''}
             ${rightIcon ? styles.hasRightIcon : ''}
@@ -58,7 +61,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           disabled={disabled}
           aria-invalid={error}
           aria-describedby={helperText ? helperTextId : undefined}
+          value={value}
           onChange={handleChange}
+          min={minDate}
+          max={maxDate}
           {...props}
         />
         {rightIcon && (
@@ -78,6 +84,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-Input.displayName = 'Input';
+DatePicker.displayName = 'DatePicker';
 
-export { Input };
+export { DatePicker };

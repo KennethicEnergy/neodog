@@ -1,0 +1,215 @@
+@import '@/styles/variables';
+
+.dateRangePickerContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.dateRangePickerWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.dateRangePicker {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  background-color: $white;
+  color: $dark;
+  font-family: inherit;
+  cursor: pointer;
+  transition: $transition-base;
+  text-align: left;
+
+  &.sm {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 2rem;
+  }
+
+  &.md {
+    padding: 0.5rem 0.75rem;
+    font-size: $font-size-sm;
+    min-height: 2.5rem;
+  }
+
+  &.lg {
+    padding: 0.75rem 1rem;
+    font-size: $font-size-base;
+    min-height: 3rem;
+  }
+
+  &:hover:not(.disabled) {
+    border-color: $primary;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 2px rgba($primary, 0.2);
+  }
+
+  &.error {
+    border-color: $danger;
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba($danger, 0.2);
+    }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background-color: $gray-100;
+  }
+}
+
+.displayValue {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+.calendar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: $white;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 16px rgba($dark, 0.08);
+  z-index: 10;
+  margin-top: 0.25rem;
+  min-width: 280px;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid $border-color;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: $text-muted;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: $border-radius;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: $gray-100;
+    color: $dark;
+  }
+}
+
+.monthYear {
+  font-weight: 500;
+  color: $dark;
+  font-size: 0.875rem;
+}
+
+.calendarGrid {
+  padding: 1rem;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekDay {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: $text-muted;
+  padding: 0.25rem;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: $dark;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: $border-radius;
+  transition: $transition-base;
+
+  &:hover:not(.disabled) {
+    background-color: $primary;
+    color: $white;
+  }
+
+  &.disabled {
+    color: $text-muted;
+    cursor: not-allowed;
+  }
+
+  &.inRange {
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+  }
+
+  &.startDate,
+  &.endDate {
+    background-color: $primary;
+    color: $white;
+    font-weight: 500;
+  }
+}
+
+.emptyDay {
+  aspect-ratio: 1;
+}
+
+.instructions {
+  padding: 0.75rem 1rem;
+  background-color: $gray-100;
+  border-top: 1px solid $border-color;
+  font-size: 0.75rem;
+  color: $text-muted;
+  text-align: center;
+}
+
+.helperText {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: $text-muted;
+
+  &.error {
+    color: $danger;
+  }
+}

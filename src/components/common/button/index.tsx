@@ -1,8 +1,17 @@
 import { Slot } from '@radix-ui/react-slot';
+import Image from 'next/image';
 import * as React from 'react';
 import styles from './styles.module.scss';
 
-export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'dark' | 'white';
+export type ButtonVariant =
+  | 'default'
+  | 'destructive'
+  | 'outline'
+  | 'secondary'
+  | 'ghost'
+  | 'link'
+  | 'dark'
+  | 'white';
 export type ButtonSize = 'default' | 'sm' | 'md' | 'lg' | 'icon';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,7 +26,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     {
       className,
       variant = 'default',
-      size = 'default',
+      size = 'md',
       asChild = false,
       isLoading = false,
       disabled,
@@ -38,7 +47,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}>
         {isLoading ? (
           <span className={styles.loading} aria-hidden="true">
-            <span className={styles.spinner} />
+            <Image
+              src="/images/loader/ellipsis-loader.gif"
+              alt="Loading..."
+              width={20}
+              height={20}
+              className={styles.loader}
+            />
           </span>
         ) : null}
         <span className={isLoading ? styles.hidden : ''}>{children}</span>

@@ -49,25 +49,14 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
   });
 
   const { clients, isLoading: clientsLoading } = useClientStore();
-  const {
-    createPet,
-    isLoading: petsLoading,
-    petSexReferences,
-    petClassificationReferences,
-    petSizeReferences,
-    fetchReferences
-  } = usePetStore();
+  const { createPet, isLoading: petsLoading, petSexReferences, fetchReferences } = usePetStore();
 
   const [ageError, setAgeError] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
 
   // Combined loading states
   const isLoading = petsLoading || clientsLoading;
-  const isInitialLoading =
-    initialLoading ||
-    (petSexReferences.length === 0 &&
-      petClassificationReferences.length === 0 &&
-      petSizeReferences.length === 0);
+  const isInitialLoading = initialLoading || petSexReferences.length === 0;
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -308,11 +297,6 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
                 onChange={handleChange}
                 required>
                 <option value="">Select Classification</option>
-                {petClassificationReferences.map((classification) => (
-                  <option key={classification.id} value={classification.id}>
-                    {classification.name}
-                  </option>
-                ))}
               </select>
             </div>
           </div>
@@ -366,11 +350,6 @@ const AddPet = ({ clientId }: { clientId?: string }) => {
                 onChange={handleChange}
                 required>
                 <option value="">Select Size</option>
-                {petSizeReferences.map((size) => (
-                  <option key={size.id} value={size.id}>
-                    {size.name}
-                  </option>
-                ))}
               </select>
             </div>
             <div className={styles.col}>

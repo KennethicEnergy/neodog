@@ -3,6 +3,7 @@ import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
 import { useToastStore } from '@/store/toast.store';
 import React, { useEffect, useState } from 'react';
+import { Input } from '../../common/input';
 import Loader from '../../common/loader';
 import styles from './styles.module.scss';
 
@@ -56,9 +57,8 @@ const AddClient = ({ client }: { client?: Client }) => {
     loadInitialData();
   }, [fetchClients, client]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    if (name === 'mobile_number') {
+  const handleChange = (field: string, value: string) => {
+    if (field === 'mobile_number') {
       // Allow digits, plus signs, parentheses, and spaces
       if (!/^[\d\s\(\)\+]*$/.test(value)) {
         setMobileError(
@@ -68,7 +68,7 @@ const AddClient = ({ client }: { client?: Client }) => {
         setMobileError('');
       }
     }
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -138,13 +138,12 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="first_name">
                 First Name
               </label>
-              <input
+              <Input
                 id="first_name"
-                className={styles.input}
                 type="text"
                 name="first_name"
                 value={form.first_name}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('first_name', value)}
                 disabled={isLoading}
                 required
               />
@@ -153,13 +152,12 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="middle_name">
                 Middle Name
               </label>
-              <input
+              <Input
                 id="middle_name"
-                className={styles.input}
                 type="text"
                 name="middle_name"
                 value={form.middle_name}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('middle_name', value)}
                 disabled={isLoading}
               />
             </div>
@@ -167,13 +165,12 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="last_name">
                 Last Name
               </label>
-              <input
+              <Input
                 id="last_name"
-                className={styles.input}
                 type="text"
                 name="last_name"
                 value={form.last_name}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('last_name', value)}
                 disabled={isLoading}
                 required
               />
@@ -184,32 +181,30 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="mobile_number">
                 Phone Number
               </label>
-              <input
+              <Input
                 id="mobile_number"
-                className={styles.input}
                 type="tel"
                 name="mobile_number"
                 value={form.mobile_number}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('mobile_number', value)}
                 pattern="\d*"
                 inputMode="numeric"
                 disabled={isLoading}
                 required
-                aria-invalid={!!mobileError}
+                error={!!mobileError}
+                helperText={mobileError}
               />
-              {mobileError && <div style={{ color: 'red', fontSize: 12 }}>{mobileError}</div>}
             </div>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="email">
                 Email
               </label>
-              <input
+              <Input
                 id="email"
-                className={styles.input}
                 type="email"
                 name="email"
                 value={form.email}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('email', value)}
                 disabled={isLoading}
                 required
               />
@@ -221,12 +216,11 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="address">
                 Address
               </label>
-              <input
+              <Input
                 id="address"
-                className={styles.input}
                 name="address"
                 value={form.address}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('address', value)}
                 disabled={isLoading}
                 required
               />
@@ -237,13 +231,12 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="city">
                 City
               </label>
-              <input
+              <Input
                 id="city"
-                className={styles.input}
                 type="text"
                 name="city"
                 value={form.city}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('city', value)}
                 disabled={isLoading}
                 required
               />
@@ -252,13 +245,12 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="state">
                 State
               </label>
-              <input
+              <Input
                 id="state"
-                className={styles.input}
                 type="text"
                 name="state"
                 value={form.state}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('state', value)}
                 disabled={isLoading}
                 required
               />
@@ -267,13 +259,12 @@ const AddClient = ({ client }: { client?: Client }) => {
               <label className={styles.label} htmlFor="zipcode">
                 Zip Code
               </label>
-              <input
+              <Input
                 id="zipcode"
-                className={styles.input}
                 type="text"
                 name="zipcode"
                 value={form.zipcode}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange('zipcode', value)}
                 disabled={isLoading}
                 required
               />
