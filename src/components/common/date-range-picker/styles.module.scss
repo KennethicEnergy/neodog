@@ -96,7 +96,7 @@
   border: $border-width solid $border-color;
   border-radius: $border-radius;
   box-shadow: 0 4px 16px rgba($dark, 0.08);
-  z-index: 10;
+  z-index: 999;
   margin-top: 0.25rem;
   min-width: 280px;
 }

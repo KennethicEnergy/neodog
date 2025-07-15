@@ -37,22 +37,30 @@ const Header = () => {
     {
       name: 'New appointment',
       icon: '/images/popup-appointment.svg',
+      iconLight: '/images/popup-icons/appointment-light.svg',
+      iconDark: '/images/popup-icons/appointment-dark.svg',
       route: '/appointments'
     },
     {
       name: 'Check-in Pet',
       icon: '/images/popup-check-in-pets.svg',
+      iconLight: '/images/popup-icons/pet-light.svg',
+      iconDark: '/images/popup-icons/pet-dark.svg',
       route: '/appointments'
     },
     {
       name: 'Add Client',
       icon: '/images/popup-client.svg',
+      iconLight: '/images/popup-icons/client-light.svg',
+      iconDark: '/images/popup-icons/client-dark.svg',
       route: '/clients-and-pets',
       onClick: openAddModal
     },
     {
       name: 'Create Invoice',
       icon: '/images/popup-create-invoice.svg',
+      iconLight: '/images/popup-icons/invoice-light.svg',
+      iconDark: '/images/popup-icons/invoice-dark.svg',
       route: ''
     }
   ];
