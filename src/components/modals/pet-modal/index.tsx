@@ -9,6 +9,7 @@ import { useToastStore } from '@/store/toast.store';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import AddNotesModal from '../add-notes';
+import AddPet from '../add-pet';
 import styles from './pet-modal.module.scss';
 
 interface PetModalProps {
@@ -19,25 +20,78 @@ interface PetModalProps {
 
 interface ActualPetData {
   id: number;
-  client_id: string;
+  client_id: number;
+  photo_path: string | null;
   name: string;
-  breed: string;
-  pet_breed_id: string;
-  pet_sex_id: string;
-  neutered: string;
-  pet_classification_id: string;
+  pet_breed_id: number;
+  date_of_birth: string;
   age: string;
-  color: string;
-  pet_size_id: string;
+  pet_sex_id: number;
+  color_or_markings: string;
+  weight: string;
+  height: string;
   microchip_number: string;
-  photo?: File;
-  belongings: string;
-  allergies_notes: string;
-  medication_notes: string;
-  diet_notes: string;
-  notes: string;
-  created_at?: string;
-  updated_at?: string;
+  enrollment_date: string;
+  spayed_or_neutered: number;
+  emergency_contact_name: string;
+  e_c_phone_number: string;
+  veterinarian_name: string;
+  v_phone_number: string;
+  handling_instruction: string;
+  behavioral_notes: string;
+  care_preferences: string;
+  feeding_instructions: string;
+  walking_preferences: string;
+  favorite_toys: string;
+  allergies: string;
+  current_medications: string;
+  medical_conditions: string;
+  admin_and_logistics: string;
+  last_visit: string;
+  pet_status_id: number;
+  created_at: string;
+  updated_at: string;
+  client: {
+    id: number;
+    facility_id: number;
+    photo_path: string | null;
+    first_name: string;
+    middle_name: string;
+    last_name: string;
+    mobile_number: string;
+    address: string;
+    city: string;
+    state: string;
+    zipcode: string;
+    email: string;
+    email_verified_at: string | null;
+    created_at: string;
+    updated_at: string;
+  };
+  pet_breed: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string | null;
+    updated_at: string | null;
+  };
+  pet_sex: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string | null;
+    updated_at: string | null;
+  };
+  pet_status: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string | null;
+    updated_at: string | null;
+  };
 }
 
 interface ReferenceData {
@@ -130,7 +184,7 @@ const mockVaccinations = [
   }
 ];
 
-const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
+const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
   const [activeTab, setActiveTab] = useState('Info');
   const [actualPetData, setActualPetData] = useState<ActualPetData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -138,7 +192,6 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
 
-  // Helper function to get reference data from localStorage
   const getReferenceData = (cacheKey: string): ReferenceData[] => {
     try {
       const cached = localStorage.getItem(cacheKey);
@@ -152,7 +205,6 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
     return [];
   };
 
-  // Helper function to get reference name by ID
   const getReferenceName = (cacheKey: string, id: string): string => {
     const references = getReferenceData(cacheKey);
     const reference = references.find((ref) => ref.value === id);
@@ -215,6 +267,27 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
     openModal(<AddNotesModal onSave={handleSave} onCancel={closeModal} />);
   };
 
+  useEffect(() => {
+    if (pet.id) {
+      (async () => {
+        try {
+          const response = await petApi.findById(pet.id);
+          if (response.data && response.data.result) {
+            const pet = response.data.result;
+            setActualPetData(pet as ActualPetData);
+          }
+        } catch {
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: 'Failed to load pet details.',
+            timeout: 4000
+          });
+        }
+      })();
+    }
+  }, [pet.id, addToast]);
+
   return (
     <BaseModal onClose={onClose}>
       <div className={styles.petModalWrapper}>
@@ -243,11 +316,13 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
                 <div className={styles.ownerInfoList}>
                   <div className={styles.ownerInfoItem}>
                     <Image src="/images/contact/user.svg" alt="Owner" width={20} height={20} />
-                    <span className={styles.ownerText}>Sarah Johnson</span>
+                    <span className={styles.ownerText}>
+                      {actualPetData?.client?.first_name} {actualPetData?.client?.last_name}
+                    </span>
                   </div>
                   <div className={styles.ownerInfoItem}>
                     <Image src="/images/contact/phone.svg" alt="Phone" width={20} height={20} />
-                    <span className={styles.ownerText}>555 123-4567</span>
+                    <span className={styles.ownerText}>{actualPetData?.client?.mobile_number}</span>
                   </div>
                 </div>
               </div>
@@ -290,37 +365,41 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
                     <div className={styles.infoGrid}>
                       <div>
                         <div className={styles.label}>Name</div>
-                        <div className={styles.value}>{actualPetData?.name || pet.name}</div>
+                        <div className={styles.value}>{actualPetData?.name}</div>
                       </div>
                       <div>
                         <div className={styles.label}>Breed</div>
                         <div className={styles.value}>
                           {actualPetData?.pet_breed_id
-                            ? getReferenceName('pet_breed_references', actualPetData.pet_breed_id)
-                            : actualPetData?.breed || pet.breed || 'Unknown Breed'}
+                            ? getReferenceName(
+                                'pet_breed_references',
+                                String(actualPetData.pet_breed_id)
+                              )
+                            : '-'}
                         </div>
                       </div>
                       <div>
                         <div className={styles.label}>Age</div>
-                        <div className={styles.value}>
-                          {actualPetData?.age || pet.age || 'Unknown'}
-                        </div>
+                        <div className={styles.value}>{actualPetData?.age}</div>
                       </div>
                       <div>
                         <div className={styles.label}>Sex</div>
                         <div className={styles.value}>
                           {actualPetData?.pet_sex_id
-                            ? getReferenceName('pet_sex_references', actualPetData.pet_sex_id)
-                            : 'Unknown'}
+                            ? getReferenceName(
+                                'pet_sex_references',
+                                String(actualPetData.pet_sex_id)
+                              )
+                            : '-'}
                         </div>
                       </div>
                       <div>
                         <div className={styles.label}>Weight</div>
-                        <div className={styles.value}>Not Available</div>
+                        <div className={styles.value}>{actualPetData?.weight}</div>
                       </div>
                       <div>
                         <div className={styles.label}>Color</div>
-                        <div className={styles.value}>{actualPetData?.color || 'Unknown'}</div>
+                        <div className={styles.value}>{actualPetData?.color_or_markings}</div>
                       </div>
                     </div>
                   )}
@@ -429,7 +508,17 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose, onEdit }) => {
               Cancel
             </Button>
             {activeTab === 'Info' ? (
-              <Button variant="dark" size="md" onClick={onEdit} className={styles.footerButton}>
+              <Button
+                variant="dark"
+                size="md"
+                onClick={() => {
+                  openModal(
+                    <BaseModal onClose={onClose}>
+                      <AddPet petId={pet.id} />
+                    </BaseModal>
+                  );
+                }}
+                className={styles.footerButton}>
                 Edit
               </Button>
             ) : (

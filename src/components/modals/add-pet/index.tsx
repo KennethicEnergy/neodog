@@ -7,7 +7,7 @@ import { Select, SelectOption } from '@/components/common/select';
 import { Textarea } from '@/components/common/textarea';
 import { createMultiMessageToast } from '@/components/common/toast';
 import { Toggle } from '@/components/common/toggle';
-import { petApi } from '@/services/pet.api';
+import { Pet, petApi } from '@/services/pet.api';
 import { vaccinationApi } from '@/services/vaccination.api';
 import { useAuthStore } from '@/store/auth.store';
 import { useClientStore } from '@/store/client.store';
@@ -49,13 +49,14 @@ export interface PetFormData {
 
 interface AddPetProps {
   clientId?: string;
+  petId?: number;
 }
 
-const AddPet = ({ clientId }: AddPetProps) => {
+const AddPet = ({ clientId, petId }: AddPetProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
   const { clients, fetchClients } = useClientStore();
-  const { createPet, isLoading: petsLoading } = usePetStore();
+  const { createPet, updatePet, isLoading: petsLoading } = usePetStore();
   const [form, setForm] = useState<PetFormData>({
     client_id: clientId || '',
     photo: null,
@@ -88,6 +89,7 @@ const AddPet = ({ clientId }: AddPetProps) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(!!petId);
 
   // Reference data with localStorage caching
   const [breedOptions, setBreedOptions] = useState<SelectOption[]>([]);
@@ -221,6 +223,33 @@ const AddPet = ({ clientId }: AddPetProps) => {
     loadInitialData();
   }, [addToast, fetchClients]);
 
+  // Fetch pet details if editing
+  useEffect(() => {
+    if (petId) {
+      setIsEditMode(true);
+      (async () => {
+        try {
+          const response = await petApi.findById(petId);
+          if (response.data && response.data.result) {
+            const pet = response.data.result;
+            setForm((prev) => ({
+              ...prev,
+              ...pet,
+              photo: null // Do not prefill photo for edit
+            }));
+          }
+        } catch {
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: 'Failed to load pet details.',
+            timeout: 4000
+          });
+        }
+      })();
+    }
+  }, [petId, addToast]);
+
   // Check authentication after all hooks are declared
   useEffect(() => {
     if (!isAuthenticated) {
@@ -287,19 +316,28 @@ const AddPet = ({ clientId }: AddPetProps) => {
         }
       });
 
-      const result = await createPet(formData);
+      let result;
+      if (isEditMode && petId) {
+        // Remove 'photo' if null or undefined for update
+        const updateData = { ...form };
+        if (updateData.photo == null) delete updateData.photo;
+        result = await updatePet(petId, updateData as Partial<Pet>);
+      } else {
+        result = await createPet(formData);
+      }
 
       if (result.success) {
         addToast({
           scheme: 'success',
           title: 'Success',
-          message: 'Pet created successfully',
+          message: isEditMode ? 'Pet updated successfully' : 'Pet created successfully',
           timeout: 3000
         });
         closeModal();
       } else {
-        if (result.fieldErrors) {
-          const errorMessages = Object.values(result.fieldErrors).flat();
+        // Handle fieldErrors if present
+        if ('fieldErrors' in result && result.fieldErrors) {
+          const errorMessages = Object.values(result.fieldErrors).flat().map(String);
           addToast(createMultiMessageToast('danger', 'Validation Error', errorMessages, 5000));
         } else if (result.message) {
           addToast({
@@ -315,7 +353,9 @@ const AddPet = ({ clientId }: AddPetProps) => {
       addToast({
         scheme: 'danger',
         title: 'Error',
-        message: 'Failed to save pet. Please try again.',
+        message: isEditMode
+          ? 'Failed to update pet. Please try again.'
+          : 'Failed to save pet. Please try again.',
         timeout: 5000
       });
     }
@@ -334,7 +374,7 @@ const AddPet = ({ clientId }: AddPetProps) => {
 
   return (
     <div className={styles.modalContainer}>
-      <h3 className={styles.header}>Add Pet</h3>
+      <h3 className={styles.header}>{isEditMode ? 'Edit Pet' : 'Add Pet'}</h3>
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
           <div className={styles.sectionTitle}>Owner Information</div>
@@ -352,7 +392,7 @@ const AddPet = ({ clientId }: AddPetProps) => {
                 error={!!errors.client_id}
                 helperText={errors.client_id}
                 required
-                disabled={!!clientId}
+                disabled={!!clientId || isEditMode}
               />
             </div>
           </div>
@@ -773,7 +813,13 @@ const AddPet = ({ clientId }: AddPetProps) => {
 
           <div className={styles.buttonContainer}>
             <Button type="submit" variant="default" isLoading={petsLoading} disabled={petsLoading}>
-              {petsLoading ? 'Adding Pet...' : 'Add Pet'}
+              {petsLoading
+                ? isEditMode
+                  ? 'Saving...'
+                  : 'Adding Pet...'
+                : isEditMode
+                  ? 'Save Changes'
+                  : 'Add Pet'}
             </Button>
           </div>
         </div>

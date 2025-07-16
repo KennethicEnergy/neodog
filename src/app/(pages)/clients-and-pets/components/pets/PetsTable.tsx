@@ -43,7 +43,7 @@ const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
     openModal(<PetModal pet={pet} onClose={closeModal} />);
   };
 
-  const handleEditPet = () => {
+  const handleEditPet = (pet: TransformedPet) => {
     // Check authentication before opening modal
     if (!isAuthenticated) {
       addToast({
@@ -57,7 +57,7 @@ const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
 
     openModal(
       <BaseModal onClose={closeModal}>
-        <AddPet />
+        <AddPet petId={pet.id} />
       </BaseModal>
     );
   };
@@ -82,7 +82,7 @@ const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
         name: 'Edit',
         type: 'edit',
         icon: '/images/actions/edit.svg',
-        onClick: () => handleEditPet()
+        onClick: () => handleEditPet(pet)
       },
       {
         name: 'Delete',
