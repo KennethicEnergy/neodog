@@ -79,3 +79,63 @@
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .operatingDaysContainer {
+    gap: 0.75rem;
+  }
+
+  .operatingDaysLabelRow {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .operatingDaysSummary {
+    margin-left: 0;
+    font-size: 11px;
+  }
+
+  .dayButtonsRow {
+    gap: 6px;
+  }
+
+  .dayButton, .selectedDayButton {
+    padding: 1rem 0.5rem;
+    font-size: 0.875rem;
+    min-height: 44px; // Ensure touch target size
+  }
+}
+
+@media (max-width: 480px) {
+  .operatingDaysContainer {
+    gap: 0.5rem;
+  }
+
+  .dayButtonsRow {
+    gap: 4px;
+  }
+
+  .dayButton, .selectedDayButton {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.75rem;
+    min-height: 40px;
+  }
+
+  .timeInputsRow {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .timeInputCol {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .dayButton, .selectedDayButton {
+    padding: 0.5rem 0.125rem;
+    font-size: 0.7rem;
+    min-height: 36px;
+  }
+}
