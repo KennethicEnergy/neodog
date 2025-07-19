@@ -264,32 +264,18 @@ const AddVaccine = () => {
               <label className={styles.label} htmlFor="pet_id">
                 Pet
               </label>
-              <div style={{ position: 'relative' }}>
-                <Select
-                  id="pet_id"
-                  options={(pets || []).map((pet) => ({
-                    value: pet.id.toString(),
-                    label: pet.name
-                  }))}
-                  placeholder="Select a pet"
-                  value={form.pet_id}
-                  onValueChange={(value) => handleInputChange('pet_id', value)}
-                  required
-                  disabled={!form.client_id || petsLoading}
-                />
-                {petsLoading && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      pointerEvents: 'none'
-                    }}>
-                    <Loader />
-                  </div>
-                )}
-              </div>
+              <Select
+                id="pet_id"
+                options={(pets || []).map((pet) => ({
+                  value: pet.id.toString(),
+                  label: pet.name
+                }))}
+                placeholder={petsLoading ? 'Loading pets...' : 'Select a pet'}
+                value={form.pet_id}
+                onValueChange={(value) => handleInputChange('pet_id', value)}
+                required
+                disabled={!form.client_id || petsLoading}
+              />
             </div>
           </div>
 
