@@ -3,11 +3,12 @@ import type { Client } from './client.api';
 
 export interface Vaccination {
   id: number;
+  client_id: number;
   pet_id: number;
-  vaccination_type_id: number;
+  vaccination_name_id: number;
   vaccination_status_id: number;
-  vaccination_date: string;
-  next_vaccination_date?: string;
+  expiration_date: string;
+  file?: File | null;
   notes?: string;
   created_at?: string;
   updated_at?: string;
@@ -68,6 +69,33 @@ export interface VaccinationStatusReferenceResponse {
   result: VaccinationStatusReference[];
 }
 
+export interface ClientReferenceResponse {
+  code: number;
+  title: string;
+  message: string;
+  result: {
+    clients: {
+      current_page: number;
+      data: Client[];
+      first_page_url: string;
+      from: number;
+      last_page: number;
+      last_page_url: string;
+      links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+      }>;
+      next_page_url: string | null;
+      path: string;
+      per_page: number;
+      prev_page_url: string | null;
+      to: number;
+      total: number;
+    };
+  };
+}
+
 export const vaccinationApi = {
   getAll: async (search?: string, page = 1, paginate = 999) => {
     const params = new URLSearchParams({
@@ -105,6 +133,19 @@ export const vaccinationApi = {
   },
 
   // Reference APIs
+  getClientReferences: async (search?: string, page = 1, paginate = 10) => {
+    const params = new URLSearchParams({
+      paginate: paginate.toString(),
+      page: page.toString()
+    });
+    if (search) {
+      params.append('search', search);
+    }
+    return apiClient.get<ClientReferenceResponse>(
+      `/facility/vaccination-management/get-client-references?${params.toString()}`
+    );
+  },
+
   getPetReferences: async (search?: string, page = 1, paginate = 10) => {
     const params = new URLSearchParams({
       paginate: paginate.toString(),
