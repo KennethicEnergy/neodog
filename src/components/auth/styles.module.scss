@@ -78,3 +78,11 @@
   font-weight: 500;
   color: #666;
 }
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .nameInputs {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}

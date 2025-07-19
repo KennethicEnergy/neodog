@@ -64,6 +64,7 @@ const OperatingDaysSelector: React.FC<Props> = ({
         <div className={styles.timeInputCol}>
           <label className={styles.timeInputLabel}>{startLabel}</label>
           <TimeInput
+            size="md"
             value={time.from}
             onValueChange={(val) => handleTimeChange('from', val)}
             disabled={isLoading}
@@ -72,6 +73,7 @@ const OperatingDaysSelector: React.FC<Props> = ({
         <div className={styles.timeInputCol}>
           <label className={styles.timeInputLabel}>{endLabel}</label>
           <TimeInput
+            size="md"
             value={time.to}
             onValueChange={(val) => handleTimeChange('to', val)}
             disabled={isLoading}
