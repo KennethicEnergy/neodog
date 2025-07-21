@@ -5,6 +5,7 @@ import AddVaccine from '@/components/modals/add-vaccine';
 import ViewVaccinationsModal from '@/components/modals/view-vaccinations';
 import { vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
+import { useToastStore } from '@/store/toast.store';
 import { useEffect, useMemo, useState } from 'react';
 import { VaccinationsControls, VaccinationsMetrics, VaccinationsTable } from './components';
 import styles from './page.module.scss';
@@ -23,6 +24,18 @@ type VaccinationApiType = {
   vaccination_due_soon_count: number;
   vaccination_overdue_count: number;
   vaccination_missing_count: number;
+  vaccinations: Array<{
+    id: number;
+    client_id: number;
+    pet_id: number;
+    vaccination_name_id: number;
+    file_path: string | null;
+    expiration_date: string;
+    notes: string;
+    vaccination_status_id: number;
+    created_at: string;
+    updated_at: string;
+  }>;
 };
 
 type VaccinationTableRow = {
@@ -38,7 +51,14 @@ type VaccinationTableRow = {
 function transformVaccinationData(
   data: VaccinationApiType[],
   openModal: (modal: React.ReactNode) => void,
-  closeModal: () => void
+  closeModal: () => void,
+  onDeleteVaccination: (vaccinationId: number, petName: string) => void,
+  addToast: (toast: {
+    scheme: 'warning' | 'success' | 'danger';
+    title: string;
+    message: string;
+    timeout?: number;
+  }) => void
 ): VaccinationTableRow[] {
   console.log('transformVaccinationData input:', data);
   const result = data.map((pet) => ({
@@ -74,7 +94,21 @@ function transformVaccinationData(
         name: 'Delete',
         type: 'delete',
         icon: '/images/actions/trash.svg',
-        onClick: () => {}
+        onClick: () => {
+          // If pet has vaccinations, delete the first one (or show a list to choose from)
+          if (pet.vaccinations && pet.vaccinations.length > 0) {
+            const vaccination = pet.vaccinations[0]; // For now, delete the first vaccination
+            onDeleteVaccination(vaccination.id, pet.name);
+          } else {
+            // No vaccinations to delete
+            addToast({
+              scheme: 'warning',
+              title: 'No Vaccinations',
+              message: `No vaccination records found for ${pet.name}.`,
+              timeout: 3000
+            });
+          }
+        }
       }
     ]
   }));
@@ -88,33 +122,103 @@ const VaccinationsPage = () => {
   const [loading, setLoading] = useState(true);
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
+  const addToast = useToastStore((state) => state.addToast);
+
+  const fetchVaccinations = async () => {
+    setLoading(true);
+    try {
+      const vaccRes = await vaccinationApi.getAll();
+      console.log('Raw API response:', vaccRes);
+      console.log('Response data:', vaccRes.data);
+
+      // Extract pets data from the new API response structure
+      const responseData = vaccRes.data;
+      const vaccData = responseData?.result?.pets?.data || [];
+
+      console.log('Extracted vaccData:', vaccData);
+      console.log('vaccData length:', vaccData.length);
+      setVaccinations(vaccData);
+    } catch (error) {
+      console.error('API Error:', error);
+      setVaccinations([]);
+      addToast({
+        scheme: 'danger',
+        title: 'Error',
+        message: 'Failed to load vaccination data.',
+        timeout: 4000
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
-    vaccinationApi
-      .getAll()
-      .then((vaccRes) => {
-        console.log('Raw API response:', vaccRes);
-        console.log('Response data:', vaccRes.data);
-
-        // Extract pets data from the new API response structure
-        const responseData = vaccRes.data;
-        const vaccData = responseData?.result?.pets?.data || [];
-
-        console.log('Extracted vaccData:', vaccData);
-        console.log('vaccData length:', vaccData.length);
-        setVaccinations(vaccData);
-      })
-      .catch((error) => {
-        console.error('API Error:', error);
-        setVaccinations([]);
-      })
-      .finally(() => setLoading(false));
+    fetchVaccinations();
   }, []);
 
+  const handleDeleteVaccination = (vaccinationId: number, petName: string) => {
+    openModal(
+      <BaseModal onClose={closeModal}>
+        <div className={styles.deleteModal}>
+          <h3>Delete Vaccination Record</h3>
+          <p>
+            Are you sure you want to delete the vaccination record for <strong>{petName}</strong>?
+          </p>
+          {/* <p>This action cannot be undone.</p> */}
+          <div className={styles.buttonGroup}>
+            <button className={styles.cancelButton} onClick={closeModal}>
+              Cancel
+            </button>
+            <button
+              className={styles.deleteButton}
+              onClick={async () => {
+                try {
+                  const response = await vaccinationApi.deleteById(vaccinationId);
+                  if (response.data.code === 200) {
+                    closeModal();
+                    addToast({
+                      scheme: 'success',
+                      title: 'Success',
+                      message: `Vaccination record for ${petName} has been deleted successfully.`,
+                      timeout: 3000
+                    });
+                    // Refresh the vaccinations list
+                    await fetchVaccinations();
+                  } else {
+                    addToast({
+                      scheme: 'danger',
+                      title: 'Delete Failed',
+                      message: response.data.message || 'Failed to delete vaccination record.',
+                      timeout: 4000
+                    });
+                  }
+                } catch (error) {
+                  console.error('Delete error:', error);
+                  addToast({
+                    scheme: 'danger',
+                    title: 'Delete Error',
+                    message: 'An error occurred while deleting vaccination record.',
+                    timeout: 4000
+                  });
+                }
+              }}>
+              Delete
+            </button>
+          </div>
+        </div>
+      </BaseModal>
+    );
+  };
+
   const transformedVaccinations = useMemo(() => {
-    return transformVaccinationData(vaccinations, openModal, closeModal);
-  }, [vaccinations, openModal, closeModal]);
+    return transformVaccinationData(
+      vaccinations,
+      openModal,
+      closeModal,
+      handleDeleteVaccination,
+      addToast
+    );
+  }, [vaccinations, openModal, closeModal, addToast]);
 
   const filteredData = useMemo(() => {
     if (!search) return transformedVaccinations;

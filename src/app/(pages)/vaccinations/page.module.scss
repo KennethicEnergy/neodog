@@ -36,3 +36,61 @@
     margin: 0;
   }
 }
+
+.deleteModal {
+  max-width: 400px;
+  width: 100%;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $dark;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $gray-700;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+
+    strong {
+      color: $dark;
+    }
+  }
+
+  .buttonGroup {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+
+  .cancelButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background: $white;
+    color: $gray-700;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+      background: $gray-100;
+    }
+  }
+
+  .deleteButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: $border-radius;
+    background: $danger;
+    color: $white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+      background: darken($danger, 10%);
+    }
+  }
+}

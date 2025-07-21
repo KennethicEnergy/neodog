@@ -237,7 +237,7 @@ const AddVaccine = () => {
 
   return (
     <div className={styles.modalContainer}>
-      <h2 className={styles.header}>New Vaccine Record</h2>
+      <h3 className={styles.header}>New Vaccine Record</h3>
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
           <div className={styles.formGroup}>

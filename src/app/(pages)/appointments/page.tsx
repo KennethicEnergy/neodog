@@ -97,7 +97,7 @@ const AppointmentsPage = () => {
   return (
     <div className={styles.appointments}>
       <div className={styles.header}>
-        <h2 className={styles.headerTitle}>Appointments</h2>
+        <h3 className={styles.headerTitle}>Appointments</h3>
       </div>
       <AppointmentHeader />
       <AppointmentFilters onSearch={handleSearch} />

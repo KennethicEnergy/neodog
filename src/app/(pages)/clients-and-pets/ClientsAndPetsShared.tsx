@@ -34,6 +34,15 @@ interface PetWithClient extends Pet {
     middle_name: string | null;
     last_name: string;
   };
+  pet_breed?: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string | null;
+    updated_at: string | null;
+  };
+  pet_breed_id?: number;
 }
 
 interface TransformedPet {
@@ -231,10 +240,42 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
       const ageValue = pet.age || '';
       const formattedAge = ageValue.includes('years') ? ageValue : `${ageValue} years`;
 
+      // Get breed name from pet_breed object or fallback to breed field
+      const getBreedName = () => {
+        const petWithBreed = pet as PetWithClient;
+
+        // Check if pet has pet_breed object (from API response)
+        if (petWithBreed.pet_breed?.name) {
+          return petWithBreed.pet_breed.name;
+        }
+        // Check if pet has pet_breed_id and we can look it up from references
+        if (petWithBreed.pet_breed_id) {
+          try {
+            const breedCache = localStorage.getItem('petBreedReferences');
+            if (breedCache) {
+              const breedReferences = JSON.parse(breedCache) as Array<{
+                value: string;
+                label: string;
+              }>;
+              const breedRef = breedReferences.find(
+                (ref) => ref.value === String(petWithBreed.pet_breed_id)
+              );
+              if (breedRef) {
+                return breedRef.label;
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing breed references:', error);
+          }
+        }
+        // Fallback to breed field or unknown
+        return pet.breed || 'Unknown Breed';
+      };
+
       return {
         id: pet.id,
         name: pet.name,
-        breed: pet.breed || 'Unknown Breed', // Add fallback for undefined breed
+        breed: getBreedName(),
         age: formattedAge,
         owner: `${petWithClient?.client?.first_name} ${petWithClient?.client?.middle_name ? petWithClient?.client?.middle_name + ' ' : ''}${petWithClient?.client?.last_name}`,
         lastVisit: pet.created_at
