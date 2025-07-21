@@ -41,7 +41,11 @@ interface Pet {
   };
 }
 
-const AddVaccine = () => {
+interface AddVaccineProps {
+  onSuccess?: () => void;
+}
+
+const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
   const [form, setForm] = useState<AddVaccineForm>({
@@ -194,6 +198,7 @@ const AddVaccine = () => {
           message: 'Vaccine record added successfully!',
           timeout: 2000
         });
+        if (onSuccess) onSuccess();
         setTimeout(() => {
           closeModal();
         }, 1000);

@@ -277,7 +277,7 @@ const VaccinationsPage = () => {
   const handleNewVaccine = () => {
     openModal(
       <BaseModal onClose={closeModal}>
-        <AddVaccine />
+        <AddVaccine onSuccess={fetchVaccinations} />
       </BaseModal>
     );
   };
