@@ -31,7 +31,7 @@ const ViewVaccinationsModal: React.FC<ViewVaccinationsModalProps> = ({ petId, on
 
   return (
     <div className={styles.modalContainer}>
-      <h4 className={styles.header}>Vaccination Record</h4>
+      <h3 className={styles.header}>Vaccination Record</h3>
       <div className={styles.section}>
         {loading ? (
           <div className={styles.loadingWrapper}>
@@ -63,12 +63,6 @@ const ViewVaccinationsModal: React.FC<ViewVaccinationsModalProps> = ({ petId, on
                 </div>
                 <div className={styles.vaccineDetails}>
                   <div className={styles.vaccineDates}>
-                    <div>
-                      Given:{' '}
-                      {vax.vaccination_date
-                        ? new Date(vax.vaccination_date).toLocaleDateString()
-                        : '-'}
-                    </div>
                     <div>
                       Due:{' '}
                       {vax.expiration_date
