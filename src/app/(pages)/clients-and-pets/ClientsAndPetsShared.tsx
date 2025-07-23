@@ -487,7 +487,6 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
                     totalCount={clientsTotal}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
-                    serverSidePagination // <-- add this
                   />
                 ) : petsView === 'list' ? (
                   <PetsTable
