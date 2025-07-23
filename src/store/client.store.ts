@@ -7,6 +7,8 @@ interface ClientState {
   isLoading: boolean;
   error: string | null;
   fetchClients: (page?: number, paginate?: number) => Promise<void>;
+  fetchAllClients: () => Promise<void>;
+  allClients: Client[];
   createClient: (data: Partial<Client>) => Promise<{
     success: boolean;
     message?: string;
@@ -23,6 +25,7 @@ interface ClientState {
 
 export const useClientStore = create<ClientState>((set, get) => ({
   clients: [],
+  allClients: [],
   client: null,
   isLoading: false,
   error: null,
@@ -51,6 +54,37 @@ export const useClientStore = create<ClientState>((set, get) => ({
       });
     } catch (error: unknown) {
       let message = 'Failed to fetch clients';
+      if (
+        error &&
+        typeof error === 'object' &&
+        'message' in error &&
+        typeof (error as Error).message === 'string'
+      ) {
+        message = (error as Error).message;
+      }
+      set({ error: message, isLoading: false });
+    }
+  },
+
+  fetchAllClients: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      // First, fetch the first page to get the total count
+      const firstPageResponse = await clientApi.getAll(1, 1);
+      const total = firstPageResponse?.data?.result?.clients?.total || 10000;
+      // Now fetch all clients using the total as the paginate value
+      const response = await clientApi.getAll(1, total);
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to fetch all clients';
+        set({ error: message, isLoading: false });
+        return;
+      }
+      set({
+        allClients: response?.data?.result?.clients?.data as Client[],
+        isLoading: false
+      });
+    } catch (error: unknown) {
+      let message = 'Failed to fetch all clients';
       if (
         error &&
         typeof error === 'object' &&

@@ -35,6 +35,7 @@ interface TableProps<T extends Record<string, unknown>> extends BaseTableData {
   totalCount?: number; // Optional: total number of items for server-side pagination
   currentPage?: number; // Optional: current page for controlled pagination
   onPageChange?: (page: number) => void; // Optional: page change handler for controlled pagination
+  hidePagination?: boolean;
 }
 
 const ITEMS_PER_PAGE = 10;
@@ -53,7 +54,8 @@ const Table = <T extends Record<string, unknown>>({
   tableOnly = false,
   totalCount,
   currentPage,
-  onPageChange
+  onPageChange,
+  hidePagination = false
 }: TableProps<T>) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
@@ -374,7 +376,7 @@ const Table = <T extends Record<string, unknown>>({
         </table>
       </div>
       {/* Pagination Controls */}
-      {safeTotalCount > ITEMS_PER_PAGE && (
+      {safeTotalCount > ITEMS_PER_PAGE && !hidePagination && (
         <div
           className={styles.pagination}
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

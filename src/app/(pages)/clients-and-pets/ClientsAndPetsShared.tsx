@@ -15,6 +15,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react
 import ClientDetailView from './components/clients/ClientDetailView';
 import FilterControls from './components/clients/FilterControls';
 import TabNavigation from './components/clients/TabNavigation';
+import type { Client as ClientType } from './components/clients/types';
 import styles from './page.module.scss';
 
 // Dynamic imports for better performance
@@ -70,7 +71,9 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
   const [searchQuery, setSearchQuery] = useState('');
   const {
     fetchClients,
+    fetchAllClients,
     clients,
+    allClients,
     clientsTotal,
     isLoading: clientsLoading,
     deleteClient
@@ -356,19 +359,59 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     });
   }, [clients]);
 
+  // Use allClients for search, clients for paginated
   const filteredClients = useMemo(() => {
+    const source = searchQuery ? (allClients as ClientType[]) : (clients as ClientType[]);
     if (!searchQuery) return transformedClients;
-
     const query = searchQuery.toLowerCase();
-    return transformedClients.filter(
-      (client) =>
-        client?.name?.toLowerCase().includes(query) ||
-        client?.contact?.some((contact: { value: string }) =>
-          contact?.value?.toLowerCase().includes(query)
-        ) ||
-        client?.status?.toLowerCase().includes(query)
-    );
-  }, [searchQuery, transformedClients]);
+    return (Array.isArray(source) ? source : [])
+      .map((c: ClientType) => ({
+        name: `${c.first_name} ${c.middle_name ? c.middle_name + ' ' : ''}${c.last_name}`,
+        contact: [
+          { type: 'email', value: c.email },
+          { type: 'phone', value: c.mobile_number }
+        ],
+        pets: `${c.pets_count || 0} Pet${c.pets_count !== 1 ? 's' : ''}`,
+        lastVisit: c.last_visit || 'No visits',
+        status: c.status?.toUpperCase() || 'INACTIVE',
+        actions: [
+          {
+            name: 'View',
+            type: 'view',
+            icon: '/images/actions/view.svg',
+            onClick: () => ctaButton(c, 'view')
+          },
+          {
+            name: 'Edit',
+            type: 'edit',
+            icon: '/images/actions/edit.svg',
+            onClick: () => ctaButton(c, 'edit')
+          },
+          {
+            name: 'Delete',
+            type: 'delete',
+            icon: '/images/actions/trash.svg',
+            onClick: () => ctaButton(c, 'delete')
+          }
+        ]
+      }))
+      .filter(
+        (client) =>
+          client?.name?.toLowerCase().includes(query) ||
+          client?.contact?.some((contact: { value: string }) =>
+            contact?.value?.toLowerCase().includes(query)
+          ) ||
+          client?.status?.toLowerCase().includes(query)
+      );
+  }, [searchQuery, allClients, clients, transformedClients]);
+
+  // Paginate filteredClients for display
+  const pageSize = 10;
+  const paginatedClients = useMemo(() => {
+    if (!searchQuery) return filteredClients;
+    const start = (currentPage - 1) * pageSize;
+    return filteredClients.slice(start, start + pageSize);
+  }, [filteredClients, currentPage, searchQuery]);
 
   const switchTab = (tab: 'pets' | 'clients') => {
     setActiveTab(tab);
@@ -385,11 +428,14 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     setSearchQuery(query);
   };
 
+  // Fetch all clients for search, paginated for normal
   useEffect(() => {
-    if (activeTab === 'clients') {
+    if (searchQuery) {
+      fetchAllClients();
+    } else {
       fetchClients(currentPage, 10);
     }
-  }, [fetchClients, activeTab, currentPage]);
+  }, [searchQuery, currentPage, fetchClients, fetchAllClients]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -484,10 +530,11 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
                 }>
                 {activeTab === 'clients' ? (
                   <ClientsTable
-                    clients={filteredClients}
+                    clients={paginatedClients}
                     totalCount={clientsTotal}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
+                    hidePagination={!!searchQuery}
                   />
                 ) : petsView === 'list' ? (
                   <PetsTable

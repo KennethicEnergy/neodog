@@ -14,6 +14,7 @@ interface ClientsTableProps {
   totalCount?: number;
   currentPage?: number;
   onPageChange?: (page: number) => void;
+  hidePagination?: boolean;
 }
 
 const CLIENT_HEADERS = [
@@ -25,7 +26,13 @@ const CLIENT_HEADERS = [
   { key: 'actions', label: 'ACTIONS' }
 ];
 
-const ClientsTable = ({ clients, totalCount, currentPage, onPageChange }: ClientsTableProps) => {
+const ClientsTable = ({
+  clients,
+  totalCount,
+  currentPage,
+  onPageChange,
+  hidePagination
+}: ClientsTableProps) => {
   return (
     <div>
       <Table
@@ -37,6 +44,7 @@ const ClientsTable = ({ clients, totalCount, currentPage, onPageChange }: Client
         totalCount={totalCount}
         currentPage={currentPage}
         onPageChange={onPageChange}
+        hidePagination={hidePagination}
       />
     </div>
   );
