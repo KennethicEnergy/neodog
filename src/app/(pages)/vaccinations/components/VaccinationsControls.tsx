@@ -1,5 +1,6 @@
 import { Button } from '@/components/common/button';
-import SearchBar from '@/components/common/searchbar';
+import { SearchInput } from '@/components/common/search-input';
+import { useState } from 'react';
 import styles from './VaccinationsControls.module.scss';
 
 interface VaccinationsControlsProps {
@@ -13,10 +14,16 @@ const VaccinationsControls = ({
   searchPlaceholder = 'Search Vaccinations',
   onNewVaccine
 }: VaccinationsControlsProps) => {
+  const [searchValue, setSearchValue] = useState('');
   return (
     <div className={styles.topControls}>
       <div className={styles.searchContainer}>
-        <SearchBar onSearch={onSearch} placeholder={searchPlaceholder} />
+        <SearchInput
+          onSearch={onSearch}
+          placeholder={searchPlaceholder}
+          value={searchValue}
+          onValueChange={setSearchValue}
+        />
       </div>
       <Button variant="dark" size="md" onClick={onNewVaccine}>
         New Vaccine Record

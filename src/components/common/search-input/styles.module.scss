@@ -23,6 +23,12 @@
   }
 }
 
+.searchInputWrapper:has(input:disabled),
+.searchInputWrapper input:disabled {
+  filter: brightness(0.9);
+  cursor: not-allowed;
+}
+
 .searchInput {
   width: 100%;
   border: none;
@@ -161,4 +167,10 @@
   &.error {
     color: $danger;
   }
+}
+
+.searchInputContainer :global(input[type="search"]::-webkit-search-cancel-button) {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }

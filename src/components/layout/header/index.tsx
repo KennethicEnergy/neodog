@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import HeaderPopup from '../../common/header-popup';
 import Icon from '../../common/icon';
-import SearchBar from '../../common/searchbar';
+import { SearchInput } from '../../common/search-input';
 import styles from './styles.module.scss';
 
 const Header = () => {
@@ -19,6 +19,7 @@ const Header = () => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const { user, logout } = useAuthStore();
+  const [headerSearch, setHeaderSearch] = useState('');
 
   const handleLogout = () => {
     logout();
@@ -84,7 +85,7 @@ const Header = () => {
     return (
       <div className={styles.headerLeft}>
         {renderBrand()}
-        <SearchBar />
+        <SearchInput value={headerSearch} onValueChange={setHeaderSearch} />
       </div>
     );
   };

@@ -1,5 +1,6 @@
 'use client';
 import { useAuthStore } from '@/store/auth.store';
+import { useModalStore } from '@/store/modal-store';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Loader from '../common/loader';
@@ -9,6 +10,7 @@ import styles from './layout.module.scss';
 import Sidebar from './sidebar';
 
 export default function DefaultLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const isModalOpen = useModalStore((state) => state.modals.length > 0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -124,7 +126,7 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
   }
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{ pointerEvents: isModalOpen ? 'none' : 'auto' }}>
       <Sidebar />
       <div className={styles.content}>
         <Header />

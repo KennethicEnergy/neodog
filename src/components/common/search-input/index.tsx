@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Loader from '../loader';
 import styles from './styles.module.scss';
 
 export interface SearchInputProps
@@ -16,6 +17,9 @@ export interface SearchInputProps
   loading?: boolean;
   suggestions?: string[];
   onSuggestionSelect?: (suggestion: string) => void;
+  debounceTime?: number;
+  value?: string;
+  disabled?: boolean;
 }
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
@@ -26,7 +30,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
       helperText,
       leftIcon,
       rightIcon,
-      disabled,
+      disabled = false,
       onChange,
       onValueChange,
       onSearch,
@@ -36,7 +40,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
       loading = false,
       suggestions = [],
       onSuggestionSelect,
-      value,
+      value: controlledValue,
+      debounceTime = 300,
       ...props
     },
     ref
@@ -46,11 +51,30 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     const suggestionsId = `${searchInputId}-suggestions`;
     const [showSuggestions, setShowSuggestions] = React.useState(false);
     const [focusedSuggestion, setFocusedSuggestion] = React.useState(-1);
+    const [internalValue, setInternalValue] = React.useState(controlledValue || '');
+    const isControlled = controlledValue !== undefined;
+    const value = isControlled ? controlledValue : internalValue;
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setInternalValue(controlledValue || '');
+      }
+    }, [controlledValue, isControlled]);
+
+    // Debounced onSearch
+    React.useEffect(() => {
+      if (!onSearch) return;
+      const handler = setTimeout(() => {
+        onSearch(value || '');
+      }, debounceTime);
+      return () => clearTimeout(handler);
+    }, [value, onSearch, debounceTime]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       onChange?.(e);
       onValueChange?.(newValue);
+      if (!isControlled) setInternalValue(newValue);
       setShowSuggestions(suggestions.length > 0 && newValue.length > 0);
       setFocusedSuggestion(-1);
     };
@@ -158,11 +182,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             {...props}
           />
           <div className={styles.rightIcons}>
-            {loading && (
-              <div className={styles.loadingIcon} aria-hidden="true">
-                <div className={styles.spinner}></div>
-              </div>
-            )}
+            {loading && <Loader />}
             {clearable && (value as string)?.length > 0 && !loading && (
               <button
                 type="button"

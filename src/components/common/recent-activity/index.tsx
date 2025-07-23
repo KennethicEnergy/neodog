@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import Icon from '../icon';
-import SearchBar from '../searchbar';
+import { SearchInput } from '../search-input';
 import styles from './styles.module.scss';
 
 type TActivityData = {
@@ -20,6 +21,7 @@ type TActivityDetails = {
 };
 
 const RecentActivity = ({ title, icon, data, controls, isPage }: TActivityDetails) => {
+  const [searchValue, setSearchValue] = useState('');
   return (
     <div className={`${styles.recentActivityWrapper} ${styles[isPage ? 'isPage' : '']}`}>
       <div className={styles.activityInfo}>
@@ -27,7 +29,7 @@ const RecentActivity = ({ title, icon, data, controls, isPage }: TActivityDetail
           {icon && <Icon src={icon} bgColor="chartPink" width={14} height={14} />}
           {title && <h3>{title}</h3>}
         </div>
-        {controls && <SearchBar />}
+        {controls && <SearchInput value={searchValue} onValueChange={setSearchValue} />}
       </div>
       <div className={styles.activities}>
         {data.map((data, index) => (

@@ -2,7 +2,7 @@
 import BaseModal from '@/components/common/base-modal';
 import Icon from '@/components/common/icon';
 import Loader from '@/components/common/loader';
-import SearchBar from '@/components/common/searchbar';
+import { SearchInput } from '@/components/common/search-input';
 import AddClient from '@/components/modals/add-client';
 import { Client as BaseClient } from '@/services/client.api';
 import { Pet } from '@/services/pet.api';
@@ -431,8 +431,9 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
             </div>
             {activeTab === 'clients' ? (
               <div className={styles.searchContainer}>
-                <SearchBar
+                <SearchInput
                   onSearch={handleSearch}
+                  onValueChange={setSearchQuery}
                   placeholder={'Search Clients'}
                   value={searchQuery}
                 />

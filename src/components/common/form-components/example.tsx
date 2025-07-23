@@ -128,6 +128,49 @@ const FormComponentsExample = () => {
       </div>
 
       <div className={styles.section}>
+        <h3 className={styles.componentTitle}>SearchInput Variants</h3>
+        <div className={styles.componentGrid}>
+          <div className={styles.componentExample}>
+            <label className={styles.label}>Default SearchInput</label>
+            <SearchInput
+              placeholder="Search for pets by name, breed, or owner..."
+              value={searchValue}
+              onValueChange={setSearchValue}
+              suggestions={searchSuggestions}
+              onSuggestionSelect={(suggestion: string) => setSearchValue(suggestion)}
+              onSearch={(value: string) => console.log('Searching for:', value)}
+              helperText="Type to search or select from suggestions"
+            />
+          </div>
+          <div className={styles.componentExample}>
+            <label className={styles.label}>Search with Loading</label>
+            <SearchInput
+              placeholder="Searching..."
+              loading={true}
+              disabled={true}
+              helperText="Search results are loading"
+            />
+          </div>
+          <div className={styles.componentExample + ' ' + styles.disabledExample}>
+            <label className={styles.label}>Disabled SearchInput</label>
+            <SearchInput disabled placeholder="Search is disabled..." />
+          </div>
+        </div>
+        <div className={styles.searchInputSizes}>
+          <h4>SearchInput Sizes</h4>
+          <div className={styles.sizeExamples}>
+            <SearchInput size="sm" placeholder="Small search" helperText="Small search input" />
+            <SearchInput
+              size="md"
+              placeholder="Medium search (default)"
+              helperText="Medium search input"
+            />
+            <SearchInput size="lg" placeholder="Large search" helperText="Large search input" />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
         <h3 className={styles.componentTitle}>TimeInput Component</h3>
         <div className={styles.componentGrid}>
           <div className={styles.componentExample}>
@@ -442,44 +485,6 @@ const FormComponentsExample = () => {
             <FileInput size="sm" accept="image/*" helperText="Small file input" />
             <FileInput size="md" accept="image/*" helperText="Medium file input (default)" />
             <FileInput size="lg" accept="image/*" helperText="Large file input" />
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.section}>
-        <h3 className={styles.componentTitle}>SearchInput Component</h3>
-        <div className={styles.componentGrid}>
-          <div className={styles.componentExample}>
-            <label className={styles.label}>Search Pets</label>
-            <SearchInput
-              placeholder="Search for pets by name, breed, or owner..."
-              value={searchValue}
-              onValueChange={setSearchValue}
-              suggestions={searchSuggestions}
-              onSuggestionSelect={(suggestion: string) => setSearchValue(suggestion)}
-              onSearch={(value: string) => console.log('Searching for:', value)}
-              helperText="Type to search or select from suggestions"
-            />
-          </div>
-          <div className={styles.componentExample}>
-            <label className={styles.label}>Search with Loading</label>
-            <SearchInput
-              placeholder="Searching..."
-              loading={true}
-              helperText="Search results are loading"
-            />
-          </div>
-        </div>
-        <div className={styles.searchInputSizes}>
-          <h4>SearchInput Sizes</h4>
-          <div className={styles.sizeExamples}>
-            <SearchInput size="sm" placeholder="Small search" helperText="Small search input" />
-            <SearchInput
-              size="md"
-              placeholder="Medium search (default)"
-              helperText="Medium search input"
-            />
-            <SearchInput size="lg" placeholder="Large search" helperText="Large search input" />
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
-import SearchBar from '@/components/common/searchbar';
+import { SearchInput } from '@/components/common/search-input';
+import { useState } from 'react';
 import styles from '../page.module.scss';
 
 interface AppointmentFiltersProps {
@@ -6,10 +7,16 @@ interface AppointmentFiltersProps {
 }
 
 const AppointmentFilters = ({ onSearch }: AppointmentFiltersProps) => {
+  const [searchValue, setSearchValue] = useState('');
   return (
     <div className={styles.filters}>
       <div className={styles.searchContainer}>
-        <SearchBar placeholder="Search appointments..." onSearch={onSearch} />
+        <SearchInput
+          placeholder="Search appointments..."
+          onSearch={onSearch}
+          value={searchValue}
+          onValueChange={setSearchValue}
+        />
       </div>
       <div className={styles.filtersRight}>
         <select className={styles.select}>
