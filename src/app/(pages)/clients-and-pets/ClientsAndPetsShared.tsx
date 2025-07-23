@@ -311,7 +311,57 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
 
   // Use allPets for search, pets for paginated
   const filteredPets = useMemo(() => {
-    const source = searchQuery ? allPets : pets;
+    // Always use allPets for grid/tiles view
+    const source = searchQuery || petsView === 'tiles' ? allPets : pets;
+    if (!searchQuery && petsView === 'tiles') {
+      return (Array.isArray(allPets) ? allPets : []).map((pet) => {
+        const petWithClient = pet as PetWithClient;
+        const ageValue = pet.age || '';
+        const formattedAge = ageValue.includes('years') ? ageValue : `${ageValue} years`;
+        const getBreedName = () => {
+          const petWithBreed = pet as PetWithClient;
+          if (petWithBreed.pet_breed?.name) {
+            return petWithBreed.pet_breed.name;
+          }
+          if (petWithBreed.pet_breed_id) {
+            try {
+              const breedCache = localStorage.getItem('petBreedReferences');
+              if (breedCache) {
+                const breedReferences = JSON.parse(breedCache) as Array<{
+                  value: string;
+                  label: string;
+                }>;
+                const breedRef = breedReferences.find(
+                  (ref) => ref.value === String(petWithBreed.pet_breed_id)
+                );
+                if (breedRef) {
+                  return breedRef.label;
+                }
+              }
+            } catch (error) {
+              console.error('Error parsing breed references:', error);
+            }
+          }
+          return pet.breed || 'Unknown Breed';
+        };
+        return {
+          id: pet.id,
+          name: pet.name,
+          breed: getBreedName(),
+          age: formattedAge,
+          owner: `${petWithClient?.client?.first_name} ${petWithClient?.client?.middle_name ? petWithClient?.client?.middle_name + ' ' : ''}${petWithClient?.client?.last_name}`,
+          lastVisit: pet.created_at
+            ? new Date(pet.created_at).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })
+            : 'No visits',
+          status: 'HEALTHY',
+          image: null
+        };
+      });
+    }
     if (!searchQuery) return transformedPets;
     const query = searchQuery.toLowerCase();
     return (Array.isArray(source) ? source : [])
@@ -369,7 +419,7 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
           pet?.owner?.toLowerCase().includes(query) ||
           pet?.status?.toLowerCase().includes(query)
       );
-  }, [searchQuery, allPets, pets, transformedPets]);
+  }, [searchQuery, allPets, pets, transformedPets, petsView]);
 
   // Paginate filteredPets for display
   const petsPageSize = 10;
@@ -502,14 +552,16 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     }
   }, [searchQuery, currentPage, fetchClients, fetchAllClients]);
 
-  // Fetch all pets for search, paginated for normal
+  // Replace the pets fetching useEffect with logic that fetches all pets for grid/tiles view, paginated for list view
   useEffect(() => {
     if (searchQuery) {
+      fetchAllPets();
+    } else if (petsView === 'tiles') {
       fetchAllPets();
     } else {
       fetchPets(currentPage, 10);
     }
-  }, [searchQuery, currentPage, fetchPets, fetchAllPets]);
+  }, [searchQuery, currentPage, fetchPets, fetchAllPets, petsView]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
