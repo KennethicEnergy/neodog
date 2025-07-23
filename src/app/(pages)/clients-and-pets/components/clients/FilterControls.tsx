@@ -14,8 +14,7 @@ interface FilterControlsProps {
   onFilterToggle: () => void;
 }
 
-const FilterControls = ({ activeTab, showFilter, onFilterToggle }: FilterControlsProps) => {
-  console.log('showFilter', showFilter);
+const FilterControls = ({ activeTab, onFilterToggle }: FilterControlsProps) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const { isAuthenticated } = useAuthStore();

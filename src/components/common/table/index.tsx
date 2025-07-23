@@ -1,5 +1,5 @@
 import { useModalStore } from '@/store/modal-store';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BaseModal from '../base-modal';
 import Icon from '../icon';
 import StatusTag from '../status-tag';
@@ -32,7 +32,12 @@ interface TableProps<T extends Record<string, unknown>> extends BaseTableData {
   enableSorting?: boolean; // Enable/disable sorting functionality
   columnOverflow?: 'left' | 'right' | 'auto'; // Control overflow direction for fixed columns
   tableOnly?: boolean;
+  totalCount?: number; // Optional: total number of items for server-side pagination
+  currentPage?: number; // Optional: current page for controlled pagination
+  onPageChange?: (page: number) => void; // Optional: page change handler for controlled pagination
 }
+
+const ITEMS_PER_PAGE = 10;
 
 const Table = <T extends Record<string, unknown>>({
   title,
@@ -45,11 +50,22 @@ const Table = <T extends Record<string, unknown>>({
   maxHeight = '60vh',
   enableSorting = true,
   columnOverflow = 'auto',
-  tableOnly = false
+  tableOnly = false,
+  totalCount,
+  currentPage,
+  onPageChange
 }: TableProps<T>) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: '', direction: null });
+  // Use controlled or internal page state
+  const [internalPage, setInternalPage] = useState(1);
+  const page = typeof currentPage === 'number' ? currentPage : internalPage;
+
+  // Reset to first page if data changes and using internal state
+  useEffect(() => {
+    if (typeof currentPage !== 'number') setInternalPage(1);
+  }, [data]);
 
   const fixedColIndices = Array.isArray(fixedColumns)
     ? fixedColumns
@@ -96,6 +112,22 @@ const Table = <T extends Record<string, unknown>>({
       return 0;
     });
   }, [data, sortConfig]);
+
+  // Always use server-side pagination: do not slice the data
+  const paginatedData = useMemo(() => {
+    return sortedData;
+  }, [sortedData]);
+
+  const safeTotalCount = typeof totalCount === 'number' ? totalCount : sortedData.length;
+  const totalPages = Math.ceil(safeTotalCount / ITEMS_PER_PAGE) || 1;
+
+  const handlePageChange = (newPage: number) => {
+    if (onPageChange) {
+      onPageChange(newPage);
+    } else {
+      setInternalPage(newPage);
+    }
+  };
 
   const handleSort = (key: string) => {
     if (!enableSorting) return;
@@ -282,17 +314,19 @@ const Table = <T extends Record<string, unknown>>({
           ...generateColumnPositions()
         } as React.CSSProperties & Record<string, string | number>
       }>
-      <div className={styles.tableInfo}>
-        <div>
-          {icon && <Icon src={icon} bgColor="blueActive" />}
-          {title && <h3>{title}</h3>}
-        </div>
-        {viewAll && (
-          <div className={styles.viewAll} onClick={expandView}>
-            View All
+      {(title || icon || viewAll) && (
+        <div className={styles.tableInfo}>
+          <div>
+            {icon && <Icon src={icon} bgColor="blueActive" />}
+            {title && <h3>{title}</h3>}
           </div>
-        )}
-      </div>
+          {viewAll && (
+            <div className={styles.viewAll} onClick={expandView}>
+              View All
+            </div>
+          )}
+        </div>
+      )}
 
       <div className={styles.tableContainer}>
         <table>
@@ -315,16 +349,16 @@ const Table = <T extends Record<string, unknown>>({
             </tr>
           </thead>
           <tbody>
-            {sortedData.length === 0 && (
+            {paginatedData.length === 0 && (
               <tr>
                 <td colSpan={headers.length} className={styles.noData}>
                   <div className={styles.noDataText}>No data found</div>
                 </td>
               </tr>
             )}
-            {sortedData.map((row, rowIndex) => (
+            {paginatedData.map((row, rowIndex) => (
               <tr
-                key={rowIndex}
+                key={rowIndex + (page - 1) * ITEMS_PER_PAGE}
                 className={fixedRowIndices.includes(rowIndex) ? styles.fixedRow : ''}>
                 {headers.map((header, colIndex) => (
                   <td
@@ -339,6 +373,117 @@ const Table = <T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
+      {/* Pagination Controls */}
+      {safeTotalCount > ITEMS_PER_PAGE && (
+        <div
+          className={styles.pagination}
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* Left: Showing X-Y of Z */}
+          <div className={styles.paginationInfo}>
+            {(() => {
+              const firstItem = (page - 1) * ITEMS_PER_PAGE + 1;
+              const lastItem = Math.min(page * ITEMS_PER_PAGE, safeTotalCount);
+              if (firstItem === lastItem) {
+                return `Showing ${firstItem} of ${safeTotalCount}`;
+              }
+              return `Showing ${firstItem}-${lastItem} of ${safeTotalCount}`;
+            })()}
+          </div>
+          {/* Right: Pagination Controls */}
+          <div className={styles.paginationControls}>
+            <button
+              className={styles.pageButton}
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}>
+              Prev
+            </button>
+            {/* Smart Pagination Buttons */}
+            {(() => {
+              const pageButtons = [];
+              const pageWindow = 2; // pages before/after current
+              const startPage = Math.max(2, page - pageWindow);
+              const endPage = Math.min(totalPages - 1, page + pageWindow);
+
+              // Always show first page
+              pageButtons.push(
+                <button
+                  key={1}
+                  className={`${styles.pageButton} ${page === 1 ? styles.activePage : ''}`}
+                  onClick={() => handlePageChange(1)}
+                  disabled={page === 1}>
+                  1
+                </button>
+              );
+
+              // Ellipsis if needed before window
+              if (startPage > 2) {
+                pageButtons.push(
+                  <span key="start-ellipsis" className={styles.ellipsis}>
+                    ...
+                  </span>
+                );
+              }
+
+              // Pages in window
+              for (let p = startPage; p <= endPage; p++) {
+                pageButtons.push(
+                  <button
+                    key={p}
+                    className={`${styles.pageButton} ${page === p ? styles.activePage : ''}`}
+                    onClick={() => handlePageChange(p)}
+                    disabled={page === p}>
+                    {p}
+                  </button>
+                );
+              }
+
+              // Ellipsis if needed after window
+              if (endPage < totalPages - 1) {
+                pageButtons.push(
+                  <span key="end-ellipsis" className={styles.ellipsis}>
+                    ...
+                  </span>
+                );
+              }
+
+              // Always show last page if more than 1
+              if (totalPages > 1) {
+                pageButtons.push(
+                  <button
+                    key={totalPages}
+                    className={`${styles.pageButton} ${page === totalPages ? styles.activePage : ''}`}
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={page === totalPages}>
+                    {totalPages}
+                  </button>
+                );
+              }
+
+              return pageButtons;
+            })()}
+            <button
+              className={styles.pageButton}
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}>
+              Next
+            </button>
+            {/* Select Page Dropdown */}
+            <label className={styles.selectPageLabel} style={{ marginLeft: '8px' }}>
+              <span>Select Page:</span>
+              <select
+                className={styles.selectPageDropdown}
+                value={page}
+                onChange={(e) => handlePageChange(Number(e.target.value))}>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

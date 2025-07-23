@@ -68,12 +68,19 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
   const [activeTab, setActiveTab] = useState<'pets' | 'clients'>(defaultTab);
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { fetchClients, clients, isLoading: clientsLoading, deleteClient } = useClientStore();
+  const {
+    fetchClients,
+    clients,
+    clientsTotal,
+    isLoading: clientsLoading,
+    deleteClient
+  } = useClientStore();
   const { fetchPets, pets, isLoading: petsLoading, deletePet } = usePetStore();
   const addToast = useToastStore((state) => state.addToast);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [petsView, setPetsView] = useState<'list' | 'tiles'>('list');
   const pathname = usePathname();
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Combined loading state
   const isLoading = clientsLoading || petsLoading;
@@ -347,7 +354,6 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
         ]
       };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clients]);
 
   const filteredClients = useMemo(() => {
@@ -380,20 +386,14 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
   };
 
   useEffect(() => {
-    const getAllClients = async () => {
-      await fetchClients(1, 10);
-    };
-
-    const getAllPets = async () => {
-      await fetchPets(1, 10);
-    };
-
     if (activeTab === 'clients') {
-      getAllClients();
-    } else {
-      getAllPets();
+      fetchClients(currentPage, 10);
     }
-  }, [fetchClients, fetchPets, activeTab]);
+  }, [fetchClients, activeTab, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Fetch pets when a client is selected to ensure pets data is available
   useEffect(() => {
@@ -482,7 +482,13 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
                   </div>
                 }>
                 {activeTab === 'clients' ? (
-                  <ClientsTable clients={filteredClients} />
+                  <ClientsTable
+                    clients={filteredClients}
+                    totalCount={clientsTotal}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                    serverSidePagination // <-- add this
+                  />
                 ) : petsView === 'list' ? (
                   <PetsTable
                     pets={filteredPets}

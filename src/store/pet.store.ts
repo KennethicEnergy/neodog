@@ -39,6 +39,7 @@ interface PetState {
   petStatusReferences: PetReference[];
   petClassificationReferences: PetClassificationReference[];
   petSizeReferences: PetSizeReference[];
+  petsTotal: number | null;
   fetchPets: (page?: number, paginate?: number) => Promise<void>;
   createPet: (data: Partial<Pet> | FormData) => Promise<{
     success: boolean;
@@ -62,6 +63,7 @@ export const usePetStore = create<PetState>((set, get) => ({
   petStatusReferences: [],
   petClassificationReferences: [],
   petSizeReferences: [],
+  petsTotal: null,
 
   fetchPets: async (page = 1, paginate = 1) => {
     set({ isLoading: true, error: null });
@@ -77,9 +79,12 @@ export const usePetStore = create<PetState>((set, get) => ({
         });
         return;
       }
-
       // Success case
-      set({ pets: response?.data?.result?.pets?.data as Pet[], isLoading: false });
+      set({
+        pets: response?.data?.result?.pets?.data as Pet[],
+        petsTotal: response?.data?.result?.pets?.total,
+        isLoading: false
+      });
     } catch (error: unknown) {
       set({
         error: error instanceof Error ? error.message : 'Failed to fetch pets',

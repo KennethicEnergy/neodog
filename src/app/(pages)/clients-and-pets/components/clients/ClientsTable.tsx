@@ -11,6 +11,9 @@ interface Client extends Record<string, unknown> {
 
 interface ClientsTableProps {
   clients: Client[];
+  totalCount?: number;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
 const CLIENT_HEADERS = [
@@ -22,7 +25,7 @@ const CLIENT_HEADERS = [
   { key: 'actions', label: 'ACTIONS' }
 ];
 
-const ClientsTable = ({ clients }: ClientsTableProps) => {
+const ClientsTable = ({ clients, totalCount, currentPage, onPageChange }: ClientsTableProps) => {
   return (
     <div>
       <Table
@@ -31,6 +34,9 @@ const ClientsTable = ({ clients }: ClientsTableProps) => {
         enableSorting={true}
         viewAll={false}
         tableOnly
+        totalCount={totalCount}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
       />
     </div>
   );

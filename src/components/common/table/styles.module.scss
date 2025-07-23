@@ -17,7 +17,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  gap: 1rem;
+  padding-bottom: 0;
   transition: $transition-base;
   box-shadow: $box-shadow-popup;
   position: relative;
@@ -408,4 +408,113 @@
   align-items: center;
   justify-content: center;
   border: 1px solid $border-light;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.pageButton {
+  background: $gray-100;
+  border: 1px solid $border-light;
+  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  font-size: 1rem;
+  color: $gray-700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+
+  &:hover:not(:disabled) {
+    background: $blue-active;
+    color: $white;
+    border-color: $blue-active;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.activePage {
+  background: $blue-active;
+  color: $white;
+  border-color: $blue-active;
+}
+
+.selectPageLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 1rem;
+  font-size: 1rem;
+}
+
+.selectPageDropdown {
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid $border-light;
+  background: $gray-100;
+  font-size: 1rem;
+  color: $gray-700;
+  cursor: pointer;
+  transition: border 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $blue-active;
+  }
+}
+
+.ellipsis {
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+  color: #888;
+  font-size: 16px;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 600px) {
+  .pagination {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  .paginationInfo {
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+    font-size: 13px;
+  }
+  .paginationControls {
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pageButton {
+    font-size: 13px;
+    padding: 4px 8px;
+    min-width: 28px;
+  }
+  .selectPageDropdown {
+    font-size: 13px;
+    padding: 2px 4px;
+    min-width: 36px;
+  }
+  .selectPageLabel span {
+    font-size: 12px;
+  }
 }

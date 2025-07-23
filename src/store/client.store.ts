@@ -18,6 +18,7 @@ interface ClientState {
   ) => Promise<{ success: boolean; message?: string }>;
   findClient: (id: number) => Promise<void>;
   deleteClient: (id: number) => Promise<{ success: boolean; message?: string }>;
+  clientsTotal?: number;
 }
 
 export const useClientStore = create<ClientState>((set, get) => ({
@@ -25,6 +26,7 @@ export const useClientStore = create<ClientState>((set, get) => ({
   client: null,
   isLoading: false,
   error: null,
+  clientsTotal: undefined,
 
   fetchClients: async (page = 1, paginate = 1) => {
     set({ isLoading: true, error: null });
@@ -42,7 +44,11 @@ export const useClientStore = create<ClientState>((set, get) => ({
       }
 
       // Success case
-      set({ clients: response?.data?.result?.clients?.data as Client[], isLoading: false });
+      set({
+        clients: response?.data?.result?.clients?.data as Client[],
+        clientsTotal: response?.data?.result?.clients?.total,
+        isLoading: false
+      });
     } catch (error: unknown) {
       let message = 'Failed to fetch clients';
       if (
