@@ -30,6 +30,7 @@ interface PetSizeReference {
 
 interface PetState {
   pets: Pet[];
+  allPets: Pet[];
   pet: Pet | null;
   isLoading: boolean;
   error: string | null;
@@ -41,6 +42,7 @@ interface PetState {
   petSizeReferences: PetSizeReference[];
   petsTotal: number | null;
   fetchPets: (page?: number, paginate?: number) => Promise<void>;
+  fetchAllPets: () => Promise<void>;
   createPet: (data: Partial<Pet> | FormData) => Promise<{
     success: boolean;
     message?: string;
@@ -54,6 +56,7 @@ interface PetState {
 
 export const usePetStore = create<PetState>((set, get) => ({
   pets: [],
+  allPets: [],
   pet: null,
   isLoading: false,
   error: null,
@@ -88,6 +91,31 @@ export const usePetStore = create<PetState>((set, get) => ({
     } catch (error: unknown) {
       set({
         error: error instanceof Error ? error.message : 'Failed to fetch pets',
+        isLoading: false
+      });
+    }
+  },
+
+  fetchAllPets: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      // First, fetch the first page to get the total count
+      const firstPageResponse = await petApi.getAll(1, 1);
+      const total = firstPageResponse?.data?.result?.pets?.total || 10000;
+      // Now fetch all pets using the total as the paginate value
+      const response = await petApi.getAll(1, total);
+      if (response.data.code && response.data.code >= 400) {
+        const message = response.data.message || 'Failed to fetch all pets';
+        set({ error: message, isLoading: false });
+        return;
+      }
+      set({
+        allPets: response?.data?.result?.pets?.data as Pet[],
+        isLoading: false
+      });
+    } catch (error: unknown) {
+      set({
+        error: error instanceof Error ? error.message : 'Failed to fetch all pets',
         isLoading: false
       });
     }

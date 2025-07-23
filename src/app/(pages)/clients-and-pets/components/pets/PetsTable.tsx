@@ -21,6 +21,9 @@ interface PetsTableProps {
   pets: TransformedPet[];
   onPetUpdated?: () => void;
   onDeletePet?: (pet: TransformedPet) => void;
+  totalCount?: number | null;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
 const PET_HEADERS = [
@@ -33,7 +36,13 @@ const PET_HEADERS = [
   { key: 'actions', label: 'ACTIONS' }
 ];
 
-const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
+const PetsTable = ({
+  pets,
+  onDeletePet,
+  totalCount,
+  currentPage,
+  onPageChange
+}: PetsTableProps) => {
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const { isAuthenticated } = useAuthStore();
@@ -101,6 +110,9 @@ const PetsTable = ({ pets, onDeletePet }: PetsTableProps) => {
         enableSorting={true}
         viewAll={false}
         tableOnly
+        totalCount={totalCount ?? undefined}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
       />
     </div>
   );

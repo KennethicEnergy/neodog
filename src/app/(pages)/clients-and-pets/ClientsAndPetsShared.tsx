@@ -78,7 +78,15 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     isLoading: clientsLoading,
     deleteClient
   } = useClientStore();
-  const { fetchPets, pets, isLoading: petsLoading, deletePet } = usePetStore();
+  const {
+    fetchPets,
+    fetchAllPets,
+    pets,
+    allPets,
+    petsTotal,
+    isLoading: petsLoading,
+    deletePet
+  } = usePetStore();
   const addToast = useToastStore((state) => state.addToast);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [petsView, setPetsView] = useState<'list' | 'tiles'>('list');
@@ -301,18 +309,75 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     });
   }, [pets]);
 
+  // Use allPets for search, pets for paginated
   const filteredPets = useMemo(() => {
+    const source = searchQuery ? allPets : pets;
     if (!searchQuery) return transformedPets;
-
     const query = searchQuery.toLowerCase();
-    return transformedPets.filter(
-      (pet) =>
-        pet?.name?.toLowerCase().includes(query) ||
-        pet?.breed?.toLowerCase().includes(query) ||
-        pet?.owner?.toLowerCase().includes(query) ||
-        pet?.status?.toLowerCase().includes(query)
-    );
-  }, [searchQuery, transformedPets]);
+    return (Array.isArray(source) ? source : [])
+      .map((pet) => {
+        const petWithClient = pet as PetWithClient;
+        const ageValue = pet.age || '';
+        const formattedAge = ageValue.includes('years') ? ageValue : `${ageValue} years`;
+        const getBreedName = () => {
+          const petWithBreed = pet as PetWithClient;
+          if (petWithBreed.pet_breed?.name) {
+            return petWithBreed.pet_breed.name;
+          }
+          if (petWithBreed.pet_breed_id) {
+            try {
+              const breedCache = localStorage.getItem('petBreedReferences');
+              if (breedCache) {
+                const breedReferences = JSON.parse(breedCache) as Array<{
+                  value: string;
+                  label: string;
+                }>;
+                const breedRef = breedReferences.find(
+                  (ref) => ref.value === String(petWithBreed.pet_breed_id)
+                );
+                if (breedRef) {
+                  return breedRef.label;
+                }
+              }
+            } catch (error) {
+              console.error('Error parsing breed references:', error);
+            }
+          }
+          return pet.breed || 'Unknown Breed';
+        };
+        return {
+          id: pet.id,
+          name: pet.name,
+          breed: getBreedName(),
+          age: formattedAge,
+          owner: `${petWithClient?.client?.first_name} ${petWithClient?.client?.middle_name ? petWithClient?.client?.middle_name + ' ' : ''}${petWithClient?.client?.last_name}`,
+          lastVisit: pet.created_at
+            ? new Date(pet.created_at).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })
+            : 'No visits',
+          status: 'HEALTHY',
+          image: null
+        };
+      })
+      .filter(
+        (pet) =>
+          pet?.name?.toLowerCase().includes(query) ||
+          pet?.breed?.toLowerCase().includes(query) ||
+          pet?.owner?.toLowerCase().includes(query) ||
+          pet?.status?.toLowerCase().includes(query)
+      );
+  }, [searchQuery, allPets, pets, transformedPets]);
+
+  // Paginate filteredPets for display
+  const petsPageSize = 10;
+  const paginatedPets = useMemo(() => {
+    if (!searchQuery) return filteredPets;
+    const start = (currentPage - 1) * petsPageSize;
+    return filteredPets.slice(start, start + petsPageSize);
+  }, [filteredPets, currentPage, searchQuery]);
 
   const selectedClientPets = useMemo(() => {
     if (!selectedClient) return [];
@@ -437,6 +502,15 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     }
   }, [searchQuery, currentPage, fetchClients, fetchAllClients]);
 
+  // Fetch all pets for search, paginated for normal
+  useEffect(() => {
+    if (searchQuery) {
+      fetchAllPets();
+    } else {
+      fetchPets(currentPage, 10);
+    }
+  }, [searchQuery, currentPage, fetchPets, fetchAllPets]);
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -538,8 +612,11 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
                   />
                 ) : petsView === 'list' ? (
                   <PetsTable
-                    pets={filteredPets}
+                    pets={paginatedPets}
                     onDeletePet={(pet) => petActionButton(pet, 'delete')}
+                    totalCount={petsTotal}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
                   />
                 ) : (
                   <PetsGrid pets={filteredPets} />
