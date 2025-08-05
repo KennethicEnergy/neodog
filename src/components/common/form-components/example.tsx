@@ -504,7 +504,7 @@ const FormComponentsExample = () => {
               <Button variant="outline" size="md">
                 Outline
               </Button>
-              <Button variant="destructive" size="md">
+              <Button variant="danger" size="md">
                 Delete
               </Button>
             </div>

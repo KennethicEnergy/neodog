@@ -54,9 +54,10 @@
     }
   }
 
-  &.destructive {
+  &.danger {
     background-color: $danger;
     color: $white;
+    border: none;
 
     &:hover:not(:disabled) {
       background-color: darken($danger, 10%);

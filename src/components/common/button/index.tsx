@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 
 export type ButtonVariant =
   | 'default'
-  | 'destructive'
+  | 'danger'
   | 'outline'
   | 'secondary'
   | 'ghost'

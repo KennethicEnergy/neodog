@@ -1,3 +1,51 @@
+@import '@/styles/variables';
+
+.modalContainer {
+  min-width: 600px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.col {
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+  margin-bottom: 8px;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
 .loadingWrapper {
   display: flex;
   width: 100%;
@@ -19,4 +67,158 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+// Dynamic vaccine form styles
+.vaccinationsContainer {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 1rem;
+  scroll-behavior: smooth;
+  transition: all 0.3s ease;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+.vaccinationSection {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+  transition: all 0.3s ease;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // First section (main vaccine) has different styling
+  &:first-child {
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+
+
+.addVaccineSection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.addVaccineButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  color: #2563eb;
+  border: 2px dashed #2563eb;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  span {
+    font-weight: bold;
+  }
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #1d4ed8;
+    color: #1d4ed8;
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+}
+
+// Additional styles for better form appearance
+.formGroup:last-child {
+  margin-bottom: 0;
+}
+
+// Ensure proper spacing for file upload sections
+.vaccinationSection .formGroup:first-child {
+  margin-bottom: 1.5rem;
+}
+
+// Style for the remove button to match the design
+.removeButton {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0;
+
+  &:hover {
+    background: #c82333;
+  }
+
+  &:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+  }
 }

@@ -3,22 +3,24 @@ import { DatePicker } from '@/components/common/date-picker';
 import { FileInput } from '@/components/common/file-input';
 import Loader from '@/components/common/loader';
 import { Select } from '@/components/common/select';
-import { Textarea } from '@/components/common/textarea';
 import { petApi } from '@/services/pet.api';
 import { vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
 import { useToastStore } from '@/store/toast.store';
 import React, { useEffect, useState } from 'react';
-import styles from '../add-pet/styles.module.scss';
+import styles from './styles.module.scss';
+
+interface VaccineFormEntry {
+  id: string;
+  vaccination_name_id: string;
+  expiration_date: string;
+  files: File[];
+}
 
 interface AddVaccineForm {
   client_id: string;
   pet_id: string;
-  vaccination_name_id: string;
-  file: File | null;
-  expiration_date: string;
-  notes: string;
-  vaccination_status_id: string;
+  vaccinations: VaccineFormEntry[];
 }
 
 interface Client {
@@ -48,32 +50,36 @@ interface AddVaccineProps {
 const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
+  const vaccinationsContainerRef = React.useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<AddVaccineForm>({
     client_id: '',
     pet_id: '',
-    vaccination_name_id: '',
-    file: null,
-    expiration_date: '',
-    notes: '',
-    vaccination_status_id: ''
+    vaccinations: [
+      {
+        id: '1',
+        vaccination_name_id: '',
+        expiration_date: '',
+        files: []
+      }
+    ]
   });
   const [clients, setClients] = useState<Client[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
   const [vaccineTypes, setVaccineTypes] = useState<{ id: number; name: string }[]>([]);
-  const [statusRefs, setStatusRefs] = useState<{ id: number; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [petsLoading, setPetsLoading] = useState(false);
+
+  const MAX_VACCINES = 5;
 
   useEffect(() => {
     // Fetch initial data
     setInitialLoading(true);
     Promise.all([
       vaccinationApi.getClientReferences(),
-      vaccinationApi.getVaccinationNameReferences(),
-      vaccinationApi.getVaccinationStatusReferences()
+      vaccinationApi.getVaccinationNameReferences()
     ])
-      .then(([clientsRes, typesRes, statusRes]) => {
+      .then(([clientsRes, typesRes]) => {
         // Extract clients from the paginated response
         const clientsData = clientsRes.data?.result?.clients?.data || [];
         setClients(clientsData);
@@ -85,19 +91,11 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
         } else {
           setVaccineTypes([]);
         }
-
-        const statusData = statusRes.data?.result;
-        if (Array.isArray(statusData)) {
-          setStatusRefs(statusData);
-        } else {
-          setStatusRefs([]);
-        }
       })
       .catch(() => {
         // Set empty arrays to prevent map errors
         setClients([]);
         setVaccineTypes([]);
-        setStatusRefs([]);
         addToast({
           scheme: 'danger',
           title: 'Error',
@@ -121,13 +119,9 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
       petApi
         .getAll(1, 100) // Get more pets to ensure we get all for this client
         .then((response) => {
-          console.log('Pet API response:', response.data);
           const allPets = response.data?.result?.pets?.data || [];
-          console.log('All pets:', allPets);
-
           // Find the selected client to get their name
           const selectedClient = clients.find((client) => client.id.toString() === form.client_id);
-          console.log('Selected client:', selectedClient);
 
           if (selectedClient) {
             // Filter pets by checking the client relationship
@@ -142,15 +136,12 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
               return pet.client_id === form.client_id;
             });
 
-            console.log('Filtered client pets:', clientPets);
             setPets(clientPets);
           } else {
-            console.log('Selected client not found');
             setPets([]);
           }
         })
-        .catch((error) => {
-          console.error('Error fetching pets:', error);
+        .catch(() => {
           setPets([]);
           addToast({
             scheme: 'danger',
@@ -172,23 +163,165 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setForm((prev) => ({ ...prev, file }));
+  const handleVaccinationChange = (
+    index: number,
+    field: keyof VaccineFormEntry,
+    value: string | File[]
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      vaccinations: prev.vaccinations.map((vaccination, i) =>
+        i === index ? { ...vaccination, [field]: value } : vaccination
+      )
+    }));
+  };
+
+  const addVaccination = () => {
+    if (form.vaccinations.length < MAX_VACCINES) {
+      setForm((prev) => ({
+        ...prev,
+        vaccinations: [
+          ...prev.vaccinations,
+          {
+            id: (prev.vaccinations.length + 1).toString(),
+            vaccination_name_id: '',
+            expiration_date: '',
+            files: []
+          }
+        ]
+      }));
+
+      // Scroll to the bottom of the container after adding new vaccination
+      setTimeout(() => {
+        if (vaccinationsContainerRef.current) {
+          vaccinationsContainerRef.current.scrollTo({
+            top: vaccinationsContainerRef.current.scrollHeight,
+            behavior: 'smooth'
+          });
+        }
+      }, 100); // Small delay to ensure DOM is updated
+    }
+  };
+
+  const removeVaccination = (index: number) => {
+    if (form.vaccinations.length > 1) {
+      setForm((prev) => ({
+        ...prev,
+        vaccinations: prev.vaccinations.filter((_, i) => i !== index)
+      }));
+    }
+  };
+
+  const handleFileChange = (index: number, files: File[]) => {
+    handleVaccinationChange(index, 'files', files);
+  };
+
+  const validateForm = (): boolean => {
+    // Check if client and pet are selected
+    if (!form.client_id || !form.pet_id) {
+      addToast({
+        scheme: 'danger',
+        title: 'Validation Error',
+        message: 'Please select a client and pet.',
+        timeout: 4000
+      });
+      return false;
+    }
+
+    // Check if at least one vaccination has required fields
+    const hasValidVaccination = form.vaccinations.some(
+      (vaccination) => vaccination.vaccination_name_id && vaccination.expiration_date
+    );
+
+    if (!hasValidVaccination) {
+      addToast({
+        scheme: 'danger',
+        title: 'Validation Error',
+        message: 'Please fill in at least one vaccine name and expiry date.',
+        timeout: 4000
+      });
+      return false;
+    }
+
+    // Check that all vaccinations with vaccine name also have expiry date and vice versa
+    const hasIncompleteVaccination = form.vaccinations.some(
+      (vaccination) =>
+        (vaccination.vaccination_name_id && !vaccination.expiration_date) ||
+        (!vaccination.vaccination_name_id && vaccination.expiration_date)
+    );
+
+    if (hasIncompleteVaccination) {
+      addToast({
+        scheme: 'danger',
+        title: 'Validation Error',
+        message:
+          'Please complete all vaccine details (both vaccine name and expiry date are required).',
+        timeout: 4000
+      });
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
       const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) => {
-        if (value !== null && value !== '') {
-          formData.append(key, value);
-        }
+
+      // Add client_id as required by the API
+      formData.append('client_id', form.client_id);
+
+      // Add vaccinations array in the correct format
+      form.vaccinations
+        .filter((vaccination) => vaccination.vaccination_name_id && vaccination.expiration_date)
+        .forEach((vaccination, index) => {
+          formData.append(`vaccinations[${index}][pet_id]`, form.pet_id);
+          formData.append(
+            `vaccinations[${index}][vaccination_name_id]`,
+            vaccination.vaccination_name_id
+          );
+          formData.append(`vaccinations[${index}][expiration_date]`, vaccination.expiration_date);
+          formData.append(`vaccinations[${index}][vaccination_status_id]`, '1');
+          formData.append(`vaccinations[${index}][notes]`, '');
+
+          // Add files if any
+          vaccination.files.forEach((file, fileIndex) => {
+            formData.append(`vaccinations[${index}][files][${fileIndex}]`, file);
+          });
+        });
+
+      // Log the form state before submission
+      console.log('=== FORM SUBMISSION DEBUG ===');
+      console.log('Form state:', form);
+      console.log('Client ID:', form.client_id);
+      console.log('Pet ID:', form.pet_id);
+      console.log('Vaccinations count:', form.vaccinations.length);
+
+      // Log each vaccination entry
+      form.vaccinations.forEach((vaccination, index) => {
+        console.log(`Vaccination ${index}:`, {
+          id: vaccination.id,
+          vaccination_name_id: vaccination.vaccination_name_id,
+          expiration_date: vaccination.expiration_date,
+          files_count: vaccination.files.length,
+          files: vaccination.files.map((f) => ({ name: f.name, size: f.size, type: f.type }))
+        });
       });
 
+      console.log('FormData contents:');
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
+
+      // Send as FormData
       const response = await vaccinationApi.create(formData);
 
       if (response.data.code === 200) {
@@ -245,6 +378,7 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
       <h3 className={styles.header}>New Vaccine Record</h3>
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
+          {/* Client and Pet Selection */}
           <div className={styles.formGroup}>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="client_id">
@@ -284,86 +418,97 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
             </div>
           </div>
 
-          <div className={styles.formGroup}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="vaccination_name_id">
-                Vaccine Name
-              </label>
-              <Select
-                id="vaccination_name_id"
-                options={(vaccineTypes || []).map((vaccine) => ({
-                  value: vaccine.id.toString(),
-                  label: vaccine.name
-                }))}
-                placeholder="Select vaccine name"
-                value={form.vaccination_name_id}
-                onValueChange={(value) => handleInputChange('vaccination_name_id', value)}
-                required
-              />
-            </div>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="expiration_date">
-                Expiry Date
-              </label>
-              <DatePicker
-                value={form.expiration_date}
-                onChange={(e) => handleInputChange('expiration_date', e.target.value)}
-                placeholder="MM/DD/YYYY"
-                required
-              />
-            </div>
+          {/* Scrollable Vaccinations Container */}
+          <div className={styles.vaccinationsContainer} ref={vaccinationsContainerRef}>
+            {form.vaccinations.map((vaccination, index) => (
+              <div key={vaccination.id} className={styles.vaccinationSection}>
+                {/* Section Header */}
+                <div className={styles.sectionHeader}>
+                  <h4 className={styles.sectionTitle}>
+                    {index === 0 ? 'Upload Vaccine Certificate' : 'Add Another Vaccine'}
+                  </h4>
+                  {index > 0 && (
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="sm"
+                      onClick={() => removeVaccination(index)}
+                      disabled={loading}>
+                      ×
+                    </Button>
+                  )}
+                </div>
+
+                {/* File Upload */}
+                <div className={styles.formGroup}>
+                  <div className={styles.col}>
+                    <FileInput
+                      id={`certificate-${index}`}
+                      accept="application/pdf,image/*,.docx"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        handleFileChange(index, files);
+                      }}
+                      helperText="Select your file or drag and drop"
+                      maxSize={2 * 1024 * 1024}
+                      showFileList={true}
+                      multiple={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Vaccine Details */}
+                <div className={styles.formGroup}>
+                  <div className={styles.col}>
+                    <label className={styles.label} htmlFor={`vaccination_name_id-${index}`}>
+                      Vaccine Name
+                    </label>
+                    <Select
+                      id={`vaccination_name_id-${index}`}
+                      options={(vaccineTypes || []).map((vaccine) => ({
+                        value: vaccine.id.toString(),
+                        label: vaccine.name
+                      }))}
+                      placeholder="Select vaccine name"
+                      value={vaccination.vaccination_name_id}
+                      onValueChange={(value) =>
+                        handleVaccinationChange(index, 'vaccination_name_id', value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div className={styles.col}>
+                    <label className={styles.label} htmlFor={`expiration_date-${index}`}>
+                      Expiry Date
+                    </label>
+                    <DatePicker
+                      value={vaccination.expiration_date}
+                      onChange={(e) =>
+                        handleVaccinationChange(index, 'expiration_date', e.target.value)
+                      }
+                      placeholder="MM/DD/YYYY"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className={styles.formGroup}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="certificate">
-                Upload Vaccine Certificate
-              </label>
-              <FileInput
-                id="certificate"
-                accept="application/pdf,image/*"
-                onChange={handleFileChange}
-                helperText="Select your file or drag and drop"
-                maxSize={2 * 1024 * 1024}
-                showFileList={true}
-              />
+          {/* Add Another Vaccine Button */}
+          {form.vaccinations.length < MAX_VACCINES && (
+            <div className={styles.addVaccineSection}>
+              <Button
+                type="button"
+                className={styles.addVaccineButton}
+                onClick={addVaccination}
+                disabled={loading}>
+                <span>+ Add Another Vaccine</span>
+              </Button>
             </div>
-          </div>
+          )}
 
-          <div className={styles.formGroup}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="notes">
-                Notes
-              </label>
-              <Textarea
-                id="notes"
-                value={form.notes}
-                onValueChange={(value) => handleInputChange('notes', value)}
-                placeholder="Enter notes (optional)"
-                rows={3}
-              />
-            </div>
-          </div>
-
-          <div className={styles.formGroup}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="vaccination_status_id">
-                Vaccination Status
-              </label>
-              <Select
-                id="vaccination_status_id"
-                options={(statusRefs || []).map((status) => ({
-                  value: status.id.toString(),
-                  label: status.name
-                }))}
-                placeholder="Select status"
-                value={form.vaccination_status_id}
-                onValueChange={(value) => handleInputChange('vaccination_status_id', value)}
-                required
-              />
-            </div>
-          </div>
-
+          {/* Action Buttons */}
           <div className={styles.buttonContainer}>
             <Button
               type="button"
