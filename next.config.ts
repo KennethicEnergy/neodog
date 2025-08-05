@@ -13,7 +13,15 @@ const nextConfig: NextConfig = {
     includePaths: ['./src']
   },
   images: {
-    domains: ['images.unsplash.com']
+    domains: ['api.neodog.app'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.neodog.app',
+        port: '',
+        pathname: '/api/**'
+      }
+    ]
   }
 };
 

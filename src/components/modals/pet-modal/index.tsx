@@ -296,13 +296,51 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
             <h3 className={styles.headerTitle}>Pet Profile</h3>
             <div className={styles.headerRow}>
               <div className={styles.avatarSection}>
-                {pet.image ? (
+                {actualPetData?.photo_path ? (
                   <Image
-                    src={pet.image}
+                    src={(() => {
+                      let processedUrl = actualPetData.photo_path;
+                      if (!processedUrl.startsWith('http')) {
+                        const encodedPath = processedUrl
+                          .split('/')
+                          .map((segment) => encodeURIComponent(segment))
+                          .join('/');
+
+                        const urlPatterns = [
+                          `https://api.neodog.app/${encodedPath}`,
+                          `https://api.neodog.app/api/${encodedPath}`,
+                          `https://api.neodog.app/storage/${encodedPath}`,
+                          `https://api.neodog.app/public/${encodedPath}`,
+                          `https://api.neodog.app/images/${encodedPath}`,
+                          `https://api.neodog.app/uploads/${encodedPath}`
+                        ];
+
+                        processedUrl = urlPatterns[0];
+                      } else if (processedUrl.startsWith('http')) {
+                        try {
+                          const urlObj = new URL(processedUrl);
+                          const pathSegments = urlObj.pathname
+                            .split('/')
+                            .map((segment) => encodeURIComponent(segment));
+                          urlObj.pathname = pathSegments.join('/');
+                          processedUrl = urlObj.href;
+                        } catch {
+                          const pathSegments = processedUrl
+                            .split('/')
+                            .map((segment) => encodeURIComponent(segment));
+                          processedUrl = pathSegments.join('/');
+                        }
+                      }
+                      return processedUrl;
+                    })()}
                     alt={pet.name}
                     width={96}
                     height={96}
                     className={styles.avatar}
+                    unoptimized={
+                      actualPetData?.photo_path?.startsWith('https://api.neodog.app') ||
+                      !actualPetData?.photo_path?.startsWith('http')
+                    }
                   />
                 ) : (
                   <div className={styles.avatarPlaceholder} />

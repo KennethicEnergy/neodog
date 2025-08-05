@@ -45,15 +45,31 @@ export interface PetReferenceResponse {
 
 export const petApi = {
   createPet: async (data: Partial<Pet> | FormData) => {
-    return apiClient.post('/facility/pet-management/create', data);
+    let config = undefined;
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      config = {
+        headers: {
+          'Content-Type': undefined
+        }
+      };
+    }
+    return apiClient.post('/facility/pet-management/create', data, config);
   },
 
   getAll: async (page = 1, paginate = 1) => {
     return apiClient.get(`/facility/pet-management?paginate=${paginate}&page=${page}`);
   },
 
-  update: async (id: number, data: Partial<Pet>) => {
-    return apiClient.put(`/facility/pet-management/update/${id}`, data);
+  update: async (id: number, data: Partial<Pet> | FormData) => {
+    let config = undefined;
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      config = {
+        headers: {
+          'Content-Type': undefined
+        }
+      };
+    }
+    return apiClient.put(`/facility/pet-management/update/${id}`, data, config);
   },
 
   findById: async (id: number) => {

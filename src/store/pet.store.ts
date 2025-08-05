@@ -48,7 +48,10 @@ interface PetState {
     message?: string;
     fieldErrors?: Record<string, string[]>;
   }>;
-  updatePet: (id: number, data: Partial<Pet>) => Promise<{ success: boolean; message?: string }>;
+  updatePet: (
+    id: number,
+    data: Partial<Pet> | FormData
+  ) => Promise<{ success: boolean; message?: string }>;
   findPet: (id: number) => Promise<void>;
   deletePet: (id: number) => Promise<{ success: boolean; message?: string }>;
   fetchReferences: () => Promise<void>;
@@ -203,7 +206,12 @@ export const usePetStore = create<PetState>((set, get) => ({
 
       // Success case
       set((state) => ({
-        pets: state.pets.map((p) => (p.id === id ? { ...p, ...data } : p)),
+        pets: state.pets.map((p) => {
+          if (p.id === id) {
+            return p;
+          }
+          return p;
+        }),
         isLoading: false
       }));
       return { success: true };

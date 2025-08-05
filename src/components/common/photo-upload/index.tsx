@@ -6,6 +6,7 @@ import styles from './styles.module.scss';
 interface PhotoUploadProps {
   id?: string;
   value?: File | null;
+  photoUrl?: string | null;
   onChange?: (file: File | null) => void;
   placeholder?: string;
   error?: boolean;
@@ -18,6 +19,7 @@ interface PhotoUploadProps {
 const PhotoUpload: React.FC<PhotoUploadProps> = ({
   id,
   value,
+  photoUrl,
   onChange,
   placeholder = 'Upload Photo',
   error = false,
@@ -29,16 +31,50 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Generate preview URL when file changes
   React.useEffect(() => {
     if (value) {
       const url = URL.createObjectURL(value);
       setPreviewUrl(url);
       return () => URL.revokeObjectURL(url);
+    } else if (photoUrl) {
+      let processedUrl = photoUrl;
+      if (photoUrl && !photoUrl.startsWith('http')) {
+        const encodedPath = photoUrl
+          .split('/')
+          .map((segment) => encodeURIComponent(segment))
+          .join('/');
+
+        const urlPatterns = [
+          `https://api.neodog.app/${encodedPath}`,
+          `https://api.neodog.app/api/${encodedPath}`,
+          `https://api.neodog.app/storage/${encodedPath}`,
+          `https://api.neodog.app/public/${encodedPath}`,
+          `https://api.neodog.app/images/${encodedPath}`,
+          `https://api.neodog.app/uploads/${encodedPath}`
+        ];
+
+        processedUrl = urlPatterns[0];
+        console.log('Trying image URL patterns:', urlPatterns);
+        console.log('Using pattern:', processedUrl);
+      } else if (photoUrl.startsWith('http')) {
+        try {
+          const urlObj = new URL(photoUrl);
+          const pathSegments = urlObj.pathname
+            .split('/')
+            .map((segment) => encodeURIComponent(segment));
+          urlObj.pathname = pathSegments.join('/');
+          processedUrl = urlObj.href;
+        } catch {
+          const pathSegments = photoUrl.split('/').map((segment) => encodeURIComponent(segment));
+          processedUrl = pathSegments.join('/');
+        }
+      }
+      setPreviewUrl(processedUrl);
     } else {
+      console.error('No photo URL, setting previewUrl to null');
       setPreviewUrl(null);
     }
-  }, [value]);
+  }, [value, photoUrl]);
 
   const handleFileSelect = (files: FileList | null) => {
     const file = files?.[0] || null;
@@ -98,6 +134,9 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
             className={styles.previewImage}
             fill
             sizes="(max-width: 768px) 100vw, 120px"
+            unoptimized={previewUrl.startsWith('https://api.neodog.app')}
+            onError={(e) => console.log('Image failed to load:', previewUrl, e)}
+            onLoad={() => console.log('Image loaded successfully:', previewUrl)}
           />
         ) : (
           <div className={styles.placeholder}>

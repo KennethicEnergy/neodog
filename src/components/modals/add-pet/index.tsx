@@ -7,7 +7,7 @@ import { Select, SelectOption } from '@/components/common/select';
 import { Textarea } from '@/components/common/textarea';
 import { createMultiMessageToast } from '@/components/common/toast';
 import { Toggle } from '@/components/common/toggle';
-import { Pet, petApi } from '@/services/pet.api';
+import { petApi } from '@/services/pet.api';
 import { vaccinationApi } from '@/services/vaccination.api';
 import { useAuthStore } from '@/store/auth.store';
 import { useClientStore } from '@/store/client.store';
@@ -20,6 +20,7 @@ import styles from './styles.module.scss';
 export interface PetFormData {
   client_id: string;
   photo?: File | null;
+  photo_url?: string | null;
   name: string;
   pet_breed_id: string;
   date_of_birth: string;
@@ -60,6 +61,7 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
   const [form, setForm] = useState<PetFormData>({
     client_id: clientId || '',
     photo: null,
+    photo_url: null,
     name: '',
     pet_breed_id: '',
     date_of_birth: '',
@@ -232,10 +234,12 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
           const response = await petApi.findById(petId);
           if (response.data && response.data.result) {
             const pet = response.data.result;
+            const { photo, photo_path, ...petWithoutPhoto } = pet;
             setForm((prev) => ({
               ...prev,
-              ...pet,
-              photo: null // Do not prefill photo for edit
+              ...petWithoutPhoto,
+              photo: null,
+              photo_url: photo_path || photo || null
             }));
           }
         } catch {
@@ -305,12 +309,16 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
 
       // Append all form fields to FormData
       Object.entries(form).forEach(([key, value]) => {
-        if (value !== null && value !== '') {
-          if (key === 'photo' && value instanceof File) {
+        if (key === 'photo') {
+          // Only append photo if it's actually a File object
+          if (value instanceof File) {
             formData.append(key, value);
-          } else if (key === 'spayed_or_neutered') {
+          }
+          // Skip if it's null, undefined, or an empty object
+        } else if (value !== null && value !== '') {
+          if (key === 'spayed_or_neutered') {
             formData.append(key, value ? '1' : '0');
-          } else if (key !== 'photo') {
+          } else {
             formData.append(key, String(value));
           }
         }
@@ -318,10 +326,29 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
 
       let result;
       if (isEditMode && petId) {
-        // Remove 'photo' if null or undefined for update
-        const updateData = { ...form };
-        if (updateData.photo == null) delete updateData.photo;
-        result = await updatePet(petId, updateData as Partial<Pet>);
+        // For edit mode, always use FormData to ensure all fields are sent
+        const updateFormData = new FormData();
+
+        // Append all form fields to FormData
+        Object.entries(form).forEach(([key, value]) => {
+          if (key === 'photo') {
+            // Only append photo if it's actually a File object
+            if (value instanceof File) {
+              updateFormData.append(key, value);
+            }
+            // Skip if it's null, undefined, or an empty object
+          } else if (key === 'photo_url') {
+            // Skip photo_url as it's only for display purposes
+          } else if (value !== null && value !== '') {
+            if (key === 'spayed_or_neutered') {
+              updateFormData.append(key, value ? '1' : '0');
+            } else {
+              updateFormData.append(key, String(value));
+            }
+          }
+        });
+
+        result = await updatePet(petId, updateFormData);
       } else {
         result = await createPet(formData);
       }
@@ -408,6 +435,7 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
                 id="photo"
                 size="sm"
                 value={form.photo}
+                photoUrl={form.photo_url}
                 onChange={(file) => {
                   if (file && file.size > 2 * 1024 * 1024) {
                     addToast({
