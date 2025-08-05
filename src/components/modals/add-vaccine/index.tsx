@@ -424,9 +424,11 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
               <div key={vaccination.id} className={styles.vaccinationSection}>
                 {/* Section Header */}
                 <div className={styles.sectionHeader}>
-                  <h4 className={styles.sectionTitle}>
-                    {index === 0 ? 'Upload Vaccine Certificate' : 'Add Another Vaccine'}
-                  </h4>
+                  <p className={styles.sectionTitle}>
+                    {form.vaccinations.length === 1
+                      ? 'Vaccine Certificate'
+                      : `Vaccine Certificate ${index + 1}`}
+                  </p>
                   {index > 0 && (
                     <Button
                       type="button"
