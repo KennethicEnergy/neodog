@@ -69,7 +69,6 @@
   gap: 0.5rem;
 }
 
-// Dynamic vaccine form styles
 .vaccinationsContainer {
   max-height: 400px;
   overflow-y: auto;
@@ -78,7 +77,6 @@
   scroll-behavior: smooth;
   transition: all 0.3s ease;
 
-  // Custom scrollbar
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -112,7 +110,6 @@
     margin-bottom: 0;
   }
 
-  // First section (main vaccine) has different styling
   &:first-child {
     background: #ffffff;
     border: 2px solid #e9ecef;
@@ -144,8 +141,6 @@
   margin: 0;
 }
 
-
-
 .addVaccineSection {
   display: flex;
   justify-content: center;
@@ -157,8 +152,6 @@
   align-items: center;
   gap: 0.5rem;
   background: #ffffff;
-  color: #2563eb;
-  border: 2px dashed #2563eb;
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
@@ -170,12 +163,6 @@
     font-weight: bold;
   }
 
-  &:hover {
-    background: #f8fafc;
-    border-color: #1d4ed8;
-    color: #1d4ed8;
-  }
-
   &:disabled {
     background: #f1f5f9;
     border-color: #cbd5e1;
@@ -184,17 +171,14 @@
   }
 }
 
-// Additional styles for better form appearance
 .formGroup:last-child {
   margin-bottom: 0;
 }
 
-// Ensure proper spacing for file upload sections
 .vaccinationSection .formGroup:first-child {
   margin-bottom: 1.5rem;
 }
 
-// Style for the remove button to match the design
 .removeButton {
   background: #dc3545;
   color: white;

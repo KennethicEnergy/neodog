@@ -501,6 +501,8 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
           {form.vaccinations.length < MAX_VACCINES && (
             <div className={styles.addVaccineSection}>
               <Button
+                size="sm"
+                variant="secondary"
                 type="button"
                 className={styles.addVaccineButton}
                 onClick={addVaccination}
