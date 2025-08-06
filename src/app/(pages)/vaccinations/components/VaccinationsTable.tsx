@@ -1,33 +1,54 @@
 import Table from '@/components/common/table';
 
-interface Vaccination extends Record<string, unknown> {
-  ownerAndContact: string[];
-  pet: string;
-  currentCount: string;
-  dueSoonCount: string;
-  overdueCount: string;
-  missingCount: string;
+interface VaccinationTableRow extends Record<string, unknown> {
+  id?: number;
+  clientName?: string[];
+  petName?: string;
+  vaccine?: string;
+  expiryDate?: string;
+  dateCreated?: string;
+  status?: string;
+  statusCode?: string;
   actions: object[];
 }
 
 interface VaccinationsTableProps {
-  vaccinations: Vaccination[];
+  vaccinations: VaccinationTableRow[];
+  totalCount?: number;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
+  hidePagination?: boolean;
 }
 
 const VACCINATION_HEADERS = [
-  { key: 'ownerAndContact', label: 'CLIENT NAME' },
-  { key: 'pet', label: 'PET NAME' },
-  { key: 'currentCount', label: 'CURRENT' },
-  { key: 'dueSoonCount', label: 'DUE SOON' },
-  { key: 'overdueCount', label: 'OVERDUE' },
-  { key: 'missingCount', label: 'MISSING' },
+  { key: 'clientName', label: 'CLIENT NAME' },
+  { key: 'petName', label: 'PET NAME' },
+  { key: 'vaccine', label: 'VACCINE' },
+  { key: 'expiryDate', label: 'EXPIRY DATE' },
+  { key: 'dateCreated', label: 'DATE CREATED' },
+  { key: 'status', label: 'STATUS' },
   { key: 'actions', label: 'ACTIONS' }
 ];
 
-const VaccinationsTable = ({ vaccinations }: VaccinationsTableProps) => {
+const VaccinationsTable = ({
+  vaccinations,
+  totalCount,
+  currentPage,
+  onPageChange,
+  hidePagination
+}: VaccinationsTableProps) => {
   return (
     <div>
-      <Table data={vaccinations} headers={VACCINATION_HEADERS} enableSorting={true} tableOnly />
+      <Table
+        data={vaccinations}
+        headers={VACCINATION_HEADERS}
+        enableSorting={true}
+        tableOnly
+        totalCount={totalCount}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+        hidePagination={hidePagination}
+      />
     </div>
   );
 };

@@ -189,6 +189,16 @@
           margin-left: 1rem;
         }
 
+        .vaccineName {
+          text-align: left;
+          max-width: 20ch;
+          text-wrap: wrap;
+        }
+
+        .date {
+          text-align: center;
+        }
+
         .petItem {
           display: flex;
           align-items: center;

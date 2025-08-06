@@ -97,7 +97,7 @@ export interface ClientReferenceResponse {
 }
 
 export const vaccinationApi = {
-  getAll: async (search?: string, page = 1, paginate = 999) => {
+  getAll: async (search?: string, page = 1, paginate = 10) => {
     const params = new URLSearchParams({
       paginate: paginate.toString(),
       page: page.toString()

@@ -12,39 +12,95 @@ import styles from './page.module.scss';
 
 type VaccinationApiType = {
   id: number;
-  name: string;
+  client_id: number;
+  pet_id: number;
+  vaccination_name_id: number;
+  expiration_date: string;
+  notes: string | null;
+  vaccination_status_id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
   client: {
     id: number;
+    facility_id: number;
+    photo_path: string | null;
     first_name: string;
+    middle_name: string | null;
     last_name: string;
     mobile_number: string;
+    address: string;
+    city: string;
+    state: string;
+    zipcode: string;
     email: string;
-  };
-  vaccination_current_count: number;
-  vaccination_due_soon_count: number;
-  vaccination_overdue_count: number;
-  vaccination_missing_count: number;
-  vaccinations: Array<{
-    id: number;
-    client_id: number;
-    pet_id: number;
-    vaccination_name_id: number;
-    file_path: string | null;
-    expiration_date: string;
-    notes: string;
-    vaccination_status_id: number;
+    email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-  }>;
+    deleted_at: string | null;
+  };
+  pet: {
+    id: number;
+    client_id: number;
+    photo_path: string | null;
+    name: string;
+    pet_breed_id: number;
+    date_of_birth: string;
+    age: string;
+    pet_sex_id: number;
+    color_or_markings: string;
+    weight: string;
+    height: string;
+    microchip_number: string | null;
+    enrollment_date: string;
+    spayed_or_neutered: number;
+    emergency_contact_name: string;
+    e_c_phone_number: string;
+    veterinarian_name: string;
+    v_phone_number: string;
+    handling_instruction: string;
+    behavioral_notes: string | null;
+    care_preferences: string | null;
+    feeding_instructions: string | null;
+    walking_preferences: string | null;
+    favorite_toys: string | null;
+    allergies: string | null;
+    current_medications: string | null;
+    medical_conditions: string | null;
+    admin_and_logistics: string | null;
+    last_visit: string;
+    pet_status_id: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  };
+  vaccination_name: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  };
+  vaccination_status: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  };
 };
 
 type VaccinationTableRow = {
-  ownerAndContact: string[];
-  pet: string;
-  currentCount: string;
-  dueSoonCount: string;
-  overdueCount: string;
-  missingCount: string;
+  id: number;
+  clientName: string[];
+  petName: string;
+  vaccine: string;
+  expiryDate: string;
+  dateCreated: string;
+  status: string;
+  statusCode: string;
   actions: object[];
 };
 
@@ -52,25 +108,21 @@ function transformVaccinationData(
   data: VaccinationApiType[],
   openModal: (modal: React.ReactNode) => void,
   closeModal: () => void,
-  onDeleteVaccination: (vaccinationId: number, petName: string) => void,
-  addToast: (toast: {
-    scheme: 'warning' | 'success' | 'danger';
-    title: string;
-    message: string;
-    timeout?: number;
-  }) => void
+  onDeleteVaccination: (vaccinationId: number, petName: string) => void
 ): VaccinationTableRow[] {
   console.log('transformVaccinationData input:', data);
-  const result = data.map((pet) => ({
-    ownerAndContact: [
-      `${pet.client.first_name} ${pet.client.last_name}`,
-      pet.client.mobile_number || pet.client.email || ''
+  const result = data.map((vaccination) => ({
+    id: vaccination.id,
+    clientName: [
+      `${vaccination.client.first_name} ${vaccination.client.last_name}`,
+      vaccination.client.mobile_number || vaccination.client.email || ''
     ],
-    pet: pet.name,
-    currentCount: pet.vaccination_current_count.toString(),
-    dueSoonCount: pet.vaccination_due_soon_count.toString(),
-    overdueCount: pet.vaccination_overdue_count.toString(),
-    missingCount: pet.vaccination_missing_count.toString(),
+    petName: vaccination.pet.name,
+    vaccine: vaccination.vaccination_name.name,
+    expiryDate: new Date(vaccination.expiration_date).toLocaleDateString('en-US'),
+    dateCreated: new Date(vaccination.created_at).toLocaleDateString('en-US'),
+    status: vaccination.vaccination_status.name,
+    statusCode: vaccination.vaccination_status.code,
     actions: [
       {
         name: 'View',
@@ -79,7 +131,7 @@ function transformVaccinationData(
         onClick: () => {
           openModal(
             <BaseModal onClose={closeModal}>
-              <ViewVaccinationsModal petId={pet.id} onClose={closeModal} />
+              <ViewVaccinationsModal petId={vaccination.pet_id} onClose={closeModal} />
             </BaseModal>
           );
         }
@@ -95,19 +147,7 @@ function transformVaccinationData(
         type: 'delete',
         icon: '/images/actions/trash.svg',
         onClick: () => {
-          // If pet has vaccinations, delete the first one (or show a list to choose from)
-          if (pet.vaccinations && pet.vaccinations.length > 0) {
-            const vaccination = pet.vaccinations[0]; // For now, delete the first vaccination
-            onDeleteVaccination(vaccination.id, pet.name);
-          } else {
-            // No vaccinations to delete
-            addToast({
-              scheme: 'warning',
-              title: 'No Vaccinations',
-              message: `No vaccination records found for ${pet.name}.`,
-              timeout: 3000
-            });
-          }
+          onDeleteVaccination(vaccination.id, vaccination.pet.name);
         }
       }
     ]
@@ -120,27 +160,37 @@ const VaccinationsPage = () => {
   const [search, setSearch] = useState('');
   const [vaccinations, setVaccinations] = useState<VaccinationApiType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
 
-  const fetchVaccinations = async () => {
+  const fetchVaccinations = async (page: number = 1) => {
     setLoading(true);
     try {
-      const vaccRes = await vaccinationApi.getAll();
+      const vaccRes = await vaccinationApi.getAll(undefined, page, 10);
       console.log('Raw API response:', vaccRes);
       console.log('Response data:', vaccRes.data);
 
-      // Extract pets data from the new API response structure
+      // Extract vaccinations data from the new API response structure
       const responseData = vaccRes.data;
-      const vaccData = responseData?.result?.pets?.data || [];
+      const vaccData = responseData?.result?.vaccinations?.data || [];
+      const paginationData = responseData?.result?.vaccinations || {};
 
       console.log('Extracted vaccData:', vaccData);
+      console.log('Extracted paginationData:', paginationData);
       console.log('vaccData length:', vaccData.length);
+      console.log('Total count from API:', paginationData.total);
+      console.log('Current page from API:', paginationData.current_page);
+
       setVaccinations(vaccData);
+      setTotalCount(paginationData.total || 0);
+      setCurrentPage(page); // Set to the actual page we fetched
     } catch (error) {
       console.error('API Error:', error);
       setVaccinations([]);
+      setTotalCount(0);
       addToast({
         scheme: 'danger',
         title: 'Error',
@@ -153,8 +203,12 @@ const VaccinationsPage = () => {
   };
 
   useEffect(() => {
-    fetchVaccinations();
+    fetchVaccinations(1);
   }, []);
+
+  const handlePageChange = (page: number) => {
+    fetchVaccinations(page);
+  };
 
   const handleDeleteVaccination = (vaccinationId: number, petName: string) => {
     openModal(
@@ -183,7 +237,7 @@ const VaccinationsPage = () => {
                       timeout: 3000
                     });
                     // Refresh the vaccinations list
-                    await fetchVaccinations();
+                    await fetchVaccinations(currentPage);
                   } else {
                     addToast({
                       scheme: 'danger',
@@ -211,22 +265,19 @@ const VaccinationsPage = () => {
   };
 
   const transformedVaccinations = useMemo(() => {
-    return transformVaccinationData(
-      vaccinations,
-      openModal,
-      closeModal,
-      handleDeleteVaccination,
-      addToast
-    );
-  }, [vaccinations, openModal, closeModal, addToast]);
+    return transformVaccinationData(vaccinations, openModal, closeModal, handleDeleteVaccination);
+  }, [vaccinations, openModal, closeModal]);
 
+  // For now, we'll use client-side filtering since the API might not support search
+  // In a real implementation, you'd want to pass the search query to the API
   const filteredData = useMemo(() => {
     if (!search) return transformedVaccinations;
     const q = search.toLowerCase();
     const result = transformedVaccinations.filter(
       (v) =>
-        v.ownerAndContact.some((item) => item.toLowerCase().includes(q)) ||
-        v.pet.toLowerCase().includes(q)
+        v.clientName?.some((item) => item.toLowerCase().includes(q)) ||
+        v.petName?.toLowerCase().includes(q) ||
+        v.vaccine?.toLowerCase().includes(q)
     );
     return result;
   }, [search, transformedVaccinations]);
@@ -234,10 +285,10 @@ const VaccinationsPage = () => {
   const calculateMetrics = (vaccinations: VaccinationTableRow[]) => {
     return vaccinations.reduce(
       (acc, v) => {
-        acc.current += parseInt(v.currentCount);
-        acc.dueSoon += parseInt(v.dueSoonCount);
-        acc.overdue += parseInt(v.overdueCount);
-        acc.missing += parseInt(v.missingCount);
+        if (v.statusCode === 'current') acc.current++;
+        else if (v.statusCode === 'due_soon') acc.dueSoon++;
+        else if (v.statusCode === 'overdue') acc.overdue++;
+        else if (v.statusCode === 'missing') acc.missing++;
         return acc;
       },
       { current: 0, dueSoon: 0, overdue: 0, missing: 0 }
@@ -277,7 +328,7 @@ const VaccinationsPage = () => {
   const handleNewVaccine = () => {
     openModal(
       <BaseModal onClose={closeModal}>
-        <AddVaccine onSuccess={fetchVaccinations} />
+        <AddVaccine onSuccess={() => fetchVaccinations(currentPage)} />
       </BaseModal>
     );
   };
@@ -294,7 +345,15 @@ const VaccinationsPage = () => {
             <p>Loading vaccinations...</p>
           </div>
         )}
-        {!loading && <VaccinationsTable vaccinations={filteredData} />}
+        {!loading && (
+          <VaccinationsTable
+            vaccinations={filteredData}
+            totalCount={totalCount}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            hidePagination={!!search}
+          />
+        )}
       </div>
     </div>
   );

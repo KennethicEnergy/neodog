@@ -215,12 +215,20 @@ const Table = <T extends Record<string, unknown>>({
   const getStatusClass = (status: string) => {
     switch (status) {
       case 'ACTIVE':
+      case 'Current':
+      case 'current':
         return 'success';
       case 'INACTIVE':
+      case 'Overdue':
+      case 'overdue':
         return 'danger';
       case 'FOLLOW-UP REQUIRED':
+      case 'Due Soon':
+      case 'due_soon':
         return 'warning';
       case 'PENDING':
+      case 'Missing':
+      case 'missing':
         return 'primary';
       default:
         return 'info'; // fallback
@@ -293,6 +301,15 @@ const Table = <T extends Record<string, unknown>>({
       );
     }
 
+    if (headerKey === 'clientName' && Array.isArray(value)) {
+      return (
+        <div className={styles.ownerAndContact}>
+          <span className={styles.ownerName}>{value[0]}</span>
+          <span className={styles.ownerContact}>{value[1]}</span>
+        </div>
+      );
+    }
+
     if (
       (headerKey === 'currentCount' ||
         headerKey === 'dueSoonCount' ||
@@ -301,6 +318,22 @@ const Table = <T extends Record<string, unknown>>({
       typeof value === 'string'
     ) {
       return <StatusTag status={value} bgColor={getStatusClass(value)} />;
+    }
+
+    if (headerKey === 'petName' && typeof value === 'string') {
+      return <div className={styles.name}>{value}</div>;
+    }
+
+    if (headerKey === 'vaccine' && typeof value === 'string') {
+      return <div className={styles.vaccineName}>{value}</div>;
+    }
+
+    if (headerKey === 'expiryDate' && typeof value === 'string') {
+      return <div className={styles.date}>{value}</div>;
+    }
+
+    if (headerKey === 'dateCreated' && typeof value === 'string') {
+      return <div className={styles.date}>{value}</div>;
     }
 
     return String(value);
@@ -376,7 +409,7 @@ const Table = <T extends Record<string, unknown>>({
         </table>
       </div>
       {/* Pagination Controls */}
-      {safeTotalCount > ITEMS_PER_PAGE && !hidePagination && (
+      {safeTotalCount >= ITEMS_PER_PAGE && !hidePagination && (
         <div
           className={styles.pagination}
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
