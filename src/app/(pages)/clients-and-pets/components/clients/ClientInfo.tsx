@@ -25,10 +25,12 @@ const ClientInfo: React.FC<ClientInfoProps> = ({ client }) => {
       <h2 className={styles.name}>
         {client.first_name} {client.middle_name ? client.middle_name + ' ' : ''}
         {client.last_name}
-        <StatusTag
-          status={client.status?.toUpperCase() || 'INACTIVE'}
-          bgColor={getStatusClass(client?.status)}
-        />
+        <div>
+          <StatusTag
+            status={client.status?.toUpperCase() || 'INACTIVE'}
+            bgColor={getStatusClass(client?.status)}
+          />
+        </div>
       </h2>
       <div className={styles.since}>
         Client Since{' '}

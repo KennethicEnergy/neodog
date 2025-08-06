@@ -147,6 +147,7 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
               </strong>
               ?
             </p>
+            <p>There are {c.pets_count} pets here associated with this client.</p>
             <div className={styles.buttonGroup}>
               <button className={styles.cancelButton} onClick={closeModal}>
                 Cancel
