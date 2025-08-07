@@ -235,12 +235,48 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
           if (response.data && response.data.result) {
             const pet = response.data.result;
             const { photo, photo_path, ...petWithoutPhoto } = pet;
-            setForm((prev) => ({
-              ...prev,
-              ...petWithoutPhoto,
-              photo: null,
-              photo_url: photo_path || photo || null
-            }));
+
+            setForm((prev) => {
+              // Ensure all form fields are properly mapped
+              const updatedForm = {
+                ...prev,
+                ...petWithoutPhoto,
+                photo: null,
+                photo_url: photo_path || photo || null,
+                // Ensure boolean fields are properly handled
+                spayed_or_neutered:
+                  petWithoutPhoto.spayed_or_neutered === 1 ||
+                  petWithoutPhoto.spayed_or_neutered === true,
+                // Ensure all string fields are strings
+                client_id: String(petWithoutPhoto.client_id || ''),
+                name: String(petWithoutPhoto.name || ''),
+                pet_breed_id: String(petWithoutPhoto.pet_breed_id || ''),
+                date_of_birth: String(petWithoutPhoto.date_of_birth || ''),
+                pet_sex_id: String(petWithoutPhoto.pet_sex_id || ''),
+                color_or_markings: String(petWithoutPhoto.color_or_markings || ''),
+                weight: String(petWithoutPhoto.weight || ''),
+                height: String(petWithoutPhoto.height || ''),
+                microchip_number: String(petWithoutPhoto.microchip_number || ''),
+                enrollment_date: String(petWithoutPhoto.enrollment_date || ''),
+                emergency_contact_name: String(petWithoutPhoto.emergency_contact_name || ''),
+                e_c_phone_number: String(petWithoutPhoto.e_c_phone_number || ''),
+                veterinarian_name: String(petWithoutPhoto.veterinarian_name || ''),
+                v_phone_number: String(petWithoutPhoto.v_phone_number || ''),
+                handling_instruction: String(petWithoutPhoto.handling_instruction || ''),
+                behavioral_notes: String(petWithoutPhoto.behavioral_notes || ''),
+                care_preferences: String(petWithoutPhoto.care_preferences || ''),
+                feeding_instructions: String(petWithoutPhoto.feeding_instructions || ''),
+                walking_preferences: String(petWithoutPhoto.walking_preferences || ''),
+                favorite_toys: String(petWithoutPhoto.favorite_toys || ''),
+                allergies: String(petWithoutPhoto.allergies || ''),
+                current_medications: String(petWithoutPhoto.current_medications || ''),
+                medical_conditions: String(petWithoutPhoto.medical_conditions || ''),
+                admin_and_logistics: String(petWithoutPhoto.admin_and_logistics || ''),
+                pet_status_id: String(petWithoutPhoto.pet_status_id || '')
+              };
+
+              return updatedForm;
+            });
           }
         } catch {
           addToast({
@@ -329,7 +365,7 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
         // For edit mode, always use FormData to ensure all fields are sent
         const updateFormData = new FormData();
 
-        // Append all form fields to FormData
+        // Append all form fields to FormData - for updates, send all fields even if empty
         Object.entries(form).forEach(([key, value]) => {
           if (key === 'photo') {
             // Only append photo if it's actually a File object
@@ -339,13 +375,22 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
             // Skip if it's null, undefined, or an empty object
           } else if (key === 'photo_url') {
             // Skip photo_url as it's only for display purposes
-          } else if (value !== null && value !== '') {
+          } else {
+            // For updates, send all fields even if empty to satisfy API requirements
             if (key === 'spayed_or_neutered') {
               updateFormData.append(key, value ? '1' : '0');
             } else {
-              updateFormData.append(key, String(value));
+              // Ensure all required fields are sent, even if empty
+              updateFormData.append(key, String(value || ''));
             }
           }
+        });
+
+        // Debug: Log what's being sent
+        console.log('Form data being sent for update:');
+        const formDataEntries = Array.from(updateFormData.entries());
+        formDataEntries.forEach(([key, value]) => {
+          console.log(`${key}: ${value}`);
         });
 
         result = await updatePet(petId, updateFormData);

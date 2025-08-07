@@ -71,7 +71,10 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
       }
       setPreviewUrl(processedUrl);
     } else {
-      console.error('No photo URL, setting previewUrl to null');
+      // Only log error if we're in development and photoUrl was explicitly provided but is invalid
+      if (process.env.NODE_ENV === 'development' && photoUrl !== undefined) {
+        console.warn('No valid photo URL provided, setting previewUrl to null');
+      }
       setPreviewUrl(null);
     }
   }, [value, photoUrl]);

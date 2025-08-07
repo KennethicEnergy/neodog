@@ -114,15 +114,21 @@ function transformVaccinationData(
   const result = data.map((vaccination) => ({
     id: vaccination.id,
     clientName: [
-      `${vaccination.client.first_name} ${vaccination.client.last_name}`,
-      vaccination.client.mobile_number || vaccination.client.email || ''
+      vaccination.client
+        ? `${vaccination.client.first_name} ${vaccination.client.last_name}`
+        : 'Unknown Client',
+      vaccination.client ? vaccination.client.mobile_number || vaccination.client.email || '' : ''
     ],
-    petName: vaccination.pet.name,
-    vaccine: vaccination.vaccination_name.name,
-    expiryDate: new Date(vaccination.expiration_date).toLocaleDateString('en-US'),
-    dateCreated: new Date(vaccination.created_at).toLocaleDateString('en-US'),
-    status: vaccination.vaccination_status.name,
-    statusCode: vaccination.vaccination_status.code,
+    petName: vaccination.pet?.name || 'Unknown Pet',
+    vaccine: vaccination.vaccination_name?.name || 'Unknown Vaccine',
+    expiryDate: vaccination.expiration_date
+      ? new Date(vaccination.expiration_date).toLocaleDateString('en-US')
+      : 'N/A',
+    dateCreated: vaccination.created_at
+      ? new Date(vaccination.created_at).toLocaleDateString('en-US')
+      : 'N/A',
+    status: vaccination.vaccination_status?.name || 'Unknown Status',
+    statusCode: vaccination.vaccination_status?.code || 'unknown',
     actions: [
       {
         name: 'View',
@@ -147,7 +153,7 @@ function transformVaccinationData(
         type: 'delete',
         icon: '/images/actions/trash.svg',
         onClick: () => {
-          onDeleteVaccination(vaccination.id, vaccination.pet.name);
+          onDeleteVaccination(vaccination.id, vaccination.pet?.name || 'Unknown Pet');
         }
       }
     ]
@@ -170,20 +176,9 @@ const VaccinationsPage = () => {
     setLoading(true);
     try {
       const vaccRes = await vaccinationApi.getAll(undefined, page, 10);
-      console.log('Raw API response:', vaccRes);
-      console.log('Response data:', vaccRes.data);
-
-      // Extract vaccinations data from the new API response structure
       const responseData = vaccRes.data;
       const vaccData = responseData?.result?.vaccinations?.data || [];
       const paginationData = responseData?.result?.vaccinations || {};
-
-      console.log('Extracted vaccData:', vaccData);
-      console.log('Extracted paginationData:', paginationData);
-      console.log('vaccData length:', vaccData.length);
-      console.log('Total count from API:', paginationData.total);
-      console.log('Current page from API:', paginationData.current_page);
-
       setVaccinations(vaccData);
       setTotalCount(paginationData.total || 0);
       setCurrentPage(page); // Set to the actual page we fetched

@@ -63,13 +63,14 @@ export const petApi = {
   update: async (id: number, data: Partial<Pet> | FormData) => {
     let config = undefined;
     if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      data.append('_method', 'PUT');
       config = {
         headers: {
           'Content-Type': undefined
         }
       };
     }
-    return apiClient.put(`/facility/pet-management/update/${id}`, data, config);
+    return apiClient.post(`/facility/pet-management/update/${id}`, data, config);
   },
 
   findById: async (id: number) => {

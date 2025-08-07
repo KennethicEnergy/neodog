@@ -204,16 +204,8 @@ export const usePetStore = create<PetState>((set, get) => ({
         };
       }
 
-      // Success case
-      set((state) => ({
-        pets: state.pets.map((p) => {
-          if (p.id === id) {
-            return p;
-          }
-          return p;
-        }),
-        isLoading: false
-      }));
+      // Success case - refresh the pets list to get updated data
+      await get().fetchPets(1, 10);
       return { success: true };
     } catch (error: unknown) {
       set({
