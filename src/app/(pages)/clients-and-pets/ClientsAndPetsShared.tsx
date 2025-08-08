@@ -55,6 +55,7 @@ interface TransformedPet {
   lastVisit: string;
   status: string;
   image: string | null;
+  photo_path?: string | null;
 }
 
 interface ClientsAndPetsSharedProps {
@@ -305,7 +306,8 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
             })
           : 'No visits',
         status: 'HEALTHY',
-        image: null
+        image: null,
+        photo_path: (pet as PetWithClient & { photo_path?: string }).photo_path || null
       };
     });
   }, [pets]);
@@ -359,7 +361,8 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
               })
             : 'No visits',
           status: 'HEALTHY',
-          image: null
+          image: null,
+          photo_path: (pet as PetWithClient & { photo_path?: string }).photo_path || null
         };
       });
     }
@@ -410,7 +413,8 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
               })
             : 'No visits',
           status: 'HEALTHY',
-          image: null
+          image: null,
+          photo_path: (pet as PetWithClient & { photo_path?: string }).photo_path || null
         };
       })
       .filter(

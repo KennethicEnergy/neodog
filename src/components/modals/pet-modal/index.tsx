@@ -6,6 +6,7 @@ import StatusTag from '@/components/common/status-tag';
 import { petApi } from '@/services/pet.api';
 import { useModalStore } from '@/store/modal-store';
 import { useToastStore } from '@/store/toast.store';
+import { getPetImageUrl } from '@/utils/image';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import AddNotesModal from '../add-notes';
@@ -298,53 +299,28 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
               <div className={styles.avatarSection}>
                 {actualPetData?.photo_path ? (
                   <Image
-                    src={(() => {
-                      let processedUrl = actualPetData.photo_path;
-                      if (!processedUrl.startsWith('http')) {
-                        const encodedPath = processedUrl
-                          .split('/')
-                          .map((segment) => encodeURIComponent(segment))
-                          .join('/');
-
-                        const urlPatterns = [
-                          `https://api.neodog.app/${encodedPath}`,
-                          `https://api.neodog.app/api/${encodedPath}`,
-                          `https://api.neodog.app/storage/${encodedPath}`,
-                          `https://api.neodog.app/public/${encodedPath}`,
-                          `https://api.neodog.app/images/${encodedPath}`,
-                          `https://api.neodog.app/uploads/${encodedPath}`
-                        ];
-
-                        processedUrl = urlPatterns[0];
-                      } else if (processedUrl.startsWith('http')) {
-                        try {
-                          const urlObj = new URL(processedUrl);
-                          const pathSegments = urlObj.pathname
-                            .split('/')
-                            .map((segment) => encodeURIComponent(segment));
-                          urlObj.pathname = pathSegments.join('/');
-                          processedUrl = urlObj.href;
-                        } catch {
-                          const pathSegments = processedUrl
-                            .split('/')
-                            .map((segment) => encodeURIComponent(segment));
-                          processedUrl = pathSegments.join('/');
-                        }
-                      }
-                      return processedUrl;
-                    })()}
+                    src={getPetImageUrl(actualPetData.photo_path) || ''}
                     alt={pet.name}
                     width={96}
                     height={96}
                     className={styles.avatar}
-                    unoptimized={
-                      actualPetData?.photo_path?.startsWith('https://api.neodog.app') ||
-                      !actualPetData?.photo_path?.startsWith('http')
-                    }
+                    onError={(e) => {
+                      console.warn('Failed to load pet image:', actualPetData.photo_path);
+                      e.currentTarget.style.display = 'none';
+                      const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                      if (placeholder) {
+                        placeholder.style.display = 'flex';
+                      }
+                    }}
+                    unoptimized={true}
                   />
-                ) : (
-                  <div className={styles.avatarPlaceholder} />
-                )}
+                ) : null}
+                {/* Fallback placeholder with pet initials */}
+                <div
+                  className={styles.avatarPlaceholder}
+                  style={{ display: actualPetData?.photo_path ? 'none' : 'flex' }}>
+                  {pet.name.charAt(0).toUpperCase()}
+                </div>
               </div>
               <div className={styles.headerInfo}>
                 <div className={styles.petNameRow}>

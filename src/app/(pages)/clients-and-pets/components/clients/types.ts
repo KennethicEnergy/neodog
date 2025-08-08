@@ -25,6 +25,7 @@ export interface Pet {
   lastVisit: string;
   status: string;
   image: string | null;
+  photo_path?: string | null;
 }
 
 export interface VaccinationData {

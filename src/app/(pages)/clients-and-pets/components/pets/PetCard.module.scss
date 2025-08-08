@@ -27,12 +27,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+  }
+
+  .petImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .imagePlaceholderFallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, $gray-200 0%, $gray-300 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: $gray-600;
+    text-transform: uppercase;
   }
 }
 

@@ -1,6 +1,7 @@
 import { Button } from '@/components/common/button';
 import PetModal from '@/components/modals/pet-modal';
 import { useModalStore } from '@/store/modal-store';
+import { getPetImageUrl } from '@/utils/image';
 import Image from 'next/image';
 import styles from './PetCard.module.scss';
 
@@ -13,6 +14,7 @@ interface Pet {
   lastVisit: string;
   status: string;
   image: string | null;
+  photo_path?: string | null;
 }
 
 interface PetCardProps {
@@ -27,26 +29,37 @@ const PetCard = ({ pet }: PetCardProps) => {
     openModal(<PetModal pet={pet} onClose={closeModal} />);
   };
 
-  // const getStatusClass = (status: string) => {
-  //   switch (status) {
-  //     case 'HEALTHY':
-  //       return 'success';
-  //     case 'MEDICAL ISSUE':
-  //       return 'danger';
-  //     case 'FOLLOW-UP REQUIRED':
-  //       return 'warning';
-  //     case 'PENDING':
-  //       return 'primary';
-  //     default:
-  //       return 'info'; // fallback
-  //   }
-  // };
+  // Get the correct image URL using the API pattern
+  const imageUrl = getPetImageUrl(pet.photo_path || null);
 
   return (
     <div className={styles.petCard}>
       <div className={styles.imageContainer} onClick={handleViewProfile}>
         <div className={styles.imagePlaceholder}>
-          {pet.image && <Image src={pet.image} alt={pet.name} width={100} height={100} />}
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={pet.name}
+              width={100}
+              height={100}
+              className={styles.petImage}
+              onError={(e) => {
+                console.warn('Failed to load pet image:', imageUrl);
+                // Hide the image on error
+                e.currentTarget.style.display = 'none';
+                const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                if (placeholder) {
+                  placeholder.style.display = 'flex';
+                }
+              }}
+              unoptimized={true}
+            />
+          ) : null}
+          <div
+            className={styles.imagePlaceholderFallback}
+            style={{ display: imageUrl ? 'none' : 'flex' }}>
+            {pet.name.charAt(0).toUpperCase()}
+          </div>
         </div>
       </div>
       <div className={styles.petInfo}>

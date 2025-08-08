@@ -1,6 +1,8 @@
 import Icon from '@/components/common/icon';
 import PetModal from '@/components/modals/pet-modal';
 import { useModalStore } from '@/store/modal-store';
+import { getPetImageUrl } from '@/utils/image';
+import Image from 'next/image';
 import React from 'react';
 import styles from './ClientDetailView.module.scss';
 import { Pet } from './types';
@@ -21,17 +23,47 @@ const ClientPets: React.FC<ClientPetsProps> = ({ pets, onAddPet }) => {
   return (
     <>
       <div className={styles.pets}>
-        {pets?.map((pet) => (
-          <div
-            key={pet.id}
-            className={styles.pet}
-            onClick={() => handleViewPet(pet)}
-            style={{ cursor: 'pointer' }}>
-            <div className={styles.petAvatar} />
-            <div className={styles.petName}>{pet.name}</div>
-            <div className={styles.petBreed}>{pet.breed}</div>
-          </div>
-        ))}
+        {pets?.map((pet) => {
+          const imageUrl = getPetImageUrl(pet.photo_path || null);
+
+          return (
+            <div
+              key={pet.id}
+              className={styles.pet}
+              onClick={() => handleViewPet(pet)}
+              style={{ cursor: 'pointer' }}>
+              <div className={styles.petAvatar}>
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={pet.name}
+                    width={60}
+                    height={60}
+                    className={styles.petImage}
+                    onError={(e) => {
+                      console.warn('Failed to load pet image:', imageUrl);
+                      // Hide the image on error
+                      e.currentTarget.style.display = 'none';
+                      const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                      if (placeholder) {
+                        placeholder.style.display = 'flex';
+                      }
+                    }}
+                    unoptimized={true}
+                  />
+                ) : null}
+                {/* Fallback placeholder with pet initials */}
+                <div
+                  className={styles.petAvatarPlaceholder}
+                  style={{ display: imageUrl ? 'none' : 'flex' }}>
+                  {pet.name.charAt(0).toUpperCase()}
+                </div>
+              </div>
+              <div className={styles.petName}>{pet.name}</div>
+              <div className={styles.petBreed}>{pet.breed}</div>
+            </div>
+          );
+        })}
       </div>
       <div className={styles.addContainer} onClick={onAddPet}>
         <Icon src="/images/icon-plus.svg" height={40} width={40} bgColor="#7F7F7F" shape="circle" />

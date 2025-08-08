@@ -1,3 +1,4 @@
+import { getPetImageUrl } from '@/utils/image';
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import { FileInput } from '../file-input';
@@ -37,38 +38,8 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
       setPreviewUrl(url);
       return () => URL.revokeObjectURL(url);
     } else if (photoUrl) {
-      let processedUrl = photoUrl;
-      if (photoUrl && !photoUrl.startsWith('http')) {
-        const encodedPath = photoUrl
-          .split('/')
-          .map((segment) => encodeURIComponent(segment))
-          .join('/');
-
-        const urlPatterns = [
-          `https://api.neodog.app/${encodedPath}`,
-          `https://api.neodog.app/api/${encodedPath}`,
-          `https://api.neodog.app/storage/${encodedPath}`,
-          `https://api.neodog.app/public/${encodedPath}`,
-          `https://api.neodog.app/images/${encodedPath}`,
-          `https://api.neodog.app/uploads/${encodedPath}`
-        ];
-
-        processedUrl = urlPatterns[0];
-        console.log('Trying image URL patterns:', urlPatterns);
-        console.log('Using pattern:', processedUrl);
-      } else if (photoUrl.startsWith('http')) {
-        try {
-          const urlObj = new URL(photoUrl);
-          const pathSegments = urlObj.pathname
-            .split('/')
-            .map((segment) => encodeURIComponent(segment));
-          urlObj.pathname = pathSegments.join('/');
-          processedUrl = urlObj.href;
-        } catch {
-          const pathSegments = photoUrl.split('/').map((segment) => encodeURIComponent(segment));
-          processedUrl = pathSegments.join('/');
-        }
-      }
+      // Use the utility function to get the correct image URL
+      const processedUrl = getPetImageUrl(photoUrl) || photoUrl;
       setPreviewUrl(processedUrl);
     } else {
       // Only log error if we're in development and photoUrl was explicitly provided but is invalid

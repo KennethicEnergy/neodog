@@ -15,6 +15,7 @@ interface TransformedPet {
   lastVisit: string;
   status: string;
   image: string | null;
+  photo_path?: string | null;
 }
 
 interface PetsTableProps {
