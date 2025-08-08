@@ -9,6 +9,7 @@ export interface Client {
   city?: string;
   state?: string;
   zip?: string;
+  photo_path?: string | null;
   created_at?: string;
   updated_at?: string;
   pets_count?: number;

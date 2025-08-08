@@ -434,15 +434,6 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     return filteredPets.slice(start, start + petsPageSize);
   }, [filteredPets, currentPage, searchQuery]);
 
-  const selectedClientPets = useMemo(() => {
-    if (!selectedClient) return [];
-    return filteredPets.filter(
-      (pet) =>
-        pet.owner ===
-        `${selectedClient.first_name} ${selectedClient.middle_name ? selectedClient.middle_name + ' ' : ''}${selectedClient.last_name}`
-    );
-  }, [selectedClient, filteredPets]);
-
   const transformedClients = useMemo(() => {
     return (Array.isArray(clients) ? clients : []).map((client) => {
       const c = client as Client & { pets_count?: number; last_visit?: string; status?: string };
@@ -572,13 +563,6 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
     setCurrentPage(page);
   };
 
-  // Fetch pets when a client is selected to ensure pets data is available
-  useEffect(() => {
-    if (selectedClient) {
-      fetchPets(1, 10);
-    }
-  }, [selectedClient, fetchPets]);
-
   useEffect(() => {
     if (pathname === '/pets' && activeTab !== 'pets') {
       setActiveTab('pets');
@@ -686,7 +670,7 @@ const ClientsAndPetsShared: React.FC<ClientsAndPetsSharedProps> = ({ defaultTab 
 
       {selectedClient && (
         <div className={styles.content}>
-          <ClientDetailView client={selectedClient} pets={selectedClientPets} onBack={handleBack} />
+          <ClientDetailView client={selectedClient} pets={[]} onBack={handleBack} />
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 import { Button } from '@/components/common/button';
+import PhotoUpload from '@/components/common/photo-upload';
 import { Client } from '@/services/client.api';
 import { useClientStore } from '@/store/client.store';
 import { useModalStore } from '@/store/modal-store';
@@ -8,10 +9,24 @@ import { Input } from '../../common/input';
 import Loader from '../../common/loader';
 import styles from './styles.module.scss';
 
+interface ClientFormData {
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  mobile_number: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zipcode: string;
+  photo?: File | null;
+  photo_url?: string | null;
+}
+
 const AddClient = ({ client }: { client?: Client }) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ClientFormData>({
     first_name: '',
     middle_name: '',
     last_name: '',
@@ -20,7 +35,9 @@ const AddClient = ({ client }: { client?: Client }) => {
     address: '',
     city: '',
     state: '',
-    zipcode: ''
+    zipcode: '',
+    photo: null,
+    photo_url: null
   });
   const { createClient, updateClient, isLoading, fetchClients } = useClientStore();
   const [mobileError, setMobileError] = useState('');
@@ -45,7 +62,9 @@ const AddClient = ({ client }: { client?: Client }) => {
             address: client.address || '',
             city: client.city || '',
             state: client.state || '',
-            zipcode: client.zipcode || ''
+            zipcode: client.zipcode || '',
+            photo: null,
+            photo_url: (client as Client & { photo_path?: string }).photo_path || null
           });
         }
       } catch (error) {
@@ -72,6 +91,10 @@ const AddClient = ({ client }: { client?: Client }) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handlePhotoUpload = (file: File | null) => {
+    setForm((prev) => ({ ...prev, photo: file }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!/^[\d\s\(\)\+]+$/.test(form.mobile_number)) {
@@ -82,9 +105,41 @@ const AddClient = ({ client }: { client?: Client }) => {
 
     let result;
     if (isEditing && client) {
-      result = await updateClient(client.id, form);
+      // Use FormData if there's a photo file, otherwise use regular object
+      if (form.photo) {
+        const formData = new FormData();
+        formData.append('photo', form.photo);
+        formData.append('first_name', form.first_name);
+        formData.append('middle_name', form.middle_name);
+        formData.append('last_name', form.last_name);
+        formData.append('mobile_number', form.mobile_number);
+        formData.append('email', form.email);
+        formData.append('address', form.address);
+        formData.append('city', form.city);
+        formData.append('state', form.state);
+        formData.append('zipcode', form.zipcode);
+        result = await updateClient(client.id, formData);
+      } else {
+        result = await updateClient(client.id, form);
+      }
     } else {
-      result = await createClient(form);
+      // Use FormData if there's a photo file, otherwise use regular object
+      if (form.photo) {
+        const formData = new FormData();
+        formData.append('photo', form.photo);
+        formData.append('first_name', form.first_name);
+        formData.append('middle_name', form.middle_name);
+        formData.append('last_name', form.last_name);
+        formData.append('mobile_number', form.mobile_number);
+        formData.append('email', form.email);
+        formData.append('address', form.address);
+        formData.append('city', form.city);
+        formData.append('state', form.state);
+        formData.append('zipcode', form.zipcode);
+        result = await createClient(formData);
+      } else {
+        result = await createClient(form);
+      }
     }
 
     if (result.success) {
@@ -104,7 +159,9 @@ const AddClient = ({ client }: { client?: Client }) => {
         address: '',
         city: '',
         state: '',
-        zipcode: ''
+        zipcode: '',
+        photo: null,
+        photo_url: null
       });
       closeModal();
     } else {
@@ -134,6 +191,20 @@ const AddClient = ({ client }: { client?: Client }) => {
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
           <p className={styles.sectionTitle}>Client Information</p>
+          <div className={styles.formGroup}>
+            <div className={styles.col}>
+              <label className={styles.label} htmlFor="photo">
+                Photo
+              </label>
+              <PhotoUpload
+                size="sm"
+                value={form.photo}
+                photoUrl={form.photo_url}
+                onChange={handlePhotoUpload}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
           <div className={styles.formGroup}>
             <div className={styles.col}>
               <label className={styles.label} htmlFor="first_name">

@@ -51,9 +51,10 @@ export interface PetFormData {
 interface AddPetProps {
   clientId?: string;
   petId?: number;
+  onPetAdded?: () => void;
 }
 
-const AddPet = ({ clientId, petId }: AddPetProps) => {
+const AddPet = ({ clientId, petId, onPetAdded }: AddPetProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
   const { clients, fetchClients } = useClientStore();
@@ -386,13 +387,6 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
           }
         });
 
-        // Debug: Log what's being sent
-        console.log('Form data being sent for update:');
-        const formDataEntries = Array.from(updateFormData.entries());
-        formDataEntries.forEach(([key, value]) => {
-          console.log(`${key}: ${value}`);
-        });
-
         result = await updatePet(petId, updateFormData);
       } else {
         result = await createPet(formData);
@@ -406,6 +400,9 @@ const AddPet = ({ clientId, petId }: AddPetProps) => {
           timeout: 3000
         });
         closeModal();
+        if (onPetAdded) {
+          onPetAdded();
+        }
       } else {
         // Handle fieldErrors if present
         if ('fieldErrors' in result && result.fieldErrors) {

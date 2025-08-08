@@ -1,11 +1,11 @@
 import Icon from '@/components/common/icon';
 import PetModal from '@/components/modals/pet-modal';
+import { Pet } from '@/services/client.api';
 import { useModalStore } from '@/store/modal-store';
 import { getPetImageUrl } from '@/utils/image';
 import Image from 'next/image';
 import React from 'react';
 import styles from './ClientDetailView.module.scss';
-import { Pet } from './types';
 
 interface ClientPetsProps {
   pets: Pet[];
@@ -17,7 +17,19 @@ const ClientPets: React.FC<ClientPetsProps> = ({ pets, onAddPet }) => {
   const closeModal = useModalStore((state) => state.closeModal);
 
   const handleViewPet = (pet: Pet) => {
-    openModal(<PetModal pet={pet} onClose={closeModal} />);
+    // Transform the pet to match the expected format for PetModal
+    const transformedPet = {
+      id: pet.id,
+      name: pet.name,
+      breed: 'Unknown Breed', // We don't have breed info in the API response
+      age: pet.age,
+      owner: '', // We don't have owner info in the API response
+      lastVisit: pet.last_visit,
+      status: 'HEALTHY',
+      image: null,
+      photo_path: pet.photo_path
+    };
+    openModal(<PetModal pet={transformedPet} onClose={closeModal} />);
   };
 
   return (
@@ -60,7 +72,7 @@ const ClientPets: React.FC<ClientPetsProps> = ({ pets, onAddPet }) => {
                 </div>
               </div>
               <div className={styles.petName}>{pet.name}</div>
-              <div className={styles.petBreed}>{pet.breed}</div>
+              <div className={styles.petBreed}>Unknown Breed</div>
             </div>
           );
         })}

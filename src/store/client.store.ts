@@ -9,14 +9,14 @@ interface ClientState {
   fetchClients: (page?: number, paginate?: number) => Promise<void>;
   fetchAllClients: () => Promise<void>;
   allClients: Client[];
-  createClient: (data: Partial<Client>) => Promise<{
+  createClient: (data: Partial<Client> | FormData) => Promise<{
     success: boolean;
     message?: string;
     fieldErrors?: Record<string, string[]>;
   }>;
   updateClient: (
     id: number,
-    data: Partial<Client>
+    data: Partial<Client> | FormData
   ) => Promise<{ success: boolean; message?: string }>;
   findClient: (id: number) => Promise<void>;
   deleteClient: (id: number) => Promise<{ success: boolean; message?: string }>;
