@@ -18,6 +18,7 @@ interface VaccinationsTableProps {
   currentPage?: number;
   onPageChange?: (page: number) => void;
   hidePagination?: boolean;
+  hideActions?: boolean;
 }
 
 const VACCINATION_HEADERS = [
@@ -35,13 +36,26 @@ const VaccinationsTable = ({
   totalCount,
   currentPage,
   onPageChange,
-  hidePagination
+  hidePagination,
+  hideActions = false
 }: VaccinationsTableProps) => {
+  // Filter out actions column if hideActions is true
+  const headers = hideActions
+    ? VACCINATION_HEADERS.filter((header) => header.key !== 'actions')
+    : VACCINATION_HEADERS;
+
+  // Remove actions from data if hideActions is true
+  const tableData = hideActions
+    ? vaccinations.map((vaccination) =>
+        Object.fromEntries(Object.entries(vaccination).filter(([key]) => key !== 'actions'))
+      )
+    : vaccinations;
+
   return (
     <div>
       <Table
-        data={vaccinations}
-        headers={VACCINATION_HEADERS}
+        data={tableData}
+        headers={headers}
         enableSorting={true}
         tableOnly
         totalCount={totalCount}

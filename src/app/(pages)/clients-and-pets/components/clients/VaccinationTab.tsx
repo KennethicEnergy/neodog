@@ -2,11 +2,22 @@ import VaccinationsTable from '@/app/(pages)/vaccinations/components/Vaccination
 import Loader from '@/components/common/loader';
 import React from 'react';
 import styles from './ClientDetailView.module.scss';
-import { TransformedVaccination } from './types';
+
+interface VaccinationTableRow extends Record<string, unknown> {
+  id?: number;
+  clientName?: string[];
+  petName?: string;
+  vaccine?: string;
+  expiryDate?: string;
+  dateCreated?: string;
+  status?: string;
+  statusCode?: string;
+  actions: object[];
+}
 
 interface VaccinationTabProps {
   vaccinationsLoading: boolean;
-  filteredVaccinations: TransformedVaccination[];
+  filteredVaccinations: VaccinationTableRow[];
 }
 
 const VaccinationTab: React.FC<VaccinationTabProps> = ({
@@ -22,7 +33,7 @@ const VaccinationTab: React.FC<VaccinationTabProps> = ({
           <p>Loading vaccination records...</p>
         </div>
       ) : filteredVaccinations.length > 0 ? (
-        <VaccinationsTable vaccinations={filteredVaccinations} />
+        <VaccinationsTable vaccinations={filteredVaccinations} hideActions={true} />
       ) : (
         <div style={{ color: '#888', padding: '2rem 0', textAlign: 'center' }}>
           No vaccination records found for this client.

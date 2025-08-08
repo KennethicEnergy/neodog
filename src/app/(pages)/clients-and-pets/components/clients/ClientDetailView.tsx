@@ -2,7 +2,7 @@ import BaseModal from '@/components/common/base-modal';
 import Loader from '@/components/common/loader';
 import AddPet from '@/components/modals/add-pet';
 import { Client, clientApi, Pet } from '@/services/client.api';
-import { vaccinationApi } from '@/services/vaccination.api';
+import { Vaccination, vaccinationApi } from '@/services/vaccination.api';
 import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal-store';
 import { useToastStore } from '@/store/toast.store';
@@ -14,7 +14,46 @@ import ClientInfo from './ClientInfo';
 import ClientPets from './ClientPets';
 import ClientTabs from './ClientTabs';
 import { useTabLoading } from './hooks/useTabLoading';
-import { VaccinationData } from './types';
+
+// Define VaccinationTableRow interface
+interface VaccinationTableRow extends Record<string, unknown> {
+  id?: number;
+  clientName?: string[];
+  petName?: string;
+  vaccine?: string;
+  expiryDate?: string;
+  dateCreated?: string;
+  status?: string;
+  statusCode?: string;
+  actions: object[];
+}
+
+// Extended type to include vaccination_files and nested objects (matching view-vaccination modal)
+interface VaccinationWithDetails extends Vaccination {
+  vaccination_name?: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+  };
+  vaccination_status?: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+  };
+  vaccination_files?: Array<{
+    id: number;
+    vaccination_id: number;
+    path: string;
+    original_name: string;
+    name: string;
+    full_path: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  }>;
+}
 
 // Lazy load tab components for better performance
 const LazyActivityTab = React.lazy(() => import('./ActivityTab'));
@@ -35,7 +74,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const [selectedTab, setSelectedTab] = useState<string>('Activity');
-  const [vaccinations, setVaccinations] = useState<VaccinationData[]>([]);
+  const [vaccinations, setVaccinations] = useState<VaccinationWithDetails[]>([]);
   const [vaccinationsLoading, setVaccinationsLoading] = useState(false);
   const [client, setClient] = useState<Client>(initialClient);
   const [pets, setPets] = useState<Pet[]>(initialPets);
@@ -72,19 +111,48 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({
     fetchClientWithPets();
   }, [initialClient.id, addToast]);
 
-  // Fetch vaccination data
+  // Fetch vaccination data for all pets of the client
   useEffect(() => {
-    if (selectedTab === 'Vaccination Records') {
+    if (selectedTab === 'Vaccination Records' && pets.length > 0) {
       setVaccinationsLoading(true);
-      vaccinationApi
-        .getAll()
-        .then((vaccRes) => {
-          const responseData = vaccRes.data;
-          const vaccData = responseData?.result?.pets?.data || [];
-          setVaccinations(vaccData);
-        })
-        .catch((error) => {
-          console.error('Vaccination API Error:', error);
+
+      const fetchVaccinationsForAllPets = async () => {
+        try {
+          const allVaccinations: VaccinationWithDetails[] = [];
+
+          // Fetch vaccination records for each pet
+          for (const pet of pets) {
+            try {
+              const response = await vaccinationApi.viewRecordsByPetId(pet.id);
+              if (response.data && response.data.result) {
+                // Handle the response structure like in view-vaccination modal
+                const result = response.data.result;
+                let petVaccinations: VaccinationWithDetails[] = [];
+
+                if (result.vaccinations) {
+                  // If the response has a vaccinations array
+                  petVaccinations = Array.isArray(result.vaccinations)
+                    ? result.vaccinations
+                    : [result.vaccinations];
+                } else if (Array.isArray(result)) {
+                  // If the result is directly an array
+                  petVaccinations = result;
+                } else {
+                  // If the result is a single object
+                  petVaccinations = [result];
+                }
+
+                allVaccinations.push(...petVaccinations);
+              }
+            } catch (error) {
+              console.error(`Error fetching vaccinations for pet ${pet.id}:`, error);
+              // Continue with other pets even if one fails
+            }
+          }
+
+          setVaccinations(allVaccinations);
+        } catch (error) {
+          console.error('Error fetching vaccination records:', error);
           setVaccinations([]);
           addToast({
             scheme: 'danger',
@@ -92,51 +160,61 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({
             message: 'Failed to load vaccination records. Please try again.',
             timeout: 4000
           });
-        })
-        .finally(() => setVaccinationsLoading(false));
-    }
-  }, [selectedTab, addToast]);
+        } finally {
+          setVaccinationsLoading(false);
+        }
+      };
 
-  // Filter vaccinations for current client
-  const filteredVaccinations = useMemo(() => {
+      fetchVaccinationsForAllPets();
+    }
+  }, [selectedTab, pets, addToast]);
+
+  // Transform vaccinations into the format expected by VaccinationsTable
+  const filteredVaccinations = useMemo((): VaccinationTableRow[] => {
     if (selectedTab !== 'Vaccination Records') return [];
 
-    const clientVaccinations = vaccinations.filter(
-      (vaccination) => vaccination.client?.id === client.id
-    );
+    return vaccinations.map((vaccination) => {
+      const pet = pets.find((p) => p.id === vaccination.pet_id);
 
-    return clientVaccinations.map((pet) => ({
-      ownerAndContact: [
-        `${client.first_name} ${client.last_name}`,
-        client.mobile_number || client.email || ''
-      ],
-      pet: pet.name,
-      currentCount: pet.vaccination_current_count?.toString() || '0',
-      dueSoonCount: pet.vaccination_due_soon_count?.toString() || '0',
-      overdueCount: pet.vaccination_overdue_count?.toString() || '0',
-      missingCount: pet.vaccination_missing_count?.toString() || '0',
-      actions: [
-        {
-          name: 'View',
-          type: 'view',
-          icon: '/images/actions/view.svg',
-          onClick: () => {}
-        },
-        {
-          name: 'Edit',
-          type: 'edit',
-          icon: '/images/actions/edit.svg',
-          onClick: () => {}
-        },
-        {
-          name: 'Delete',
-          type: 'delete',
-          icon: '/images/actions/trash.svg',
-          onClick: () => {}
-        }
-      ]
-    }));
-  }, [vaccinations, client, selectedTab]);
+      return {
+        id: vaccination.id,
+        clientName: [
+          `${client.first_name} ${client.last_name}`,
+          client.mobile_number || client.email || ''
+        ],
+        petName: pet?.name || 'Unknown Pet',
+        vaccine: vaccination.vaccination_name?.name || 'Unknown Vaccination',
+        expiryDate: vaccination.expiration_date
+          ? new Date(vaccination.expiration_date).toLocaleDateString()
+          : 'N/A',
+        dateCreated: vaccination.created_at
+          ? new Date(vaccination.created_at).toLocaleDateString()
+          : 'N/A',
+        status: vaccination.vaccination_status?.name || 'Unknown Status',
+        statusCode: vaccination.vaccination_status?.code || 'unknown',
+        actions: [
+          {
+            name: 'View',
+            type: 'view',
+            icon: '/images/actions/view.svg',
+            onClick: () => {}
+          },
+          {
+            name: 'Edit',
+            type: 'edit',
+            icon: '/images/actions/edit.svg',
+            onClick: () => {}
+          },
+          {
+            name: 'Delete',
+            type: 'delete',
+            icon: '/images/actions/trash.svg',
+            onClick: () => {}
+          }
+        ]
+      };
+    });
+  }, [vaccinations, client, pets, selectedTab]);
 
   const handlePetAdded = async () => {
     // Refresh client data with pets when a new pet is added

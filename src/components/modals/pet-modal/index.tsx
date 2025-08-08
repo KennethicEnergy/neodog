@@ -1,14 +1,16 @@
 import { Pet } from '@/app/(pages)/clients-and-pets/components/clients/types';
+import VaccinationsTable from '@/app/(pages)/vaccinations/components/VaccinationsTable';
 import BaseModal from '@/components/common/base-modal';
 import { Button } from '@/components/common/button';
 import Loader from '@/components/common/loader';
 import StatusTag from '@/components/common/status-tag';
 import { petApi } from '@/services/pet.api';
+import { Vaccination, vaccinationApi } from '@/services/vaccination.api';
 import { useModalStore } from '@/store/modal-store';
 import { useToastStore } from '@/store/toast.store';
 import { getPetImageUrl } from '@/utils/image';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import AddNotesModal from '../add-notes';
 import AddPet from '../add-pet';
 import styles from './pet-modal.module.scss';
@@ -154,41 +156,52 @@ const mockBelongings = [
   }
 ];
 
-const mockVaccinations = [
-  {
-    name: 'Rabies Vaccination',
-    type: 'Vaccination',
-    given: 'April 15, 2025',
-    due: 'April 15, 2025',
-    status: 'CURRENT'
-  },
-  {
-    name: 'DHPP Vaccination',
-    type: 'Vaccination',
-    given: 'March 10, 2025',
-    due: 'March 10, 2026',
-    status: 'CURRENT'
-  },
-  {
-    name: 'Bordetella',
-    type: 'Vaccination',
-    given: 'February 1, 2025',
-    due: 'February 1, 2026',
-    status: 'CURRENT'
-  },
-  {
-    name: 'Leptospirosis',
-    type: 'Vaccination',
-    given: 'January 5, 2025',
-    due: 'January 5, 2026',
-    status: 'CURRENT'
-  }
-];
+// Extended type to include vaccination_files and nested objects (matching view-vaccination modal)
+interface VaccinationWithDetails extends Vaccination {
+  vaccination_name?: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+  };
+  vaccination_status?: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+  };
+  vaccination_files?: Array<{
+    id: number;
+    vaccination_id: number;
+    path: string;
+    original_name: string;
+    name: string;
+    full_path: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  }>;
+}
+
+// Define VaccinationTableRow interface for the table
+interface VaccinationTableRow extends Record<string, unknown> {
+  id?: number;
+  clientName?: string[];
+  petName?: string;
+  vaccine?: string;
+  expiryDate?: string;
+  dateCreated?: string;
+  status?: string;
+  statusCode?: string;
+  actions: object[];
+}
 
 const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
   const [activeTab, setActiveTab] = useState('Info');
   const [actualPetData, setActualPetData] = useState<ActualPetData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [vaccinations, setVaccinations] = useState<VaccinationWithDetails[]>([]);
+  const [vaccinationsLoading, setVaccinationsLoading] = useState(false);
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const addToast = useToastStore((state) => state.addToast);
@@ -244,20 +257,51 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
     fetchPetData();
   }, [pet.id, addToast]);
 
-  const getVaccinationStatusClass = (status: string) => {
-    switch (status?.toUpperCase()) {
-      case 'CURRENT':
-        return 'success';
-      case 'OVERDUE':
-        return 'danger';
-      case 'DUE SOON':
-        return 'warning';
-      case 'PENDING':
-        return 'primary';
-      default:
-        return 'info';
+  // Fetch vaccination data when Vaccinations tab is selected
+  useEffect(() => {
+    if (activeTab === 'Vaccinations') {
+      setVaccinationsLoading(true);
+
+      const fetchVaccinations = async () => {
+        try {
+          const response = await vaccinationApi.viewRecordsByPetId(pet.id);
+          if (response.data && response.data.result) {
+            // Handle the response structure like in view-vaccination modal
+            const result = response.data.result;
+            let petVaccinations: VaccinationWithDetails[] = [];
+
+            if (result.vaccinations) {
+              // If the response has a vaccinations array
+              petVaccinations = Array.isArray(result.vaccinations)
+                ? result.vaccinations
+                : [result.vaccinations];
+            } else if (Array.isArray(result)) {
+              // If the result is directly an array
+              petVaccinations = result;
+            } else {
+              // If the result is a single object
+              petVaccinations = [result];
+            }
+
+            setVaccinations(petVaccinations);
+          }
+        } catch (error) {
+          console.error('Error fetching vaccination records:', error);
+          setVaccinations([]);
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: 'Failed to load vaccination records. Please try again.',
+            timeout: 4000
+          });
+        } finally {
+          setVaccinationsLoading(false);
+        }
+      };
+
+      fetchVaccinations();
     }
-  };
+  }, [activeTab, pet.id, addToast]);
 
   const handleSave = (note: string) => {
     console.log(note);
@@ -288,6 +332,32 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
       })();
     }
   }, [pet.id, addToast]);
+
+  // Transform vaccinations into the format expected by VaccinationsTable
+  const filteredVaccinations = useMemo((): VaccinationTableRow[] => {
+    if (activeTab !== 'Vaccinations') return [];
+
+    return vaccinations.map((vaccination) => {
+      return {
+        id: vaccination.id,
+        clientName: [
+          `${actualPetData?.client?.first_name || ''} ${actualPetData?.client?.last_name || ''}`,
+          actualPetData?.client?.mobile_number || actualPetData?.client?.email || ''
+        ],
+        petName: pet.name,
+        vaccine: vaccination.vaccination_name?.name || 'Unknown Vaccination',
+        expiryDate: vaccination.expiration_date
+          ? new Date(vaccination.expiration_date).toLocaleDateString()
+          : 'N/A',
+        dateCreated: vaccination.created_at
+          ? new Date(vaccination.created_at).toLocaleDateString()
+          : 'N/A',
+        status: vaccination.vaccination_status?.name || 'Unknown Status',
+        statusCode: vaccination.vaccination_status?.code || 'unknown',
+        actions: []
+      };
+    });
+  }, [vaccinations, actualPetData, pet.name, activeTab]);
 
   return (
     <BaseModal onClose={onClose}>
@@ -469,50 +539,18 @@ const PetModal: React.FC<PetModalProps> = ({ pet, onClose }) => {
               {activeTab === 'Vaccinations' && (
                 <div className={styles.vaccinationsSection}>
                   <h3>Pet Vaccinations</h3>
-                  <div className={styles.vaccinationsList}>
-                    {mockVaccinations.map((vax, idx) => (
-                      <div className={styles.vaccinationCard} key={idx}>
-                        <div className={styles.vaxHeader}>
-                          <div>
-                            <div className={styles.vaxName}>{vax.name}</div>
-                            <div className={styles.vaxType}>{vax.type}</div>
-                          </div>
-                          <div className={styles.vaxStatus}>
-                            <StatusTag
-                              status={vax.status}
-                              bgColor={getVaccinationStatusClass(vax.status)}
-                            />
-                          </div>
-                        </div>
-                        <div className={styles.vaxFooter}>
-                          <div className={styles.vaxDates}>
-                            <div>Given: {vax.given}</div>
-                            <div>Due: {vax.due}</div>
-                          </div>
-                          <div className={styles.vaxActions}>
-                            <Image
-                              src="/images/actions/view.svg"
-                              alt="View"
-                              width={18}
-                              height={18}
-                            />
-                            <Image
-                              src="/images/actions/edit.svg"
-                              alt="Download"
-                              width={18}
-                              height={18}
-                            />
-                            <Image
-                              src="/images/actions/download.svg"
-                              alt="Download"
-                              width={18}
-                              height={18}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  {vaccinationsLoading ? (
+                    <div className={styles.loadingWrapper}>
+                      <Loader />
+                      <p>Loading vaccination records...</p>
+                    </div>
+                  ) : filteredVaccinations.length > 0 ? (
+                    <VaccinationsTable vaccinations={filteredVaccinations} hideActions={true} />
+                  ) : (
+                    <div style={{ color: '#888', padding: '2rem 0', textAlign: 'center' }}>
+                      No vaccination records found for this pet.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
