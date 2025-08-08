@@ -1,6 +1,7 @@
+import BaseModal from '@/components/common/base-modal';
 import { Button } from '@/components/common/button';
 import { DatePicker } from '@/components/common/date-picker';
-import { FileInput } from '@/components/common/file-input';
+import { ExistingFile, FileInput } from '@/components/common/file-input';
 import Loader from '@/components/common/loader';
 import { Select } from '@/components/common/select';
 import { petApi } from '@/services/pet.api';
@@ -43,12 +44,108 @@ interface Pet {
   };
 }
 
-interface AddVaccineProps {
-  onSuccess?: () => void;
+interface VaccinationData {
+  id: number;
+  client_id: number;
+  pet_id: number;
+  vaccination_name_id: number;
+  expiration_date: string;
+  notes: string | null;
+  vaccination_status_id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  client: {
+    id: number;
+    facility_id: number;
+    photo_path: string | null;
+    first_name: string;
+    middle_name: string | null;
+    last_name: string;
+    mobile_number: string;
+    address: string;
+    city: string;
+    state: string;
+    zipcode: string;
+    email: string;
+    email_verified_at: string | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  };
+  pet: {
+    id: number;
+    client_id: number;
+    photo_path: string | null;
+    name: string;
+    pet_breed_id: number;
+    date_of_birth: string;
+    age: string;
+    pet_sex_id: number;
+    color_or_markings: string;
+    weight: string;
+    height: string;
+    microchip_number: string | null;
+    enrollment_date: string;
+    spayed_or_neutered: number;
+    emergency_contact_name: string;
+    e_c_phone_number: string;
+    veterinarian_name: string;
+    v_phone_number: string;
+    handling_instruction: string;
+    behavioral_notes: string | null;
+    care_preferences: string | null;
+    feeding_instructions: string | null;
+    walking_preferences: string | null;
+    favorite_toys: string | null;
+    allergies: string | null;
+    current_medications: string | null;
+    medical_conditions: string | null;
+    admin_and_logistics: string | null;
+    last_visit: string;
+    pet_status_id: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  };
+  vaccination_name: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  };
+  vaccination_status: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  };
+  vaccination_files: Array<{
+    id: number;
+    vaccination_id: number;
+    path: string;
+    original_name: string;
+    name: string;
+    full_path: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  }>;
 }
 
-const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
+interface AddVaccineProps {
+  onSuccess?: () => void;
+  vaccinationId?: number; // For edit mode
+  isEditMode?: boolean; // Flag to indicate edit mode
+}
+
+const AddVaccine = ({ onSuccess, vaccinationId, isEditMode = false }: AddVaccineProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
+  const openModal = useModalStore((state) => state.openModal);
   const addToast = useToastStore((state) => state.addToast);
   const vaccinationsContainerRef = React.useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<AddVaccineForm>({
@@ -63,6 +160,7 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
       }
     ]
   });
+  const [existingFiles, setExistingFiles] = useState<{ [key: string]: ExistingFile[] }>({});
   const [clients, setClients] = useState<Client[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
   const [vaccineTypes, setVaccineTypes] = useState<{ id: number; name: string }[]>([]);
@@ -71,6 +169,61 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
   const [petsLoading, setPetsLoading] = useState(false);
 
   const MAX_VACCINES = 5;
+
+  // Fetch vaccination data for edit mode
+  useEffect(() => {
+    if (isEditMode && vaccinationId) {
+      setInitialLoading(true);
+      vaccinationApi
+        .findById(vaccinationId)
+        .then((response) => {
+          const vaccinationData: VaccinationData = response.data.result;
+
+          // Format the expiration date to YYYY-MM-DD for the date picker
+          const expirationDate = vaccinationData.expiration_date
+            ? new Date(vaccinationData.expiration_date).toISOString().split('T')[0]
+            : '';
+
+          setForm({
+            client_id: vaccinationData.client_id.toString(),
+            pet_id: vaccinationData.pet_id.toString(),
+            vaccinations: [
+              {
+                id: '1',
+                vaccination_name_id: vaccinationData.vaccination_name_id.toString(),
+                expiration_date: expirationDate,
+                files: []
+              }
+            ]
+          });
+
+          // Set existing files for the vaccination
+          if (vaccinationData.vaccination_files && vaccinationData.vaccination_files.length > 0) {
+            setExistingFiles({
+              '1': vaccinationData.vaccination_files.map((file) => ({
+                id: file.id,
+                name: file.name,
+                original_name: file.original_name,
+                path: file.path,
+                full_path: file.full_path
+              }))
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching vaccination data:', error);
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: 'Failed to load vaccination data for editing.',
+            timeout: 4000
+          });
+        })
+        .finally(() => {
+          setInitialLoading(false);
+        });
+    }
+  }, [isEditMode, vaccinationId, addToast]);
 
   useEffect(() => {
     // Fetch initial data
@@ -113,7 +266,9 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
     if (form.client_id) {
       setPetsLoading(true);
       setPets([]);
-      setForm((prev) => ({ ...prev, pet_id: '' })); // Reset pet selection
+      if (!isEditMode) {
+        setForm((prev) => ({ ...prev, pet_id: '' })); // Reset pet selection only in add mode
+      }
 
       // Fetch pets for the selected client
       petApi
@@ -155,9 +310,11 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
         });
     } else {
       setPets([]);
-      setForm((prev) => ({ ...prev, pet_id: '' }));
+      if (!isEditMode) {
+        setForm((prev) => ({ ...prev, pet_id: '' }));
+      }
     }
-  }, [form.client_id, clients, addToast]);
+  }, [form.client_id, clients, addToast, isEditMode]);
 
   const handleInputChange = (field: keyof AddVaccineForm, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -214,6 +371,71 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
 
   const handleFileChange = (index: number, files: File[]) => {
     handleVaccinationChange(index, 'files', files);
+  };
+
+  const handleFileRemove = async (vaccinationIndex: string, fileId?: number, fileName?: string) => {
+    if (fileId) {
+      // Show confirmation modal for existing files
+      openModal(
+        <BaseModal onClose={closeModal}>
+          <div className={styles.deleteModal}>
+            <h3>Delete File</h3>
+            <p>
+              Are you sure you want to delete <strong>{fileName || 'this file'}</strong>?
+            </p>
+            <p>This action cannot be undone.</p>
+            <div className={styles.buttonGroup}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={closeModal}
+                style={{ marginRight: 8 }}>
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                onClick={async () => {
+                  try {
+                    // Call API to delete the file from server
+                    await vaccinationApi.deleteVaccinationFile(fileId);
+
+                    // Remove existing file from local state
+                    setExistingFiles((prev) => {
+                      const updated = { ...prev };
+                      if (updated[vaccinationIndex]) {
+                        updated[vaccinationIndex] = updated[vaccinationIndex].filter(
+                          (file) => file.id !== fileId
+                        );
+                      }
+                      return updated;
+                    });
+
+                    closeModal();
+                    addToast({
+                      scheme: 'success',
+                      title: 'Success',
+                      message: 'File deleted successfully.',
+                      timeout: 2000
+                    });
+                  } catch (error) {
+                    console.error('Error deleting file:', error);
+                    closeModal();
+                    addToast({
+                      scheme: 'danger',
+                      title: 'Error',
+                      message: 'Failed to delete file. Please try again.',
+                      timeout: 4000
+                    });
+                  }
+                }}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </BaseModal>
+      );
+    }
   };
 
   const validateForm = (): boolean => {
@@ -276,79 +498,101 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
     try {
       const formData = new FormData();
 
-      // Add client_id as required by the API
-      formData.append('client_id', form.client_id);
+      if (isEditMode && vaccinationId) {
+        // For edit mode, use PUT method override
+        formData.append('_method', 'PUT');
+        formData.append('client_id', form.client_id);
+        formData.append('pet_id', form.pet_id);
 
-      // Add vaccinations array in the correct format
-      form.vaccinations
-        .filter((vaccination) => vaccination.vaccination_name_id && vaccination.expiration_date)
-        .forEach((vaccination, index) => {
-          formData.append(`vaccinations[${index}][pet_id]`, form.pet_id);
-          formData.append(
-            `vaccinations[${index}][vaccination_name_id]`,
-            vaccination.vaccination_name_id
-          );
-          formData.append(`vaccinations[${index}][expiration_date]`, vaccination.expiration_date);
-          formData.append(`vaccinations[${index}][vaccination_status_id]`, '1');
-          formData.append(`vaccinations[${index}][notes]`, '');
+        // Add vaccination data for single vaccination in edit mode
+        const vaccination = form.vaccinations[0];
+        formData.append('vaccination_name_id', vaccination.vaccination_name_id);
+        formData.append('expiration_date', vaccination.expiration_date);
+        formData.append('vaccination_status_id', '1'); // Default to 1 for edit mode
+        formData.append('notes', ''); // Include notes field as empty string
 
-          // Add files if any
-          vaccination.files.forEach((file, fileIndex) => {
-            formData.append(`vaccinations[${index}][files][${fileIndex}]`, file);
+        // Add files if any
+        vaccination.files.forEach((file, fileIndex) => {
+          formData.append(`files[${fileIndex}]`, file);
+        });
+
+        // Send update request
+        const response = await vaccinationApi.update(vaccinationId, formData);
+
+        if (response.data.code === 200) {
+          addToast({
+            scheme: 'success',
+            title: 'Success',
+            message: 'Vaccine record updated successfully!',
+            timeout: 2000
           });
-        });
-
-      // Log the form state before submission
-      console.log('=== FORM SUBMISSION DEBUG ===');
-      console.log('Form state:', form);
-      console.log('Client ID:', form.client_id);
-      console.log('Pet ID:', form.pet_id);
-      console.log('Vaccinations count:', form.vaccinations.length);
-
-      // Log each vaccination entry
-      form.vaccinations.forEach((vaccination, index) => {
-        console.log(`Vaccination ${index}:`, {
-          id: vaccination.id,
-          vaccination_name_id: vaccination.vaccination_name_id,
-          expiration_date: vaccination.expiration_date,
-          files_count: vaccination.files.length,
-          files: vaccination.files.map((f) => ({ name: f.name, size: f.size, type: f.type }))
-        });
-      });
-
-      console.log('FormData contents:');
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
-
-      // Send as FormData
-      const response = await vaccinationApi.create(formData);
-
-      if (response.data.code === 200) {
-        addToast({
-          scheme: 'success',
-          title: 'Success',
-          message: 'Vaccine record added successfully!',
-          timeout: 2000
-        });
-        if (onSuccess) onSuccess();
-        setTimeout(() => {
-          closeModal();
-        }, 1000);
+          if (onSuccess) onSuccess();
+          setTimeout(() => {
+            closeModal();
+          }, 1000);
+        } else {
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: response.data.message || 'Failed to update vaccine record',
+            timeout: 4000
+          });
+        }
       } else {
-        addToast({
-          scheme: 'danger',
-          title: 'Error',
-          message: response.data.message || 'Failed to add vaccine record',
-          timeout: 4000
-        });
+        // Original create logic for add mode
+        // Add client_id as required by the API
+        formData.append('client_id', form.client_id);
+
+        // Add vaccinations array in the correct format
+        form.vaccinations
+          .filter((vaccination) => vaccination.vaccination_name_id && vaccination.expiration_date)
+          .forEach((vaccination, index) => {
+            formData.append(`vaccinations[${index}][pet_id]`, form.pet_id);
+            formData.append(
+              `vaccinations[${index}][vaccination_name_id]`,
+              vaccination.vaccination_name_id
+            );
+            formData.append(`vaccinations[${index}][expiration_date]`, vaccination.expiration_date);
+            formData.append(`vaccinations[${index}][vaccination_status_id]`, '1');
+            formData.append(`vaccinations[${index}][notes]`, '');
+
+            // Add files if any
+            vaccination.files.forEach((file, fileIndex) => {
+              formData.append(`vaccinations[${index}][files][${fileIndex}]`, file);
+            });
+          });
+
+        // Send as FormData
+        const response = await vaccinationApi.create(formData);
+
+        if (response.data.code === 200) {
+          addToast({
+            scheme: 'success',
+            title: 'Success',
+            message: 'Vaccine record added successfully!',
+            timeout: 2000
+          });
+          if (onSuccess) onSuccess();
+          setTimeout(() => {
+            closeModal();
+          }, 1000);
+        } else {
+          addToast({
+            scheme: 'danger',
+            title: 'Error',
+            message: response.data.message || 'Failed to add vaccine record',
+            timeout: 4000
+          });
+        }
       }
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
           ? (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
-            'Failed to add vaccine record'
-          : 'Failed to add vaccine record';
+            (isEditMode ? 'Failed to update vaccine record' : 'Failed to add vaccine record')
+          : isEditMode
+            ? 'Failed to update vaccine record'
+            : 'Failed to add vaccine record';
       addToast({
         scheme: 'danger',
         title: 'Error',
@@ -375,7 +619,7 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
 
   return (
     <div className={styles.modalContainer}>
-      <h3 className={styles.header}>New Vaccine Record</h3>
+      <h3 className={styles.header}>{isEditMode ? 'Edit Vaccine Record' : 'New Vaccine Record'}</h3>
       <form onSubmit={handleSubmit}>
         <div className={styles.section}>
           {/* Client and Pet Selection */}
@@ -394,6 +638,7 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
                 value={form.client_id}
                 onValueChange={(value) => handleInputChange('client_id', value)}
                 required
+                disabled={isEditMode} // Disable client selection in edit mode
               />
             </div>
           </div>
@@ -413,7 +658,7 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
                 value={form.pet_id}
                 onValueChange={(value) => handleInputChange('pet_id', value)}
                 required
-                disabled={!form.client_id || petsLoading}
+                disabled={!form.client_id || petsLoading || isEditMode} // Disable pet selection in edit mode
               />
             </div>
           </div>
@@ -429,7 +674,7 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
                       ? 'Vaccine Certificate'
                       : `Vaccine Certificate ${index + 1}`}
                   </p>
-                  {index > 0 && (
+                  {index > 0 && !isEditMode && (
                     <Button
                       type="button"
                       variant="danger"
@@ -451,6 +696,10 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
                         const files = Array.from(e.target.files || []);
                         handleFileChange(index, files);
                       }}
+                      onFileRemove={(fileId, fileName) =>
+                        handleFileRemove(vaccination.id, fileId, fileName)
+                      }
+                      existingFiles={existingFiles[vaccination.id] || []}
                       helperText="Select your file or drag and drop"
                       maxSize={2 * 1024 * 1024}
                       showFileList={true}
@@ -497,8 +746,8 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
             ))}
           </div>
 
-          {/* Add Another Vaccine Button */}
-          {form.vaccinations.length < MAX_VACCINES && (
+          {/* Add Another Vaccine Button - Hidden in edit mode */}
+          {!isEditMode && form.vaccinations.length < MAX_VACCINES && (
             <div className={styles.addVaccineSection}>
               <Button
                 size="sm"
@@ -527,7 +776,13 @@ const AddVaccine = ({ onSuccess }: AddVaccineProps) => {
               variant="default"
               isLoading={loading || initialLoading}
               disabled={loading || initialLoading}>
-              {loading || initialLoading ? 'Saving Vaccine Record...' : 'Save Vaccine Record'}
+              {loading || initialLoading
+                ? isEditMode
+                  ? 'Updating Vaccine Record...'
+                  : 'Saving Vaccine Record...'
+                : isEditMode
+                  ? 'Update Vaccine Record'
+                  : 'Save Vaccine Record'}
             </Button>
           </div>
         </div>

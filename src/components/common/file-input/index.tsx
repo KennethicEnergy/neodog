@@ -2,6 +2,15 @@ import Image from 'next/image';
 import * as React from 'react';
 import styles from './styles.module.scss';
 
+export interface ExistingFile {
+  id?: number;
+  name: string;
+  size?: number;
+  path?: string;
+  original_name?: string;
+  full_path?: string;
+}
+
 export interface FileInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange' | 'size'> {
   error?: boolean;
@@ -10,11 +19,13 @@ export interface FileInputProps
   rightIcon?: React.ReactNode;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileSelect?: (files: FileList | null) => void;
+  onFileRemove?: (fileId?: number, fileName?: string) => void;
   size?: 'sm' | 'md' | 'lg';
   accept?: string;
   multiple?: boolean;
   maxSize?: number; // in bytes
   showFileList?: boolean;
+  existingFiles?: ExistingFile[];
 }
 
 const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
@@ -28,11 +39,13 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
       disabled,
       onChange,
       onFileSelect,
+      onFileRemove,
       size = 'md',
       accept,
       multiple = false,
       maxSize,
       showFileList = false,
+      existingFiles = [],
       ...props
     },
     ref
@@ -41,6 +54,9 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
     const helperTextId = `${fileInputId}-helper-text`;
     const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
     const [dragActive, setDragActive] = React.useState(false);
+
+    // Check if there are any files (existing or selected)
+    const hasFiles = existingFiles.length > 0 || selectedFiles.length > 0;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files;
@@ -100,11 +116,103 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    const removeFile = (index: number) => {
+    const removeSelectedFile = (index: number) => {
       const newFiles = selectedFiles.filter((_, i) => i !== index);
       setSelectedFiles(newFiles);
     };
 
+    const removeExistingFile = (file: ExistingFile) => {
+      onFileRemove?.(file.id, file.name);
+    };
+
+    // If there are files, show the file list instead of the upload interface
+    if (hasFiles) {
+      return (
+        <div className={styles.fileInputContainer}>
+          <div className={styles.fileList}>
+            {/* Show existing files */}
+            {existingFiles.map((file, index) => (
+              <div key={`existing-${file.id || index}`} className={styles.fileItem}>
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileName}>{file.original_name || file.name}</span>
+                  {file.size && (
+                    <span className={styles.fileSize}>{formatFileSize(file.size)}</span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className={styles.removeFile}
+                  onClick={() => removeExistingFile(file)}
+                  aria-label={`Remove ${file.original_name || file.name}`}>
+                  ×
+                </button>
+              </div>
+            ))}
+
+            {/* Show newly selected files */}
+            {selectedFiles.map((file, index) => (
+              <div key={`selected-${index}`} className={styles.fileItem}>
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileName}>{file.name}</span>
+                  <span className={styles.fileSize}>{formatFileSize(file.size)}</span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.removeFile}
+                  onClick={() => removeSelectedFile(index)}
+                  aria-label={`Remove ${file.name}`}>
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Show upload button when files are removed */}
+          {/* <div className={styles.uploadButtonContainer}>
+            <button
+              type="button"
+              className={styles.uploadButton}
+              onClick={() => document.getElementById(fileInputId)?.click()}
+              disabled={disabled}>
+              <Image
+                src="/images/actions/upload.svg"
+                alt="Upload"
+                width={24}
+                height={24}
+                className={styles.uploadIcon}
+              />
+              <span>Add more files</span>
+            </button>
+          </div> */}
+
+          {/* Hidden file input */}
+          <input
+            type="file"
+            id={fileInputId}
+            className={styles.hiddenFileInput}
+            ref={ref}
+            disabled={disabled}
+            aria-invalid={error}
+            aria-describedby={helperText ? helperTextId : undefined}
+            onChange={handleChange}
+            accept={accept}
+            multiple={multiple}
+            {...props}
+          />
+
+          {helperText && (
+            <p
+              id={helperTextId}
+              className={`${styles.helperText} ${error ? styles.error : ''}`}
+              role={error ? 'alert' : undefined}>
+              {helperText}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    // Original upload interface when no files are present
     return (
       <div className={styles.fileInputContainer}>
         <div
@@ -170,12 +278,14 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
           <div className={styles.fileList}>
             {selectedFiles.map((file, index) => (
               <div key={index} className={styles.fileItem}>
-                <span className={styles.fileName}>{file.name}</span>
-                <span className={styles.fileSize}>{formatFileSize(file.size)}</span>
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileName}>{file.name}</span>
+                  <span className={styles.fileSize}>{formatFileSize(file.size)}</span>
+                </div>
                 <button
                   type="button"
                   className={styles.removeFile}
-                  onClick={() => removeFile(index)}
+                  onClick={() => removeSelectedFile(index)}
                   aria-label={`Remove ${file.name}`}>
                   ×
                 </button>

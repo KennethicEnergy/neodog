@@ -55,6 +55,14 @@
   }
 }
 
+.hiddenFileInput {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .fileInputContent {
   display: flex;
   flex-direction: column;
@@ -129,11 +137,17 @@
   border: 1px solid $border-color;
 }
 
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 0.5rem;
+  gap: 0.25rem;
+}
+
 .fileName {
   font-size: 0.875rem;
   color: $dark;
-  flex: 1;
-  margin-right: 0.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -142,7 +156,6 @@
 .fileSize {
   font-size: 0.75rem;
   color: $text-muted;
-  margin-right: 0.5rem;
 }
 
 .removeFile {
@@ -160,9 +173,48 @@
   align-items: center;
   justify-content: center;
   transition: $transition-base;
+  flex-shrink: 0;
 
   &:hover {
     background-color: rgba($danger, 0.1);
+  }
+}
+
+.uploadButtonContainer {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: $white;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  color: $text-muted;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $primary;
+    color: $primary;
+    background-color: rgba($primary, 0.02);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .uploadIcon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 0;
+    opacity: 0.6;
   }
 }
 

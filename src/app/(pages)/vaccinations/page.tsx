@@ -108,7 +108,8 @@ function transformVaccinationData(
   data: VaccinationApiType[],
   openModal: (modal: React.ReactNode) => void,
   closeModal: () => void,
-  onDeleteVaccination: (vaccinationId: number, petName: string) => void
+  onDeleteVaccination: (vaccinationId: number, petName: string) => void,
+  onEditVaccination: (vaccinationId: number) => void
 ): VaccinationTableRow[] {
   console.log('transformVaccinationData input:', data);
   const result = data.map((vaccination) => ({
@@ -146,7 +147,7 @@ function transformVaccinationData(
         name: 'Edit',
         type: 'edit',
         icon: '/images/actions/edit.svg',
-        onClick: () => {}
+        onClick: () => onEditVaccination(vaccination.id)
       },
       {
         name: 'Delete',
@@ -205,6 +206,18 @@ const VaccinationsPage = () => {
     fetchVaccinations(page);
   };
 
+  const handleEditVaccination = (vaccinationId: number) => {
+    openModal(
+      <BaseModal onClose={closeModal}>
+        <AddVaccine
+          vaccinationId={vaccinationId}
+          isEditMode={true}
+          onSuccess={() => fetchVaccinations(currentPage)}
+        />
+      </BaseModal>
+    );
+  };
+
   const handleDeleteVaccination = (vaccinationId: number, petName: string) => {
     openModal(
       <BaseModal onClose={closeModal}>
@@ -260,8 +273,14 @@ const VaccinationsPage = () => {
   };
 
   const transformedVaccinations = useMemo(() => {
-    return transformVaccinationData(vaccinations, openModal, closeModal, handleDeleteVaccination);
-  }, [vaccinations, openModal, closeModal]);
+    return transformVaccinationData(
+      vaccinations,
+      openModal,
+      closeModal,
+      handleDeleteVaccination,
+      handleEditVaccination
+    );
+  }, [vaccinations, openModal, closeModal, handleEditVaccination]);
 
   // For now, we'll use client-side filtering since the API might not support search
   // In a real implementation, you'd want to pass the search query to the API

@@ -124,8 +124,16 @@ export const vaccinationApi = {
     );
   },
 
-  update: async (id: number, data: Partial<Vaccination>) => {
-    return apiClient.post(`/facility/vaccination-management/update/${id}`, data);
+  update: async (id: number, data: Partial<Vaccination> | FormData) => {
+    let headers = undefined;
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      headers = { 'Content-Type': 'multipart/form-data' };
+    }
+    return apiClient.post(
+      `/facility/vaccination-management/update/${id}`,
+      data,
+      headers ? { headers } : undefined
+    );
   },
 
   deleteById: async (id: number) => {
@@ -173,5 +181,9 @@ export const vaccinationApi = {
 
   viewRecordsByPetId: async (petId: string | number) => {
     return apiClient.get(`/facility/vaccination-management/view-records/${petId}`);
+  },
+
+  deleteVaccinationFile: async (fileId: number) => {
+    return apiClient.delete(`/facility/vaccination-management/vaccination-file/delete/${fileId}`);
   }
 };
