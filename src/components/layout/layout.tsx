@@ -89,7 +89,6 @@ export default function DefaultLayout({ children }: Readonly<{ children: React.R
     const handleAuthenticated = async () => {
       if (isAuthenticated) {
         const res = await checkAuth();
-        console.log('@@ useEffect user', res);
         setLoading(false);
       }
     };

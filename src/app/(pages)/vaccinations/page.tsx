@@ -111,7 +111,6 @@ function transformVaccinationData(
   onDeleteVaccination: (vaccinationId: number, petName: string) => void,
   onEditVaccination: (vaccinationId: number) => void
 ): VaccinationTableRow[] {
-  console.log('transformVaccinationData input:', data);
   const result = data.map((vaccination) => ({
     id: vaccination.id,
     clientName: [
@@ -159,7 +158,6 @@ function transformVaccinationData(
       }
     ]
   }));
-  console.log('transformVaccinationData output:', result);
   return result;
 }
 

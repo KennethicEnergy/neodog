@@ -131,8 +131,6 @@ const RevenueChart: React.FC = () => {
       }
     });
 
-    console.log(labels[labels.length - 1], dataPoints[dataPoints.length - 1]);
-
     return () => {
       chartRef.current?.destroy();
     };

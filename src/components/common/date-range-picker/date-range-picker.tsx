@@ -41,7 +41,6 @@ const DateRangePicker = React.forwardRef<HTMLDivElement, DateRangePickerProps>(
     const [currentMonth, setCurrentMonth] = React.useState(() => {
       const today = new Date();
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-      console.log('Initializing currentMonth to:', firstDay.toISOString().split('T')[0]);
       return firstDay;
     });
     const [hoveredDate, setHoveredDate] = React.useState<string | null>(null);
