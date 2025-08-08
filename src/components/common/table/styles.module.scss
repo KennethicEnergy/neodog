@@ -103,7 +103,7 @@
           font-weight: 700;
           font-size: 12px;
           line-height: 20px;
-          color: #5a5a5a;
+          color: $gray-600;
           border-bottom: 2px solid $gray-300;
           background-color: $gray-100;
           min-width: 150px;
@@ -492,7 +492,7 @@
   display: inline-block;
   min-width: 24px;
   text-align: center;
-  color: #888;
+  color: $text-lighter;
   font-size: 16px;
   pointer-events: none;
   user-select: none;

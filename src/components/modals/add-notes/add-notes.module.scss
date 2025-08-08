@@ -1,5 +1,7 @@
+@import '@/styles/variables';
+
 .addNoteModalContainer {
-  background: #fff;
+  background: $white;
   border-radius: 24px;
   min-width: 600px;
   display: flex;
@@ -11,25 +13,25 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #222;
+  color: $black;
 }
 
 .textarea {
   width: 100%;
-  border: 1.5px solid #ddd;
+  border: 1.5px solid $border-light;
   border-radius: 8px;
   padding: 1.2rem;
   font-size: 1.1rem;
-  color: #222;
+  color: $black;
   resize: none;
-  background: #fff;
+  background: $white;
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.2s;
 }
 
 .textarea:focus {
-  border-color: #7f7f7f;
+  border-color: $gray-500;
 }
 
 .footer {

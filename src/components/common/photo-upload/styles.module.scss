@@ -1,3 +1,5 @@
+@import '@/styles/variables';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -8,8 +10,8 @@
 .uploadCircle {
   position: relative;
   border-radius: 50%;
-  border: 2px dashed #d1d5db;
-  background-color: #f9fafb;
+  border: 2px dashed $gray-300;
+  background-color: $gray-100;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   overflow: hidden;
@@ -18,8 +20,8 @@
   justify-content: center;
 
   &:hover {
-    border-color: #3b82f6;
-    background-color: #eff6ff;
+    border-color: $blue-active;
+    background-color: rgba($blue-active, 0.05);
 
     .overlay {
       opacity: 1;
@@ -28,17 +30,17 @@
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: $blue-active;
+    box-shadow: 0 0 0 3px rgba($blue-active, 0.1);
   }
 
   &.error {
-    border-color: #ef4444;
-    background-color: #fef2f2;
+    border-color: $danger;
+    background-color: rgba($danger, 0.05);
 
     &:hover {
-      border-color: #dc2626;
-      background-color: #fef2f2;
+      border-color: darken($danger, 10%);
+      background-color: rgba($danger, 0.05);
     }
   }
 
@@ -47,8 +49,8 @@
     opacity: 0.6;
 
     &:hover {
-      border-color: #d1d5db;
-      background-color: #f9fafb;
+      border-color: $gray-300;
+      background-color: $gray-100;
 
       .overlay {
         opacity: 0;
@@ -115,7 +117,7 @@
 
 .placeholderText {
   font-size: 12px;
-  color: #6b7280;
+  color: $gray-500;
   font-weight: 500;
   line-height: 1.2;
   position: absolute;
@@ -135,7 +137,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba($black, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,7 +147,7 @@
 }
 
 .overlayText {
-  color: white;
+  color: $white;
   font-size: 12px;
   font-weight: 500;
   text-align: center;
@@ -173,12 +175,12 @@
 
 .helperText {
   font-size: 12px;
-  color: #6b7280;
+  color: $gray-500;
   margin: 0;
   text-align: center;
   line-height: 1.4;
 
   &.errorText {
-    color: #ef4444;
+    color: $danger;
   }
 }

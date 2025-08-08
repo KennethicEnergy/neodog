@@ -42,13 +42,13 @@
 }
 
 .formFieldError {
-  color: red;
+  color: $danger;
   font-size: 0.95em;
   margin-top: 2px;
 }
 
 .formMessage {
-  color: red;
+  color: $danger;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -71,12 +71,12 @@
 
 .facilityFieldsVisible p {
   font-weight: 500;
-  color: #666;
+  color: $text-light;
 }
 
 .description {
   font-weight: 500;
-  color: #666;
+  color: $text-light;
 }
 
 // Mobile responsive styles

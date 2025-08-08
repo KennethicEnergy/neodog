@@ -18,7 +18,7 @@
 }
 
 .operatingDaysSummary {
-  color: #888;
+  color: $text-lighter;
   font-size: 12px;
   font-weight: 400;
   white-space: nowrap;
@@ -49,14 +49,14 @@
 }
 
 .dayButton {
-  background: #eee;
-  color: #333;
+  background: $gray-200;
+  color: $dark;
   cursor: pointer;
 }
 
 .selectedDayButton {
   background: $gray-500;
-  color: #fff;
+  color: $white;
   cursor: pointer;
 }
 

@@ -1,3 +1,5 @@
+@import '@/styles/variables';
+
 .modalContainer {
   min-width: 600px;
   max-width: 800px;
@@ -7,12 +9,12 @@
 .header {
   font-weight: 600;
   margin: 1rem 0;
-  color: #1a1a1a;
+  color: $black;
   padding: 0 1rem;
 }
 
 .section {
-  background: #ffffff;
+  background: $white;
   border-radius: 8px;
   padding: 1rem;
   height: 300px;
@@ -29,7 +31,7 @@
   min-height: 200px;
 
   p {
-    color: #888;
+    color: $text-lighter;
     font-size: 1rem;
     margin: 0;
   }
@@ -37,16 +39,16 @@
 
 .noRecords {
   text-align: center;
-  color: #888;
+  color: $text-lighter;
   padding: 2rem;
 }
 
 .vaccineCard {
-  background: #fff;
+  background: $white;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid $border-light;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -63,22 +65,22 @@
 }
 
 .vaccineType {
-  color: #888;
+  color: $text-lighter;
   font-size: 15px;
 }
 
 .vaccineStatus {
   font-weight: 600;
   font-size: 14px;
-  background: #f3f3f3;
+  background: $gray-100;
   border-radius: 16px;
   padding: 4px 16px;
-  color: #888;
+  color: $text-lighter;
 }
 
 .vaccineDates {
   margin-top: 8px;
-  color: #444;
+  color: $gray-700;
   font-size: 15px;
 }
 
@@ -96,7 +98,7 @@
   padding: 8px 20px;
   font-size: 16px;
   border-radius: 4px;
-  background: #e0e0e0;
+  background: $border-light;
   border: none;
   cursor: pointer;
   font-weight: 500;

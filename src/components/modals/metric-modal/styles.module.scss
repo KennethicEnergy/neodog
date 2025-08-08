@@ -1,7 +1,7 @@
 @import '@/styles/variables';
 
 .metricModal {
-  background: #f5f5f5;
+  background: $background;
   display: flex;
   flex-direction: column;
   gap: 1rem;

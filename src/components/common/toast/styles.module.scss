@@ -74,23 +74,23 @@
 }
 
 .primary {
-  border: 1px solid rgba(0, 112, 243, 0.8);
-  background-color: #e6f0fb;
+  border: 1px solid rgba($primary, 0.8);
+  background-color: rgba($primary, 0.1);
   color: $primary;
 }
 .success {
-  border: 1px solid rgba(40, 167, 69, 0.8);
-  background-color: #e6f9ef;
+  border: 1px solid rgba($success, 0.8);
+  background-color: rgba($success, 0.1);
   color: $success;
 }
 .danger {
-  border: 1px solid rgba(220, 53, 69, 0.8);
-  background-color: #fdeaea;
+  border: 1px solid rgba($danger, 0.8);
+  background-color: rgba($danger, 0.1);
   color: $danger;
 }
 .warning {
-  border: 1px solid rgba(255, 193, 7, 0.8);
-  background-color: #fff8e1;
+  border: 1px solid rgba($warning, 0.8);
+  background-color: rgba($warning, 0.1);
   color: $warning;
 }
 
